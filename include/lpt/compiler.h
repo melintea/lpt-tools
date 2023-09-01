@@ -14,14 +14,15 @@
  * Usage:
  *   disable_optimizer(v.data());
  *   v.push_back(xyz);
- *   read_write_memory();
+ *   barrier();
  */
 inline void disable_optimizer(void* p) {
     asm volatile("" : : "g"(p) : "memory");
 }
 
 // Pretend all memory was read & written
-inline void read_write_memory() {
+//#define barrier() __asm__ __volatile__("": : :"memory")
+inline void barrier() {
     asm volatile("" : : : "memory");
 }
 
@@ -47,7 +48,4 @@ inline void read_write_memory() {
 #else
 #  warning ACCESSB already defined
 #endif
-
-
-#define barrier() __asm__ __volatile__("": : :"memory")
 
