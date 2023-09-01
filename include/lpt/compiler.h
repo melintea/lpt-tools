@@ -1,6 +1,9 @@
 /*
  *  $Id: $
  *
+ *  Copyright 2023 Aurelian Melinte. 
+ *  Released under LGPL 3.0 or later. 
+ * 
  *  Various instructions for the compiler to be used from within code.
  */
 
