@@ -38,7 +38,7 @@
 #endif
 
 constexpr const size_t vecSize = 10'000'000;
-constexpr const int    numLoops = 2;
+constexpr const int    numLoops = 50;
 
 using strvec = std::vector<std::string>;
 
@@ -52,6 +52,8 @@ using strvec = std::vector<std::string>;
        // , PAPI_L2_STM  // "L2 store  missess"
        , PAPI_BR_MSP  // "Branch mispredictions"
    >;
+
+   using accumulator_set = lpt::papi::accumulator_set<counters>;
 
 //-----------------------------------------------------------------------------
 /*
@@ -178,6 +180,8 @@ int main()
    counters::measurement_data copyConstructRead;
    counters::measurement_data moveConstructRead;
 
+   accumulator_set stats;
+
    copyConstructedData.reserve(vecSize);
    moveConstructedData.reserve(vecSize);
 
@@ -196,7 +200,7 @@ int main()
                                   std::cout << std::endl;
                             };
 
-   for (auto loop : std::views::iota(1, numLoops))
+   for (auto loop : std::views::iota(1, numLoops+1))
    {
        std::cout << loop << " -------------------------------------\n";
 
@@ -263,9 +267,14 @@ int main()
         as_percent("Diffusion (positive: move is worse)", moveConstructRead, copyConstructRead);
 
         counters::percents_t pcts(moveConstructRead.as_percent_of(copyConstructRead));
+        stats(pcts);
 
         std::cout << std::endl;
-    }
+    } // for tests' loop
+
+    std::cout << "\n" << numLoops << " tests stats:\nPositive%: move is worse than copy\n"
+               << stats
+               << std::endl;
 
 
    exit(EXIT_SUCCESS);    
