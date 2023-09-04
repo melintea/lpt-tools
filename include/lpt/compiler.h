@@ -9,6 +9,8 @@
 
 #pragma once 
 
+namespace lpt { namespace intel {
+
 /*
  * p can be used to access all memory - placate optimizer for p
  * Usage:
@@ -48,4 +50,7 @@ inline void barrier() {
 #else
 #  warning ACCESSB already defined
 #endif
+
+}} //namespace lpt::intel
+
 
