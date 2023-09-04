@@ -15,12 +15,14 @@
 
 #pragma once
 
+#include <array>
+#include <algorithm>
+#include <atomic>
+#include <cassert>
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <algorithm>
-#include <cassert>
-#include <atomic>
+#include <utility>
 
 #include <papi.h> 
 
@@ -268,10 +270,14 @@ public:
 
     static constexpr const size_t NUM_COUNTERS = sizeof...(EVENTS);
     using event_t    = int;
-    using value_t    = long long;
-    using events_t   = event_t[NUM_COUNTERS];
+    using events_t   = std::array<event_t, NUM_COUNTERS>;
     using eventset_t = int;
-    using values_t   = value_t[NUM_COUNTERS];
+    using name_t     = char[PAPI_MAX_STR_LEN + 1];
+    using names_t    = std::array<std::string, NUM_COUNTERS>;
+    using value_t    = long long;
+    using values_t   = std::array<value_t, NUM_COUNTERS>;
+    using percent_t  = double;
+    using percents_t = std::array<percent_t, NUM_COUNTERS>;
 
     counters()
     {
@@ -284,7 +290,7 @@ public:
             throw error("PAPI_create_eventset", retval);
         }
 
-        retval = PAPI_add_events(_eventSet, (int*)_events, NUM_COUNTERS);
+        retval = PAPI_add_events(_eventSet, const_cast<event_t*>(_events.begin()), NUM_COUNTERS);
         if (retval != PAPI_OK) {
             // events that can be added are added even if it returns an error
             //throw error("PAPI_add_events", retval);
@@ -305,7 +311,7 @@ public:
     ~counters() noexcept(false)
     {
         values_t  discard{0};
-        int retval(PAPI_stop(_eventSet, discard));
+        int retval(PAPI_stop(_eventSet, discard.begin()));
         if (retval != PAPI_OK) {
             throw error("PAPI_stop", retval);
         }
@@ -323,14 +329,21 @@ public:
 
     static std::string name(size_t idx)
     {
+        static const names_t _names = [&](){
+            names_t ns2;
+            for (auto idx = 0; idx < NUM_COUNTERS; ++idx) {
+                name_t n = {0};
+                PAPI_event_code_to_name(_events[idx], n);
+                ns2[idx] = n;
+
+                //PAPI_event_info_t _einfo;
+                //PAPI_get_event_info(evt, &_einfo);
+            }
+            return ns2;
+        }();
+
         assert(idx < NUM_COUNTERS);
-
-        char  n[PAPI_MAX_STR_LEN+1] = {0};
-        PAPI_event_code_to_name(_events[idx], n);
-        return n;
-
-        //PAPI_event_info_t _einfo;
-        //PAPI_get_event_info(evt, &_einfo);
+        return _names[idx];
     }
 
     void accumulate(const values_t& vals)
@@ -379,7 +392,7 @@ public:
         const     values_t&    values() const { return _values; }
         const     std::string& tag()    const { return _tag; }
 
-        measurement_data operator-(const measurement_data& r)
+        measurement_data operator-(const measurement_data& r) const
         {
             measurement_data ret;
             for (auto i = 0; i < NUM_COUNTERS; ++i )
@@ -389,6 +402,20 @@ public:
             return ret;
         }
 
+        percents_t as_percent_of(const measurement_data& base) const
+        {
+            percents_t pcts{0};
+            for (auto i = 0; i < NUM_COUNTERS; ++i )
+            {
+                double dataPoint(_values[i]);
+                double basePoint(base._values[i]);
+                pcts[i] = basePoint != 0
+                        ? (((dataPoint - basePoint)/basePoint) * 100)
+                        : 0 ;
+            }
+            return pcts;
+        }
+
     }; // measurement_data
 
     template <typename FUNC>
@@ -396,6 +423,7 @@ public:
     {
     public:
 
+        /// Apply the @param func functor in the destructor
         measurement(std::string      tag,
                     counters&        ctrs,
                     FUNC             func)
@@ -403,7 +431,7 @@ public:
             , _counters(ctrs)
             , _func(std::move(func))
         {
-            int retval(PAPI_read(_counters.eventset(), measurement_data::_values));
+            int retval(PAPI_read(_counters.eventset(), measurement_data::_values.begin()));
             if (retval != PAPI_OK) {
                 throw error("PAPI_read", retval);
             }
@@ -413,7 +441,7 @@ public:
         {
             values_t  _second_read{0};
 
-            int retval(PAPI_read(_counters.eventset(), _second_read));
+            int retval(PAPI_read(_counters.eventset(), _second_read.begin()));
             if (retval == PAPI_OK)
             {
                 for (auto i = 0; i < NUM_COUNTERS; ++i )
@@ -434,7 +462,7 @@ public:
         {
             measurement_data dnow{measurement_data::_tag};
 
-            int retval(PAPI_read(_counters.eventset(), dnow._values));
+            int retval(PAPI_read(_counters.eventset(), dnow._values.begin()));
             if (retval != PAPI_OK) {
                 throw error("PAPI_read", retval);
             }
@@ -457,6 +485,7 @@ public:
 private:
 
     static constexpr const events_t   _events{ EVENTS... };
+    //static constexpr const names_t    _names{};
     eventset_t                        _eventSet{PAPI_NULL};
     values_t                          _accumulators{0};
 
