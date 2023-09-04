@@ -10,8 +10,13 @@
  * 
  *  Notes:
  *  * measurements on an 4-cpu Intel(R) Pentium(R) Gold G5420 CPU @ 3.80GHz
- *   - cycles: reading moved objects increase cycles by about 400+ %
- *   - cache misses: reading moved objects increase cache misses by 300+ %
+ *      Stats for 50 tests stats; positive%: move is worse than copy:
+ *      Counter,      min%,    max%,    mean%,   median%, stddev
+ *      PAPI_TOT_INS, 11.326,  11.3265, 11.3262, 11.3262, 8.85509e-05
+ *      PAPI_TOT_CYC, 104.449, 306.481, 236.179, 246.921, 46.9529
+ *      PAPI_L1_DCM,  220.235, 221.637, 221.32,  221.326, 0.219124
+ *      PAPI_L2_DCM,  334.049, 383.885, 359.962, 352.859, 19.3096
+ *      PAPI_BR_MSP,  0,       0,       0,       0,       0
  */
 
 #include <lpt/papi_stats.h>
