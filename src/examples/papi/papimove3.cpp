@@ -10,11 +10,16 @@
  * 
  *  Notes:
  *  * measurements on an 4-cpu Intel(R) Pentium(R) Gold G5420 CPU @ 3.80GHz
- *   - cycles: reading moved objects increase cycles by about 400+ %
- *   - cache misses: reading moved objects increase cache misses by 300+ %
+ *      Stats for 50 tests stats; positive%: move is worse than copy:
+ *      Counter,      min%,    max%,    mean%,   median%, stddev
+ *      PAPI_TOT_INS, 11.326,  11.3265, 11.3262, 11.3262, 8.85509e-05
+ *      PAPI_TOT_CYC, 104.449, 306.481, 236.179, 246.921, 46.9529
+ *      PAPI_L1_DCM,  220.235, 221.637, 221.32,  221.326, 0.219124
+ *      PAPI_L2_DCM,  334.049, 383.885, 359.962, 352.859, 19.3096
+ *      PAPI_BR_MSP,  0,       0,       0,       0,       0
  */
 
-#include <lpt/papi.h>
+#include <lpt/papi/papi_stats.h>
 
 #include <atomic>
 #include <barrier>
@@ -22,6 +27,7 @@
 #include <ctime>
 #include <mutex>
 #include <new>
+#include <ranges>
 #include <string>
 #include <thread>
 #include <vector>
@@ -37,6 +43,7 @@
 #endif
 
 constexpr const size_t vecSize = 10'000'000;
+constexpr const int    numLoops = 50;
 
 using strvec = std::vector<std::string>;
 
@@ -50,6 +57,8 @@ using strvec = std::vector<std::string>;
        // , PAPI_L2_STM  // "L2 store  missess"
        , PAPI_BR_MSP  // "Branch mispredictions"
    >;
+
+   using accumulator_set = lpt::papi::accumulator_set<counters>;
 
 //-----------------------------------------------------------------------------
 /*
@@ -176,6 +185,8 @@ int main()
    counters::measurement_data copyConstructRead;
    counters::measurement_data moveConstructRead;
 
+   accumulator_set stats;
+
    copyConstructedData.reserve(vecSize);
    moveConstructedData.reserve(vecSize);
 
@@ -194,69 +205,82 @@ int main()
                                   std::cout << std::endl;
                             };
 
-   std::cout << "**\n"
-                "** Under cache line size \n"
-                "**\n";
+   for (auto loop : std::views::iota(1, numLoops+1))
    {
-       strvec& data(copyConstructedData);
-       counters::measurement_data& measurement(copyConstructRead);
+       std::cout << loop << " -------------------------------------\n";
 
-       // prefill
-       data.clear();
-       for (auto i = 0; i < vecSize; ++i)
-       {
-           data.push_back(underCacheLineStr);
-       }
+           std::cout << "**\n"
+                        "** Under cache line size \n"
+                        "**\n";
+        {
+            strvec& data(copyConstructedData);
+            counters::measurement_data& measurement(copyConstructRead);
 
-       // Churn memory for churnTime
-       fill_copy(data, underCacheLineStr);
+            // prefill
+            data.clear();
+            for (auto i = 0; i < vecSize; ++i)
+            {
+                data.push_back(underCacheLineStr);
+            }
 
-       {
-           counters::measurement pc("Baseline read of copy <64 constructed",
-                                    ctrs,
-                                    cout_measurement);
-           for (auto i = 0; i < vecSize; ++i)
-           {
-               const auto& str = data[i];
-               for (auto j = 0; j < str.size(); ++j) { volatile char c = str[j]; }
-           }
+            // Churn memory for churnTime
+            fill_copy(data, underCacheLineStr);
 
-           measurement = pc.data();
-       }
-   }
-   {
-       strvec& data(moveConstructedData);
-       counters::measurement_data& measurement(moveConstructRead);
+            {
+                counters::measurement pc("Baseline read of copy <64 constructed",
+                                            ctrs,
+                                            cout_measurement);
+                for (auto i = 0; i < vecSize; ++i)
+                {
+                    const auto& str = data[i];
+                    for (auto j = 0; j < str.size(); ++j) { volatile char c = str[j]; }
+                }
 
-       data.clear();
-       for (auto i = 0; i < vecSize; ++i)
-       {
-           data.push_back(underCacheLineStr);
-       }
+                measurement = pc.data();
+            }
+        }
+        {
+            strvec& data(moveConstructedData);
+            counters::measurement_data& measurement(moveConstructRead);
 
-       // Churn memory for churnTime
-       fill_move(data, overCacheLine, overCacheLineSize);
+            data.clear();
+            for (auto i = 0; i < vecSize; ++i)
+            {
+                data.push_back(underCacheLineStr);
+            }
 
-       {
-           counters::measurement pc("Baseline read of move <64 constructed",
-                                    ctrs,
-                                    cout_measurement);
-           for (auto i = 0; i < vecSize; ++i)
-           {
-               const auto& str = data[i];
-               for (auto j = 0; j < str.size(); ++j) { volatile char c = str[j]; }
-           }
+            // Churn memory for churnTime
+            fill_move(data, overCacheLine, overCacheLineSize);
 
-           measurement = pc.data();
-       }
-   }
+            {
+                counters::measurement pc("Baseline read of move <64 constructed",
+                                            ctrs,
+                                            cout_measurement);
+                for (auto i = 0; i < vecSize; ++i)
+                {
+                    const auto& str = data[i];
+                    for (auto j = 0; j < str.size(); ++j) { volatile char c = str[j]; }
+                }
 
-   counters::measurement_data copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
-   copyLessMoveConstructRead._tag = "Diffusion read: copy - move (negative if move > copy)";
-   cout_measurement(&copyLessMoveConstructRead);
-   as_percent("Diffusion (positive: move is worse)", moveConstructRead, copyConstructRead);
+                measurement = pc.data();
+            }
+        }
 
-   std::cout << std::endl;
+        counters::measurement_data copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
+        copyLessMoveConstructRead._tag = "Diffusion read: copy - move (negative if move > copy)";
+        cout_measurement(&copyLessMoveConstructRead);
+        as_percent("Diffusion (positive: move is worse)", moveConstructRead, copyConstructRead);
+
+        counters::percents_t pcts(moveConstructRead.as_percent_of(copyConstructRead));
+        stats(pcts);
+
+        std::cout << std::endl;
+    } // for tests' loop
+
+    std::cout << "\n" << numLoops << " tests stats:\nPositive%: move is worse than copy\n"
+               << stats
+               << std::endl;
+
 
    exit(EXIT_SUCCESS);    
 }

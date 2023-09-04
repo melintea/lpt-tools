@@ -12,7 +12,7 @@
  *   - reading moved objects increase cache misses by 80-140 %
  */
 
-#include <lpt/papi.h>
+#include <lpt/papi/papi.h>
 
 #include <barrier>
 #include <mutex>
