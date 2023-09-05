@@ -8,9 +8,9 @@
  
  
 #if defined(_WIN32)
-#  include <lpt/detail/win_call_stack.hpp>
+#  include <lpt/callstack/detail/win_call_stack.hpp>
 #elif defined(__GNUG__)
-#  include <lpt/detail/glibc_call_stack.hpp>
+#  include <lpt/callstack/detail/glibc_call_stack.hpp>
 #else
 #  error "Unsupported platform"
 #endif
