@@ -1,0 +1,125 @@
+Compiler version: 1538
+func1
+aclass::meth1
+aclass::meth2
+func2
+**
+[ Stack: 12
+[13f3a6886] ??+0x0
+	in ??
+	at ??:0
+[13f3a1909] ??+0x0
+	in ??
+	at ??:0
+[13f3a3179] ??+0x0
+	in ??
+	at ??:0
+[13f3a1994] ??+0x0
+	in ??
+	at ??:0
+[13f3a7c48] ??+0x0
+	in ??
+	at ??:0
+[13f3a7bca] ??+0x0
+	in ??
+	at ??:0
+[13f3a1c5c] ??+0x0
+	in ??
+	at ??:0
+[13f3a1cec] ??+0x0
+	in ??
+	at ??:0
+[13f3a8e6d] ??+0x0
+	in ??
+	at ??:0
+[13f3a8f9e] ??+0x0
+	in ??
+	at ??:0
+[7741652d] ??+0x0
+	in ??
+	at ??:0
+[7769c521] ??+0x0
+	in ??
+	at ??:0
+**] Stack
+
+**
+[ Stack: 12
+[13f3a6886] lpt::stack::detail::dbghelp::library::backtrace+0xb6
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\lpt\include\lpt\win_call_stack_details.hpp:321
+[13f3a1909] lpt::stack::detail::backtrace+0x39
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\lpt\include\lpt\win_call_stack_details.hpp:395
+[13f3a3179] lpt::stack::call_stack<40>::call_stack<40>+0x69
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\lpt\include\lpt\call_stack.hpp:74
+[13f3a1994] func2+0x74
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:27
+[13f3a7c48] aclass::meth2+0x58
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:48
+[13f3a7bca] aclass::meth1+0x5a
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:54
+[13f3a1c5c] func1+0x5c
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:66
+[13f3a1cec] wmain+0x5c
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:75
+[13f3a8e6d] __tmainCRTStartup+0x19d
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at f:\dd\vctools\crt_bld\self_64_amd64\crt\src\crtexe.c:533
+[13f3a8f9e] wmainCRTStartup+0xe
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at f:\dd\vctools\crt_bld\self_64_amd64\crt\src\crtexe.c:377
+[7741652d] wmainCRTStartup-0x0
+	in C:\Windows\system32\kernel32.dll
+	at f:\dd\vctools\crt_bld\self_64_amd64\crt\src\crtexe.c:377
+[7769c521] wmainCRTStartup-0x0
+	in C:\Windows\SYSTEM32\ntdll.dll
+	at f:\dd\vctools\crt_bld\self_64_amd64\crt\src\crtexe.c:377
+**] Stack
+
+**
+[ Stack: 12
+[13f3a6886] lpt::stack::detail::dbghelp::library::backtrace+0xb6
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\lpt\include\lpt\win_call_stack_details.hpp:321
+[13f3a1909] lpt::stack::detail::backtrace+0x39
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\lpt\include\lpt\win_call_stack_details.hpp:395
+[13f3a3179] lpt::stack::call_stack<40>::call_stack<40>+0x69
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\lpt\include\lpt\call_stack.hpp:74
+[13f3a1994] func2+0x74
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:27
+[13f3a7c48] aclass::meth2+0x58
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:48
+[13f3a7bca] aclass::meth1+0x5a
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:54
+[13f3a1c5c] func1+0x5c
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:66
+[13f3a1cec] wmain+0x5c
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:75
+[13f3a8e6d] __tmainCRTStartup+0x19d
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at f:\dd\vctools\crt_bld\self_64_amd64\crt\src\crtexe.c:533
+[13f3a8f9e] wmainCRTStartup+0xe
+	in C:\xyz\callstack\lpt\tests\winstack\x64\Debug\winstack.exe
+	at f:\dd\vctools\crt_bld\self_64_amd64\crt\src\crtexe.c:377
+[7741652d] wmainCRTStartup-0x0
+	in C:\Windows\system32\kernel32.dll
+	at f:\dd\vctools\crt_bld\self_64_amd64\crt\src\crtexe.c:377
+[7769c521] wmainCRTStartup-0x0
+	in C:\Windows\SYSTEM32\ntdll.dll
+	at f:\dd\vctools\crt_bld\self_64_amd64\crt\src\crtexe.c:377
+**] Stack
+

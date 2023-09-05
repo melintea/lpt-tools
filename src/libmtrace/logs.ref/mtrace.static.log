@@ -1,0 +1,90 @@
+= Start
+@ /usr/lib/libstdc++.so.6:(_Znwj+27)[0x400fa727] + 0x8590998 0x13
+**[ Stack: 11
+[0x804938e]  (./sleaker+804938e)
+[0x8049b03]  (./sleaker+8049b03)
+[0x804a07b]  (./sleaker+804a07b)
+[0x401cb905] __libc_malloc (/lib/i686/cmov/libc.so.6+35)
+[0x400fa727] operator new(unsigned int) (/usr/lib/libstdc++.so.6+27)
+[0x400d4c01] std::string::_Rep::_S_create(unsigned int, unsigned int, std::allocator<char> const&) (/usr/lib/libstdc++.so.6+61)
+[0x400d5f05]  (/usr/lib/libstdc++.so.6+400d5f05)
+[0x400d60b7] std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (/usr/lib/libstdc++.so.6+47)
+[0x804900c] __gxx_personality_v0 (./sleaker+26c)
+[0x40174450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048df1] __gxx_personality_v0 (./sleaker+51)
+**] Stack
+
+@ /usr/lib/libstdc++.so.6:(_Znwj+27)[0x400fa727] + 0x85909b0 0x4
+**[ Stack: 8
+[0x804938e]  (./sleaker+804938e)
+[0x8049b03]  (./sleaker+8049b03)
+[0x804a07b]  (./sleaker+804a07b)
+[0x401cb905] __libc_malloc (/lib/i686/cmov/libc.so.6+35)
+[0x400fa727] operator new(unsigned int) (/usr/lib/libstdc++.so.6+27)
+[0x8049034] __gxx_personality_v0 (./sleaker+294)
+[0x40174450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048df1] __gxx_personality_v0 (./sleaker+51)
+**] Stack
+
+@ /usr/lib/libstdc++.so.6:(_Znwj+27)[0x400fa727] + 0x85909e8 0x11
+**[ Stack: 11
+[0x804938e]  (./sleaker+804938e)
+[0x8049b03]  (./sleaker+8049b03)
+[0x804a07b]  (./sleaker+804a07b)
+[0x401cb905] __libc_malloc (/lib/i686/cmov/libc.so.6+35)
+[0x400fa727] operator new(unsigned int) (/usr/lib/libstdc++.so.6+27)
+[0x400d4c01] std::string::_Rep::_S_create(unsigned int, unsigned int, std::allocator<char> const&) (/usr/lib/libstdc++.so.6+61)
+[0x400d5f05]  (/usr/lib/libstdc++.so.6+400d5f05)
+[0x400d60b7] std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (/usr/lib/libstdc++.so.6+47)
+[0x8049078] __gxx_personality_v0 (./sleaker+2d8)
+[0x40174450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048df1] __gxx_personality_v0 (./sleaker+51)
+**] Stack
+
+@ ./sleaker:(__gxx_personality_v0+2f5)[0x8049095] + 0x8590a00 0x400
+**[ Stack: 7
+[0x804938e]  (./sleaker+804938e)
+[0x8049b03]  (./sleaker+8049b03)
+[0x804a07b]  (./sleaker+804a07b)
+[0x401cb905] __libc_malloc (/lib/i686/cmov/libc.so.6+35)
+[0x8049095] __gxx_personality_v0 (./sleaker+2f5)
+[0x40174450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048df1] __gxx_personality_v0 (./sleaker+51)
+**] Stack
+
+@ ./sleaker:(__gxx_personality_v0+304)[0x80490a4] + 0x8590e08 0x800
+**[ Stack: 7
+[0x804938e]  (./sleaker+804938e)
+[0x8049b03]  (./sleaker+8049b03)
+[0x804a07b]  (./sleaker+804a07b)
+[0x401cb905] __libc_malloc (/lib/i686/cmov/libc.so.6+35)
+[0x80490a4] __gxx_personality_v0 (./sleaker+304)
+[0x40174450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048df1] __gxx_personality_v0 (./sleaker+51)
+**] Stack
+
+@ ./sleaker:(__gxx_personality_v0+312)[0x80490b2] - 0x8590e08
+**[ Stack: 7
+[0x804938e]  (./sleaker+804938e)
+[0x8049b03]  (./sleaker+8049b03)
+[0x804a199]  (./sleaker+804a199)
+[0x401cd145] cfree (/lib/i686/cmov/libc.so.6+35)
+[0x80490b2] __gxx_personality_v0 (./sleaker+312)
+[0x40174450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048df1] __gxx_personality_v0 (./sleaker+51)
+**] Stack
+
+@ /usr/lib/libstdc++.so.6:(_ZdlPv+21)[0x400f8e41] - 0x8590998
+**[ Stack: 10
+[0x804938e]  (./sleaker+804938e)
+[0x8049b03]  (./sleaker+8049b03)
+[0x804a199]  (./sleaker+804a199)
+[0x401cd145] cfree (/lib/i686/cmov/libc.so.6+35)
+[0x400f8e41] operator delete(void*) (/usr/lib/libstdc++.so.6+21)
+[0x400d4c4d] std::string::_Rep::_M_destroy(std::allocator<char> const&) (/usr/lib/libstdc++.so.6+1d)
+[0x400d6af1] std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string() (/usr/lib/libstdc++.so.6+51)
+[0x80490c2] __gxx_personality_v0 (./sleaker+322)
+[0x40174450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048df1] __gxx_personality_v0 (./sleaker+51)
+**] Stack
+

@@ -1,0 +1,8 @@
+= Start
+@ /usr/lib/libstdc++.so.6:(_Znwj+0x27)[0xb7ebb727] + 0x9fca378 0x13
+@ /usr/lib/libstdc++.so.6:(_Znwj+0x27)[0xb7ebb727] + 0x9fca390 0x4
+@ /usr/lib/libstdc++.so.6:(_Znwj+0x27)[0xb7ebb727] + 0x9fca3a0 0x11
+@ /home/amelinte/projects/articole/memtrace/memtrace.v3/dleaker:(__gxx_personality_v0+0x2ed)[0x8048a75] + 0x9fca3b8 0x400
+@ /home/amelinte/projects/articole/memtrace/memtrace.v3/dleaker:(__gxx_personality_v0+0x2fc)[0x8048a84] + 0x9fca7c0 0x800
+@ /home/amelinte/projects/articole/memtrace/memtrace.v3/dleaker:(__gxx_personality_v0+0x30a)[0x8048a92] - 0x9fca7c0
+@ /usr/lib/libstdc++.so.6:(_ZdlPv+0x21)[0xb7eb9e41] - 0x9fca378

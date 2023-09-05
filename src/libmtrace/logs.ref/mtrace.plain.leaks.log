@@ -1,0 +1,7 @@
+
+Memory not freed:
+-----------------
+   Address     Size     Caller
+0x081e2390      0x4  at 0x400fa727
+0x081e23a0     0x11  at 0x400fa727
+0x081e23b8    0x400  at /home/amelinte/projects/articole/memtrace/memtrace.v3/main.cpp:25

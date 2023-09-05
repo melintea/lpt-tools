@@ -1,0 +1,91 @@
+= Start
+@ /usr/lib/libstdc++.so.6:(_Znwj+27)[0x400ff727] + 0x8bf8998 0x13
+**[ Stack: 11
+[0x40022251]  (./libmtrace.so+40022251)
+[0x40022b43]  (./libmtrace.so+40022b43)
+[0x400231e8]  (./libmtrace.so+400231e8)
+[0x401cf905] __libc_malloc (/lib/i686/cmov/libc.so.6+35)
+[0x400ff727] operator new(unsigned int) (/usr/lib/libstdc++.so.6+27)
+[0x400d9c01] std::string::_Rep::_S_create(unsigned int, unsigned int, std::allocator<char> const&) (/usr/lib/libstdc++.so.6+61)
+[0x400daf05]  (/usr/lib/libstdc++.so.6+400daf05)
+[0x400db0b7] std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (/usr/lib/libstdc++.so.6+47)
+[0x80489a7] __gxx_personality_v0 (./dleaker+257)
+[0x40178450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048791] __gxx_personality_v0 (./dleaker+41)
+**] Stack
+
+@ /usr/lib/libstdc++.so.6:(_Znwj+27)[0x400ff727] + 0x8bf89b0 0x4
+**[ Stack: 8
+[0x40022251]  (./libmtrace.so+40022251)
+[0x40022b43]  (./libmtrace.so+40022b43)
+[0x400231e8]  (./libmtrace.so+400231e8)
+[0x401cf905] __libc_malloc (/lib/i686/cmov/libc.so.6+35)
+[0x400ff727] operator new(unsigned int) (/usr/lib/libstdc++.so.6+27)
+[0x80489cf] __gxx_personality_v0 (./dleaker+27f)
+[0x40178450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048791] __gxx_personality_v0 (./dleaker+41)
+**] Stack
+
+@ /usr/lib/libstdc++.so.6:(_Znwj+27)[0x400ff727] + 0x8bf89e8 0x11
+**[ Stack: 11
+[0x40022251]  (./libmtrace.so+40022251)
+[0x40022b43]  (./libmtrace.so+40022b43)
+[0x400231e8]  (./libmtrace.so+400231e8)
+[0x401cf905] __libc_malloc (/lib/i686/cmov/libc.so.6+35)
+[0x400ff727] operator new(unsigned int) (/usr/lib/libstdc++.so.6+27)
+[0x400d9c01] std::string::_Rep::_S_create(unsigned int, unsigned int, std::allocator<char> const&) (/usr/lib/libstdc++.so.6+61)
+[0x400daf05]  (/usr/lib/libstdc++.so.6+400daf05)
+[0x400db0b7] std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (/usr/lib/libstdc++.so.6+47)
+[0x8048a13] __gxx_personality_v0 (./dleaker+2c3)
+[0x40178450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048791] __gxx_personality_v0 (./dleaker+41)
+**] Stack
+
+@ ./dleaker:(__gxx_personality_v0+2e0)[0x8048a30] + 0x8bf8a00 0x400
+**[ Stack: 7
+[0x40022251]  (./libmtrace.so+40022251)
+[0x40022b43]  (./libmtrace.so+40022b43)
+[0x400231e8]  (./libmtrace.so+400231e8)
+[0x401cf905] __libc_malloc (/lib/i686/cmov/libc.so.6+35)
+[0x8048a30] __gxx_personality_v0 (./dleaker+2e0)
+[0x40178450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048791] __gxx_personality_v0 (./dleaker+41)
+**] Stack
+
+@ ./dleaker:(__gxx_personality_v0+2ef)[0x8048a3f] + 0x8bf8e08 0x800
+**[ Stack: 7
+[0x40022251]  (./libmtrace.so+40022251)
+[0x40022b43]  (./libmtrace.so+40022b43)
+[0x400231e8]  (./libmtrace.so+400231e8)
+[0x401cf905] __libc_malloc (/lib/i686/cmov/libc.so.6+35)
+[0x8048a3f] __gxx_personality_v0 (./dleaker+2ef)
+[0x40178450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048791] __gxx_personality_v0 (./dleaker+41)
+**] Stack
+
+@ ./dleaker:(__gxx_personality_v0+2fd)[0x8048a4d] - 0x8bf8e08
+**[ Stack: 7
+[0x40022251]  (./libmtrace.so+40022251)
+[0x40022b43]  (./libmtrace.so+40022b43)
+[0x4002331d]  (./libmtrace.so+4002331d)
+[0x401d1145] cfree (/lib/i686/cmov/libc.so.6+35)
+[0x8048a4d] __gxx_personality_v0 (./dleaker+2fd)
+[0x40178450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048791] __gxx_personality_v0 (./dleaker+41)
+**] Stack
+
+@ /usr/lib/libstdc++.so.6:(_ZdlPv+21)[0x400fde41] - 0x8bf8998
+**[ Stack: 10
+[0x40022251]  (./libmtrace.so+40022251)
+[0x40022b43]  (./libmtrace.so+40022b43)
+[0x4002331d]  (./libmtrace.so+4002331d)
+[0x401d1145] cfree (/lib/i686/cmov/libc.so.6+35)
+[0x400fde41] operator delete(void*) (/usr/lib/libstdc++.so.6+21)
+[0x400d9c4d] std::string::_Rep::_M_destroy(std::allocator<char> const&) (/usr/lib/libstdc++.so.6+1d)
+[0x400dbaf1] std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string() (/usr/lib/libstdc++.so.6+51)
+[0x8048a5d] __gxx_personality_v0 (./dleaker+30d)
+[0x40178450] __libc_start_main (/lib/i686/cmov/libc.so.6+e0)
+[0x8048791] __gxx_personality_v0 (./dleaker+41)
+**] Stack
+
+= End

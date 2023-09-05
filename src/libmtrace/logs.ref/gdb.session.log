@@ -1,0 +1,128 @@
+GNU gdb 6.7.1-debian
+Copyright (C) 2007 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "i486-linux-gnu"...
+Using host libthread_db library "/lib/i686/cmov/libthread_db.so.1".
+(gdb) set env MALLOC_TRACE=./logs/gdb.mtrace.log
+(gdb) b __libc_malloc
+Make breakpoint pending on future shared library load? (y or [n]) 
+Breakpoint 1 (__libc_malloc) pending.
+(gdb) run
+Starting program: /home/amelinte/projects/articole/memtrace/memtrace.v3/dleaker 
+Breakpoint 2 at 0xb7cf28d6
+Pending breakpoint "__libc_malloc" resolved
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+(gdb) command
+Type commands for when breakpoint 2 is hit, one per line.
+End with a line saying just "end".
+>bt
+>cont
+>end
+(gdb) c
+Continuing.
+
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0xb7cf2905 in malloc () from /lib/i686/cmov/libc.so.6
+#2  0xb7cf5a55 in mtrace () from /lib/i686/cmov/libc.so.6
+#3  0x080489c7 in main () at main.cpp:21                     <== mtrace();
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0xb7cdf99f in ?? () from /lib/i686/cmov/libc.so.6
+#2  0xb7cdfa6c in fopen () from /lib/i686/cmov/libc.so.6
+#3  0xb7cf5a78 in mtrace () from /lib/i686/cmov/libc.so.6
+#4  0x080489c7 in main () at main.cpp:21
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0xb7ebb727 in operator new () from /usr/lib/libstdc++.so.6
+#2  0xb7e95c01 in std::string::_Rep::_S_create () from /usr/lib/libstdc++.so.6
+#3  0xb7e96f05 in ?? () from /usr/lib/libstdc++.so.6
+#4  0xb7e970b7 in std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string () from /usr/lib/libstdc++.so.6
+#5  0x080489ec in main () at main.cpp:23                     <== new std::string("noleak");
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0xb7cf6198 in ?? () from /lib/i686/cmov/libc.so.6
+#2  0x00000013 in ?? ()
+#3  0xb7e03000 in ?? ()
+#4  0x000e45b4 in ?? ()
+#5  0x00000001 in ?? ()
+#6  0xb7dcdff4 in ?? () from /lib/i686/cmov/libc.so.6
+#7  0x00000013 in ?? ()
+#8  0x00000006 in ?? ()
+#9  0xbf92cbc8 in ?? ()
+#10 0xb7cf2905 in malloc () from /lib/i686/cmov/libc.so.6
+Backtrace stopped: frame did not save the PC
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0xb7ebb727 in operator new () from /usr/lib/libstdc++.so.6
+#2  0x08048a14 in main () at main.cpp:25             <== new std::string("leak");
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0xb7cf6198 in ?? () from /lib/i686/cmov/libc.so.6
+#2  0x00000004 in ?? ()
+#3  0xb7f2eff4 in ?? () from /lib/ld-linux.so.2
+#4  0x080482fc in ?? ()
+#5  0xb7f2f668 in _r_debug ()
+#6  0xb7dcdff4 in ?? () from /lib/i686/cmov/libc.so.6
+#7  0x00000004 in ?? ()
+#8  0x00000000 in ?? ()
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0xb7ebb727 in operator new () from /usr/lib/libstdc++.so.6
+#2  0xb7e95c01 in std::string::_Rep::_S_create () from /usr/lib/libstdc++.so.6
+#3  0xb7e96f05 in ?? () from /usr/lib/libstdc++.so.6
+#4  0xb7e970b7 in std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string () from /usr/lib/libstdc++.so.6
+#5  0x08048a58 in main () at main.cpp:25           <== new std::string("leak");
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0xb7cf6198 in ?? () from /lib/i686/cmov/libc.so.6
+#2  0x00000011 in ?? ()
+#3  0xbf92cbf8 in ?? ()
+#4  0xb7cf5d09 in ?? () from /lib/i686/cmov/libc.so.6
+#5  0x09fca210 in ?? ()
+#6  0xb7dcdff4 in ?? () from /lib/i686/cmov/libc.so.6
+#7  0x00000011 in ?? ()
+#8  0x00000004 in ?? ()
+#9  0xbf92cbc8 in ?? ()
+#10 0xb7cf2905 in malloc () from /lib/i686/cmov/libc.so.6
+Backtrace stopped: frame did not save the PC
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0x08048a75 in main () at main.cpp:27            <== malloc(leak);
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0xb7cf6198 in ?? () from /lib/i686/cmov/libc.so.6
+#2  0x00000400 in ?? ()
+#3  0x00000000 in ?? ()
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0x08048a84 in main () at main.cpp:28
+
+Breakpoint 2, 0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#0  0xb7cf28d6 in malloc () from /lib/i686/cmov/libc.so.6
+#1  0xb7cf6198 in ?? () from /lib/i686/cmov/libc.so.6
+#2  0x00000800 in ?? ()
+#3  0xb7db1acd in ?? () from /lib/i686/cmov/libc.so.6
+#4  0x09fca3b8 in ?? ()
+#5  0x00000400 in ?? ()
+#6  0xb7dcdff4 in ?? () from /lib/i686/cmov/libc.so.6
+#7  0xb7f2ece0 in ?? () from /lib/ld-linux.so.2
+#8  0x00000000 in ?? ()
+
+Program exited normally.
+(gdb) q

@@ -1,0 +1,89 @@
+= Start
+@ /opt/lpt/gcc-4.7.0-bin/lib/libstdc++.so.6:(operator new(unsigned int)+39)[0x400942b7] + 0x9c5a2b0 13
+**[ Stack: 7
+[0x400251a4] ?? (binaries/lib/libmtrace.so+0x400251a4) in ??:0
+[0x40026aa7] lpt::stack::call_stack<40u>::call_stack(bool) (binaries/lib/libmtrace.so+0x5b) in ??:0
+[0x4002520a] ?? (binaries/lib/libmtrace.so+0x4002520a) in ??:0
+[0x4002552e] ?? (binaries/lib/libmtrace.so+0x4002552e) in ??:0
+[0x40025849] ?? (binaries/lib/libmtrace.so+0x40025849) in ??:0
+[0x401e9905] ?? (/lib/i686/cmov/libc.so.6+0x35) in ??:0
+[0x400942b7] operator new(unsigned int) (/opt/lpt/gcc-4.7.0-bin/lib/libstdc++.so.6+0x27) in ??:0
+**] Stack
+
+@ /opt/lpt/gcc-4.7.0-bin/lib/libstdc++.so.6:(operator new(unsigned int)+39)[0x400942b7] + 0x9c5a338 4
+**[ Stack: 9
+[0x400251a4] ?? (binaries/lib/libmtrace.so+0x400251a4) in ??:0
+[0x40026aa7] lpt::stack::call_stack<40u>::call_stack(bool) (binaries/lib/libmtrace.so+0x5b) in ??:0
+[0x4002520a] ?? (binaries/lib/libmtrace.so+0x4002520a) in ??:0
+[0x4002552e] ?? (binaries/lib/libmtrace.so+0x4002552e) in ??:0
+[0x40025849] ?? (binaries/lib/libmtrace.so+0x40025849) in ??:0
+[0x401e9905] ?? (/lib/i686/cmov/libc.so.6+0x35) in ??:0
+[0x400942b7] operator new(unsigned int) (/opt/lpt/gcc-4.7.0-bin/lib/libstdc++.so.6+0x27) in ??:0
+[0x40192450] ?? (/lib/i686/cmov/libc.so.6+0xe0) in ??:0
+[0x80488c1] ?? (binaries/bin/dleaker+0x4d) in ??:0
+**] Stack
+
+@ /opt/lpt/gcc-4.7.0-bin/lib/libstdc++.so.6:(operator new(unsigned int)+39)[0x400942b7] + 0x9c5a348 11
+**[ Stack: 7
+[0x400251a4] ?? (binaries/lib/libmtrace.so+0x400251a4) in ??:0
+[0x40026aa7] lpt::stack::call_stack<40u>::call_stack(bool) (binaries/lib/libmtrace.so+0x5b) in ??:0
+[0x4002520a] ?? (binaries/lib/libmtrace.so+0x4002520a) in ??:0
+[0x4002552e] ?? (binaries/lib/libmtrace.so+0x4002552e) in ??:0
+[0x40025849] ?? (binaries/lib/libmtrace.so+0x40025849) in ??:0
+[0x401e9905] ?? (/lib/i686/cmov/libc.so.6+0x35) in ??:0
+[0x400942b7] operator new(unsigned int) (/opt/lpt/gcc-4.7.0-bin/lib/libstdc++.so.6+0x27) in ??:0
+**] Stack
+
+@ binaries/bin/dleaker:(??+485)[0x8048a59] + 0x9c5a360 400
+**[ Stack: 9
+[0x400251a4] ?? (binaries/lib/libmtrace.so+0x400251a4) in ??:0
+[0x40026aa7] lpt::stack::call_stack<40u>::call_stack(bool) (binaries/lib/libmtrace.so+0x5b) in ??:0
+[0x4002520a] ?? (binaries/lib/libmtrace.so+0x4002520a) in ??:0
+[0x4002552e] ?? (binaries/lib/libmtrace.so+0x4002552e) in ??:0
+[0x40025849] ?? (binaries/lib/libmtrace.so+0x40025849) in ??:0
+[0x401e9905] ?? (/lib/i686/cmov/libc.so.6+0x35) in ??:0
+[0x8048a59] ?? (binaries/bin/dleaker+0x1e5) in ??:0
+[0x40192450] ?? (/lib/i686/cmov/libc.so.6+0xe0) in ??:0
+[0x80488c1] ?? (binaries/bin/dleaker+0x4d) in ??:0
+**] Stack
+
+@ binaries/bin/dleaker:(??+501)[0x8048a69] + 0x9c5a768 800
+**[ Stack: 9
+[0x400251a4] ?? (binaries/lib/libmtrace.so+0x400251a4) in ??:0
+[0x40026aa7] lpt::stack::call_stack<40u>::call_stack(bool) (binaries/lib/libmtrace.so+0x5b) in ??:0
+[0x4002520a] ?? (binaries/lib/libmtrace.so+0x4002520a) in ??:0
+[0x4002552e] ?? (binaries/lib/libmtrace.so+0x4002552e) in ??:0
+[0x40025849] ?? (binaries/lib/libmtrace.so+0x40025849) in ??:0
+[0x401e9905] ?? (/lib/i686/cmov/libc.so.6+0x35) in ??:0
+[0x8048a69] ?? (binaries/bin/dleaker+0x1f5) in ??:0
+[0x40192450] ?? (/lib/i686/cmov/libc.so.6+0xe0) in ??:0
+[0x80488c1] ?? (binaries/bin/dleaker+0x4d) in ??:0
+**] Stack
+
+@ binaries/bin/dleaker:(??+517)[0x8048a79] - 0x9c5a768 0
+**[ Stack: 9
+[0x400251a4] ?? (binaries/lib/libmtrace.so+0x400251a4) in ??:0
+[0x40026aa7] lpt::stack::call_stack<40u>::call_stack(bool) (binaries/lib/libmtrace.so+0x5b) in ??:0
+[0x4002520a] ?? (binaries/lib/libmtrace.so+0x4002520a) in ??:0
+[0x4002552e] ?? (binaries/lib/libmtrace.so+0x4002552e) in ??:0
+[0x400255f2] ?? (binaries/lib/libmtrace.so+0x400255f2) in ??:0
+[0x401eb145] ?? (/lib/i686/cmov/libc.so.6+0x35) in ??:0
+[0x8048a79] ?? (binaries/bin/dleaker+0x205) in ??:0
+[0x40192450] ?? (/lib/i686/cmov/libc.so.6+0xe0) in ??:0
+[0x80488c1] ?? (binaries/bin/dleaker+0x4d) in ??:0
+**] Stack
+
+@ /opt/lpt/gcc-4.7.0-bin/lib/libstdc++.so.6:(operator delete(void*)+31)[0x40091ecf] - 0x9c5a2b0 0
+**[ Stack: 9
+[0x400251a4] ?? (binaries/lib/libmtrace.so+0x400251a4) in ??:0
+[0x40026aa7] lpt::stack::call_stack<40u>::call_stack(bool) (binaries/lib/libmtrace.so+0x5b) in ??:0
+[0x4002520a] ?? (binaries/lib/libmtrace.so+0x4002520a) in ??:0
+[0x4002552e] ?? (binaries/lib/libmtrace.so+0x4002552e) in ??:0
+[0x400255f2] ?? (binaries/lib/libmtrace.so+0x400255f2) in ??:0
+[0x401eb145] ?? (/lib/i686/cmov/libc.so.6+0x35) in ??:0
+[0x40091ecf] operator delete(void*) (/opt/lpt/gcc-4.7.0-bin/lib/libstdc++.so.6+0x1f) in ??:0
+[0x40192450] ?? (/lib/i686/cmov/libc.so.6+0xe0) in ??:0
+[0x80488c1] ?? (binaries/bin/dleaker+0x4d) in ??:0
+**] Stack
+
+= End

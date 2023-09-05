@@ -1,0 +1,125 @@
+Compiler version: 1538
+func1
+aclass::meth1
+aclass::meth2
+func2
+**
+[ Stack: 12
+[d87662] ??+0x0
+	in ??
+	at ??:0
+[d836c5] ??+0x0
+	in ??
+	at ??:0
+[d88858] ??+0x0
+	in ??
+	at ??:0
+[d8947b] ??+0x0
+	in ??
+	at ??:0
+[d893df] ??+0x0
+	in ??
+	at ??:0
+[d8875f] ??+0x0
+	in ??
+	at ??:0
+[d89e26] ??+0x0
+	in ??
+	at ??:0
+[d8a759] ??+0x0
+	in ??
+	at ??:0
+[d8a94d] ??+0x0
+	in ??
+	at ??:0
+[76df33aa] ??+0x0
+	in ??
+	at ??:0
+[77889ef2] ??+0x0
+	in ??
+	at ??:0
+[77889ec5] ??+0x0
+	in ??
+	at ??:0
+**] Stack
+
+**
+[ Stack: 12
+[d87662] lpt::stack::detail::backtrace+0x32
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\lpt\include\lpt\win_call_stack_details.hpp:395
+[d836c5] lpt::stack::call_stack<40>::call_stack<40>+0x55
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\lpt\include\lpt\call_stack.hpp:74
+[d88858] func2+0x78
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:27
+[d8947b] aclass::meth2+0x5b
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:47
+[d893df] aclass::meth1+0x5f
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:54
+[d8875f] func1+0x5f
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:66
+[d89e26] wmain+0x66
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:73
+[d8a759] __tmainCRTStartup+0x199
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c:533
+[d8a94d] wmainCRTStartup+0xd
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c:377
+[76df33aa] wmainCRTStartup-0x0
+	in C:\Windows\syswow64\kernel32.dll
+	at f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c:377
+[77889ef2] wmainCRTStartup-0x0
+	in C:\Windows\SysWOW64\ntdll.dll
+	at f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c:377
+[77889ec5] wmainCRTStartup-0x0
+	in C:\Windows\SysWOW64\ntdll.dll
+	at f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c:377
+**] Stack
+
+**
+[ Stack: 12
+[d87662] lpt::stack::detail::backtrace+0x32
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\lpt\include\lpt\win_call_stack_details.hpp:395
+[d836c5] lpt::stack::call_stack<40>::call_stack<40>+0x55
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\lpt\include\lpt\call_stack.hpp:74
+[d88858] func2+0x78
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:27
+[d8947b] aclass::meth2+0x5b
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:47
+[d893df] aclass::meth1+0x5f
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:54
+[d8875f] func1+0x5f
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:66
+[d89e26] wmain+0x66
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at c:\xyz\callstack\lpt\tests\winstack\winstack.cpp:73
+[d8a759] __tmainCRTStartup+0x199
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c:533
+[d8a94d] wmainCRTStartup+0xd
+	in C:\xyz\callstack\lpt\tests\winstack\Debug\winstack.exe
+	at f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c:377
+[76df33aa] wmainCRTStartup-0x0
+	in C:\Windows\syswow64\kernel32.dll
+	at f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c:377
+[77889ef2] wmainCRTStartup-0x0
+	in C:\Windows\SysWOW64\ntdll.dll
+	at f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c:377
+[77889ec5] wmainCRTStartup-0x0
+	in C:\Windows\SysWOW64\ntdll.dll
+	at f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c:377
+**] Stack
+

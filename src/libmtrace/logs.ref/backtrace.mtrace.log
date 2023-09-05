@@ -1,0 +1,90 @@
+= Start
+@ /usr/lib/libstdc++.so.6:(_Znwj+27)[0xb7f1f727] + 0x9d3f398 0x13
+**[ Stack: 11
+./a.out(__gxx_personality_v0+0x304)[0x80492c8]
+./a.out[0x80496c1]
+./a.out[0x8049a0f]
+/lib/i686/cmov/libc.so.6(__libc_malloc+0x35)[0xb7d56905]
+/usr/lib/libstdc++.so.6(_Znwj+0x27)[0xb7f1f727]
+/usr/lib/libstdc++.so.6(_ZNSs4_Rep9_S_createEjjRKSaIcE+0x61)[0xb7ef9c01]
+/usr/lib/libstdc++.so.6[0xb7efaf05]
+/usr/lib/libstdc++.so.6(_ZNSsC1EPKcRKSaIcE+0x47)[0xb7efb0b7]
+./a.out(main+0x3c)[0x8049b28]
+/lib/i686/cmov/libc.so.6(__libc_start_main+0xe0)[0xb7cff450]
+./a.out(__gxx_personality_v0+0x6d)[0x8049031]
+**] Stack
+
+@ /usr/lib/libstdc++.so.6:(_Znwj+27)[0xb7f1f727] + 0x9d3f3b0 0x4
+**[ Stack: 8
+./a.out(__gxx_personality_v0+0x304)[0x80492c8]
+./a.out[0x80496c1]
+./a.out[0x8049a0f]
+/lib/i686/cmov/libc.so.6(__libc_malloc+0x35)[0xb7d56905]
+/usr/lib/libstdc++.so.6(_Znwj+0x27)[0xb7f1f727]
+./a.out(main+0x64)[0x8049b50]
+/lib/i686/cmov/libc.so.6(__libc_start_main+0xe0)[0xb7cff450]
+./a.out(__gxx_personality_v0+0x6d)[0x8049031]
+**] Stack
+
+@ /usr/lib/libstdc++.so.6:(_Znwj+27)[0xb7f1f727] + 0x9d3f3c0 0x11
+**[ Stack: 11
+./a.out(__gxx_personality_v0+0x304)[0x80492c8]
+./a.out[0x80496c1]
+./a.out[0x8049a0f]
+/lib/i686/cmov/libc.so.6(__libc_malloc+0x35)[0xb7d56905]
+/usr/lib/libstdc++.so.6(_Znwj+0x27)[0xb7f1f727]
+/usr/lib/libstdc++.so.6(_ZNSs4_Rep9_S_createEjjRKSaIcE+0x61)[0xb7ef9c01]
+/usr/lib/libstdc++.so.6[0xb7efaf05]
+/usr/lib/libstdc++.so.6(_ZNSsC1EPKcRKSaIcE+0x47)[0xb7efb0b7]
+./a.out(main+0xa8)[0x8049b94]
+/lib/i686/cmov/libc.so.6(__libc_start_main+0xe0)[0xb7cff450]
+./a.out(__gxx_personality_v0+0x6d)[0x8049031]
+**] Stack
+
+@ ./a.out:(main+c5)[0x8049bb1] + 0x9d3f3d8 0x400
+**[ Stack: 7
+./a.out(__gxx_personality_v0+0x304)[0x80492c8]
+./a.out[0x80496c1]
+./a.out[0x8049a0f]
+/lib/i686/cmov/libc.so.6(__libc_malloc+0x35)[0xb7d56905]
+./a.out(main+0xc5)[0x8049bb1]
+/lib/i686/cmov/libc.so.6(__libc_start_main+0xe0)[0xb7cff450]
+./a.out(__gxx_personality_v0+0x6d)[0x8049031]
+**] Stack
+
+@ ./a.out:(main+d4)[0x8049bc0] + 0x9d3f7e0 0x800
+**[ Stack: 7
+./a.out(__gxx_personality_v0+0x304)[0x80492c8]
+./a.out[0x80496c1]
+./a.out[0x8049a0f]
+/lib/i686/cmov/libc.so.6(__libc_malloc+0x35)[0xb7d56905]
+./a.out(main+0xd4)[0x8049bc0]
+/lib/i686/cmov/libc.so.6(__libc_start_main+0xe0)[0xb7cff450]
+./a.out(__gxx_personality_v0+0x6d)[0x8049031]
+**] Stack
+
+@ ./a.out:(main+e2)[0x8049bce] - 0x9d3f7e0
+**[ Stack: 7
+./a.out(__gxx_personality_v0+0x304)[0x80492c8]
+./a.out[0x80496c1]
+./a.out[0x8049a79]
+/lib/i686/cmov/libc.so.6(cfree+0x35)[0xb7d58145]
+./a.out(main+0xe2)[0x8049bce]
+/lib/i686/cmov/libc.so.6(__libc_start_main+0xe0)[0xb7cff450]
+./a.out(__gxx_personality_v0+0x6d)[0x8049031]
+**] Stack
+
+@ /usr/lib/libstdc++.so.6:(_ZdlPv+21)[0xb7f1de41] - 0x9d3f398
+**[ Stack: 10
+./a.out(__gxx_personality_v0+0x304)[0x80492c8]
+./a.out[0x80496c1]
+./a.out[0x8049a79]
+/lib/i686/cmov/libc.so.6(cfree+0x35)[0xb7d58145]
+/usr/lib/libstdc++.so.6(_ZdlPv+0x21)[0xb7f1de41]
+/usr/lib/libstdc++.so.6(_ZNSs4_Rep10_M_destroyERKSaIcE+0x1d)[0xb7ef9c4d]
+/usr/lib/libstdc++.so.6(_ZNSsD1Ev+0x51)[0xb7efbaf1]
+./a.out(main+0xf2)[0x8049bde]
+/lib/i686/cmov/libc.so.6(__libc_start_main+0xe0)[0xb7cff450]
+./a.out(__gxx_personality_v0+0x6d)[0x8049031]
+**] Stack
+
