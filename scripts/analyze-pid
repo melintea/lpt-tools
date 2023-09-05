@@ -1,0 +1,48 @@
+#!/bin/bash
+
+#
+# A script to generate a core and a status report for a running process. 
+#
+
+
+if [ $# -ne 1 ]
+then
+  echo "Usage: `basename $0` <PID>"
+  exit -1
+else
+  pid=$1
+fi
+
+
+gdblogfile="analyze-$pid.log"
+rm $gdblogfile
+
+corefile="core-$pid.core"
+  
+gdb -batch \
+      -ex "set logging file $gdblogfile" \
+      -ex "set logging on" \
+      -ex "set pagination off" \
+      -ex "printf \"**\n** Process info for PID=$pid \n** Generated `date`\n\"" \
+      -ex "printf \"**\n** Core: $corefile \n**\n\"" \
+      -ex "attach $pid" \
+      -ex "bt" \
+      -ex "info proc" \
+      -ex "printf \"*\n* Libraries \n*\n\"" \
+      -ex "info sharedlib" \
+      -ex "printf \"*\n* Memory map \n*\n\"" \
+      -ex "info target" \
+      -ex "printf \"*\n* Registers \n*\n\"" \
+      -ex "info registers" \
+      -ex "printf \"*\n* Current instructions \n*\n\"" -ex "x/16i \$pc" \
+      -ex "printf \"*\n* Threads (full) \n*\n\"" \
+      -ex "info threads" \
+      -ex "bt" \
+      -ex "thread apply all bt full" \
+      -ex "printf \"*\n* Threads (basic) \n*\n\"" \
+      -ex "info threads" \
+      -ex "thread apply all bt" \
+      -ex "printf \"*\n* Done \n*\n\"" \
+      -ex "generate-core-file $corefile" \
+      -ex "detach" \
+      -ex "quit" 

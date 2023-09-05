@@ -1,0 +1,45 @@
+#!/bin/bash
+
+#
+# A script to OProfile a program. 
+# Must be run as root. 
+#
+
+
+if [ $# -ne 1 ]
+then
+  echo "Usage: `basename $0` <for-binary-image>"
+  exit -1
+else
+  binimg=$1
+fi
+
+opcontrol --stop
+opcontrol --shutdown
+
+# Out of the box RedHat kernels are OProfile repellent.
+opcontrol --no-vmlinux
+opcontrol --reset
+
+# List of events for platform to be found in /usr/share/oprofile/<>/events
+opcontrol --event=L2_CACHE_MISSES:1000
+
+
+opcontrol --start
+
+$binimg
+
+opcontrol --stop
+opcontrol --dump
+
+
+rm $binimg.opreport.log
+opreport > $binimg.opreport.log
+
+rm $binimg.opreport.sym
+opreport -l > $binimg.opreport.sym
+
+
+opcontrol --shutdown
+opcontrol --deinit
+echo "Done"

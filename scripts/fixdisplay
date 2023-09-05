@@ -1,0 +1,8 @@
+#!/bin/bash
+
+
+mytty=`tty | cut -b 6-`
+mydisplay=`who | grep $USER | grep $mytty | sed -n '/(/,/)/{:a; $!N; /)/!{$!ba}; s/.*(\([^)]*\)).*/\1/p}'`
+export DISPLAY="$mydisplay":0.0
+echo "DISPLAY is $DISPLAY"
+

@@ -1,0 +1,34 @@
+#!/bin/ksh
+#
+# Based on:
+# http://stackoverflow.com/questions/131303/linux-how-to-measure-actual-memory-usage-of-an-application-or-process
+#
+# Returns total memory used by process $1 in kb.
+#
+# See /proc/PID/smaps; This file is only present if the CONFIG_MMU 
+# kernel configuration option is enabled
+#
+
+IFS=$'\n'
+
+for line in $(</proc/$1/smaps)
+do
+   [[ $line =~ ^Private_Clean:\s+(\S+) ]] && ((pkb += ${.sh.match[1]}))
+   [[ $line =~ ^Private_Dirty:\s+(\S+) ]] && ((pkb += ${.sh.match[1]}))
+   [[ $line =~ ^Shared_Clean:\s+(\S+) ]]  && ((skb += ${.sh.match[1]}))
+   [[ $line =~ ^Shared_Dirty:\s+(\S+) ]]  && ((skb += ${.sh.match[1]}))
+   [[ $line =~ ^Size:\s+(\S+) ]]          && ((szkb += ${.sh.match[1]}))
+   [[ $line =~ ^Pss:\s+(\S+) ]]           && ((psskb += ${.sh.match[1]}))
+done
+
+((tkb += pkb))
+((tkb += skb))
+#((tkb += psskb))
+
+echo "Total private:        $pkb kb"
+echo "Total shared:         $skb kb"
+echo "Total proc prop:      $psskb kb Pss"
+echo "Priv + shared:        $tkb kb"
+echo "Size:                 $szkb kb"
+
+pmap -d $1 | tail -n 1

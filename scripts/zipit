@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# tar & gz folder or file: zipit <folder>
+
+if [ $# -ne 1 ]
+then
+  echo "Usage: `basename $0` <folder>"
+  exit -1
+fi
+
+tar cvzf $1.tgz $1
+ls -l $1.tgz

@@ -1,0 +1,98 @@
+#!/usr/bin/perl -w
+# http://permalink.gmane.org/gmane.comp.video.gstreamer.devel/10609
+
+use bigint;
+use integer;
+
+use Carp;
+
+sub bighex {
+    my $hex = shift;
+
+    my $part = qr/[0-9a-fA-F]{8}/;
+    #croak "$hex is not a 64-bit hex number" unless
+    my ($high, $low) = $hex =~ /^0x($part)($part)$/;
+    
+    return hex("0x$low") + (hex("0x$high") << 32);
+}
+
+
+#------------------------------------------------------------------
+
+$pid = $ARGV[0];
+
+if(!$pid) {
+	print "procmap <pid>\n";
+	exit 1;
+}
+
+open MAP, "/proc/$pid/maps";
+@lines = <MAP>;
+close MAP;
+
+$writable_code = 0;
+$data = 0;
+$rodata = 0;
+$unreadable = 0;
+$unbacked_unknown = 0;
+$mapped_executable = 0;
+$mapped_rodata = 0;
+$mapped_rwdata = 0;
+$mapped_unknown = 0;
+$private = 0;
+while ($line = shift @lines) {
+	$line =~ m/^(\w+)-(\w+) (....) (\w+) (\S+) (\d+) *(.*)$/;
+	$start = bighex("0x$1");
+	$end   = bighex("0x$2");
+	$rwxp = $3;
+	#$offset = hex($4);
+	$device = $5;
+	#$inode = $6;
+	#$filename = $7;
+
+	$seg_size = ($end - $start)/1024;
+
+	if ($device eq "00:00") {
+		# anonymous mapping
+		if ($rwxp =~ m/rwx./) {
+			$writable_code += $seg_size;
+		} elsif ($rwxp =~ m/rw-./) {
+			$data += $seg_size;
+		} elsif ($rwxp =~ m/r--./) {
+			$rodata += $seg_size;
+		} elsif ($rwxp =~ m/---./) {
+			$unreadable += $seg_size;
+		} else {
+			$unbacked_unknown += $seg_size;
+		}
+	} else {
+		if ($rwxp =~ m/r-x./) {
+			$mapped_executable += $seg_size;
+		} elsif ($rwxp =~ m/r--./) {
+			$mapped_rodata += $seg_size;
+		} elsif ($rwxp =~ m/rw-./) {
+			$mapped_rwdata += $seg_size;
+		} else {
+			$mapped_unknown += $seg_size;
+		}
+	}
+	
+	if ($rwxp =~ m/...p/) {
+		$private += $seg_size;
+		print "$line : $seg_size\n";
+	}
+}
+
+print "Backed by file:\n";
+print "  Executable               $mapped_executable\n";
+print "  RO data                  $mapped_rodata\n";
+print "  Data                     $mapped_rwdata\n";
+print "  Unknown                  $mapped_unknown\n";
+print "Anonymous:\n";
+print "  Writable code (stack)    $writable_code\n";
+print "  Data (malloc, mmap)      $data\n";
+print "  RO data                  $rodata\n";
+print "  Unreadable               $unreadable\n";
+print "  Unknown                  $unbacked_unknown\n";
+print "Private:                   $private\n";
+
