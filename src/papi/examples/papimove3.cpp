@@ -19,7 +19,7 @@
  *      PAPI_BR_MSP,  0,       0,       0,       0,       0
  */
 
-#include <lpt/papi/papi_stats.h>
+#include <lpt/papi/papi_stats.hpp>
 
 #include <atomic>
 #include <barrier>

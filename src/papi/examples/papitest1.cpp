@@ -9,7 +9,7 @@
  */
 
 
-#include <lpt/papi/papi.h>
+#include <lpt/papi/papi.hpp>
 
 const int nlines = 196608;
 const int ncols  = 64;

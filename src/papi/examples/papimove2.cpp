@@ -14,7 +14,7 @@
  *   - cache misses: reading moved objects increase cache misses by 300+ %
  */
 
-#include <lpt/papi/papi.h>
+#include <lpt/papi/papi.hpp>
 
 #include <atomic>
 #include <barrier>

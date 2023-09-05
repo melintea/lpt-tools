@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include <lpt/papi/papi.h>
+#include <lpt/papi/papi.hpp>
 
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics.hpp>
