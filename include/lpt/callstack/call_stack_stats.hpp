@@ -14,8 +14,8 @@
 #include <unordered_map>
 
 #include <lpt/nocopy.hpp>
-#include <lpt/call_stack.hpp>
-#include <lpt/allocator.hpp>
+#include <lpt/callstack/call_stack.hpp>
+#include <lpt/callstack/allocator.hpp>
 
 #include <lpt/crc32.hpp> // software or hardware impl?
 

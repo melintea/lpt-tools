@@ -13,8 +13,8 @@
 #include <unordered_map>
 
 #include <lpt/nocopy.hpp>
-#include <lpt/allocator.hpp>
-#include <lpt/call_stack_stats.hpp> //stack::key_type
+#include <lpt/callstack/allocator.hpp>
+#include <lpt/callstack/call_stack_stats.hpp> //stack::key_type
 
 #pragma once 
 

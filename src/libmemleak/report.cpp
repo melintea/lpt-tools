@@ -27,9 +27,9 @@
 #include <fstream>
 
 
+#include <lpt/callstack/call_stack.hpp>
+#include <lpt/callstack/mem_stats.hpp>
 #include <lpt/gnu_atomic_guard.hpp>
-#include <lpt/call_stack_stats.hpp>
-#include <lpt/mem_stats.hpp>
 #include <lpt/timing.hpp>
 
 #include "report.h" 

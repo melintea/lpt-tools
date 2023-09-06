@@ -2,7 +2,7 @@
  *
  */
 
-#include <lpt/mem_stats.hpp> //memsize_type
+#include <lpt/callstack/mem_stats.hpp> //memsize_type
 
 #pragma once
 
