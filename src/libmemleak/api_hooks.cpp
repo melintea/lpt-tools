@@ -47,7 +47,7 @@
 #include <mutex>
 #include <atomic>
 
-#include <lpt/call_stack.hpp>
+#include <lpt/callstack/call_stack.hpp>
 
 #include "report.h" 
 #include "config.h"
