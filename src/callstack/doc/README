@@ -1,0 +1,5 @@
+You will need to install the PAPI library (https://icl.utk.edu/papi/) - see INSTALL.txt within the released archive (7.0.1 as of today):
+
+    ./configure && make && sudo make install-all
+
+That's all.

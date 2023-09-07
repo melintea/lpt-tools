@@ -1,0 +1,11 @@
+To compile:
+  - install dependencies
+      - libiberty (Debian package: libiberty-dev)
+      - libbfd (Debian package: binutils-dev)
+
+  - compile
+
+Usage:
+
+    LD_PRELOAD=libmemleak.so  executable
+ 
