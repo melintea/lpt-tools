@@ -2,7 +2,7 @@
  *  Copyright 2012 Aurelian Melinte. 
  *  Released under GPL 3.0 or later. 
  *
- *  The mallinfo() API was deprecated. 
+ *  The __free_hook/__malloc_hook/tc hooks API are deprecated. 
  * 
  */
  

@@ -1,1 +1,1 @@
-Work in progress. The mallinfo() API was deprecated. 
+Work in progress. The __free_hook/__malloc_hook/tc hooks API are deprecated. 

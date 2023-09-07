@@ -16,7 +16,7 @@ vpath %.cpp .
 
 
 #
-# mallinfo\: deprecated
+# mallinfo\: deprecated __free_hook/__malloc_hook/etc hooks
 #
 
 all : clean \
