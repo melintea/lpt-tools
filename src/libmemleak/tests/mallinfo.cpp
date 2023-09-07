@@ -2,7 +2,7 @@
  *  Copyright 2012 Aurelian Melinte. 
  *  Released under GPL 3.0 or later. 
  *
- *  You need a C++0x compiler. 
+ *  The mallinfo() API was deprecated. 
  * 
  */
  
@@ -12,7 +12,7 @@
 #include <string>
 #include <cassert>
 
-#include <lpt/mallinfo.hpp>
+#include <lpt/callstack/mallinfo.hpp>
 
 
 int main()
