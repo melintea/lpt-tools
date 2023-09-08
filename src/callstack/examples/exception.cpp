@@ -33,7 +33,7 @@ private:
     stack_type _where;
 };
 
-void func2()
+void fun*c2()
 {
     throw traced_exception();
 }
@@ -51,6 +51,25 @@ int main()
     }
     catch (const traced_exception& ex)
     {
+        /*
+            Exception: traced_exception
+            Stack is 5 frames depth:
+            [0x560b3f276a66] func2()+0x76
+                    At /usr/include/c++/11/bits/move.h:205
+                    In ./callstack1
+            [0x560b3f276aef] main+0x27
+                    At /home/amelinte/work/github/lpt-tools/src/callstack/examples/exception.cpp:43
+                    In ./callstack1
+            [0x7fc201e29d90] __libc_start_call_main+0x7fc201e29d90
+                    At ./csu/../sysdeps/nptl/libc_start_call_main.h:58
+                    In /lib/x86_64-linux-gnu/libc.so.6
+            [0x7fc201e29e40] __libc_start_main+0x80
+                    At ./csu/../csu/libc-start.c:128
+                    In /lib/x86_64-linux-gnu/libc.so.6
+            [0x560b3f276cc5] _start+0x25
+                    At ??:0
+                    In ./callstack1
+        */
         std::cout << "Exception: " << ex.what() << "\n"
                   << "Stack is " << ex.where().depth() << " frames depth:\n"
                   << traced_exception::call_stack_info_type(ex.where())
