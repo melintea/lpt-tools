@@ -242,7 +242,7 @@ int main()
                 measurement = pc.data();
             }
 
-            data.clear();
+            data.clear(); // Comment out for maximum cache thrashing
         }
         {
             strvec& data(moveConstructedData);
@@ -273,7 +273,7 @@ int main()
                 measurement = pc.data();
             }
 
-            data.clear();
+            data.clear(); // Comment out for maximum cache thrashing
         }
 
         counters::measurement_data copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
