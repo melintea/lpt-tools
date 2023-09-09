@@ -248,6 +248,7 @@ int main()
             strvec& data(moveConstructedData);
             counters::measurement_data& measurement(moveConstructRead);
 
+            // prefill
             data.clear();
             for (auto i = 0; i < vecSize; ++i)
             {
