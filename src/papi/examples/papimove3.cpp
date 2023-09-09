@@ -11,14 +11,15 @@
  *  Notes:
  *  * measurements on an 4-cpu Intel(R) Pentium(R) Gold G5420 CPU @ 3.80GHz
  *      Stats for 50 tests stats; positive%: move is worse than copy:
- *      Counter,      min%,    max%,    mean%,   median%, stddev
- *      PAPI_TOT_INS, 11.326,  11.3265, 11.3262, 11.3262, 8.85509e-05
- *      PAPI_TOT_CYC, 104.449, 306.481, 236.179, 246.921, 46.9529
- *      PAPI_L1_DCM,  220.235, 221.637, 221.32,  221.326, 0.219124
- *      PAPI_L2_DCM,  334.049, 383.885, 359.962, 352.859, 19.3096
- *      PAPI_BR_MSP,  0,       0,       0,       0,       0
+ *      Counter,      min%,     max%,   mean%,   median%, stddev
+ *      PAPI_TOT_INS, 11.2532,  11.2538, 11.2534, 11.2534, 0.000113846
+ *      PAPI_TOT_CYC, -12.6177, 253.974, 10.5825, 5.11862, 37.2027
+ *      PAPI_L1_DCM,  3.77828,  216.783, 8.22858, 4.19694, 30.0962
+ *      PAPI_L2_DCM,  3.71539,  327.555, 11.0606, 4.35712, 45.6747
+ *      PAPI_BR_MSP, 0, 0, 0, 0, 0
  */
 
+#include <lpt/compiler.hpp>
 #include <lpt/papi/papi_stats.hpp>
 
 #include <atomic>
@@ -228,16 +229,20 @@ int main()
 
             {
                 counters::measurement pc("Baseline read of copy <64 constructed",
-                                            ctrs,
-                                            cout_measurement);
+                                         ctrs,
+                                         cout_measurement);
                 for (auto i = 0; i < vecSize; ++i)
                 {
-                    const auto& str = data[i];
+                    auto& str = data[i];
+                    lpt::intel::disable_optimizer(str.data());
                     for (auto j = 0; j < str.size(); ++j) { volatile char c = str[j]; }
                 }
+                lpt::intel::barrier();
 
                 measurement = pc.data();
             }
+
+            data.clear();
         }
         {
             strvec& data(moveConstructedData);
@@ -254,16 +259,20 @@ int main()
 
             {
                 counters::measurement pc("Baseline read of move <64 constructed",
-                                            ctrs,
-                                            cout_measurement);
+                                         ctrs,
+                                         cout_measurement);
                 for (auto i = 0; i < vecSize; ++i)
                 {
-                    const auto& str = data[i];
+                    auto& str = data[i];
+                    lpt::intel::disable_optimizer(str.data());
                     for (auto j = 0; j < str.size(); ++j) { volatile char c = str[j]; }
                 }
+                lpt::intel::barrier();
 
                 measurement = pc.data();
             }
+
+            data.clear();
         }
 
         counters::measurement_data copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
