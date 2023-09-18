@@ -3,6 +3,7 @@
 #  Released under LGPL 3.0 or later. 
 #
 #  mtrace()/muntrace() & tools.  Based on glibc 2.6.1. 
+#  smalloc hooks have been deprecated (https://stackoverflow.com/questions/17803456/an-alternative-for-the-deprecated-malloc-hook-functionality-of-glibc)
 #
 
 #
