@@ -248,6 +248,12 @@ public:
         return os;
     }
 
+    friend inline std::ostream& operator<<(std::ostream&   os,
+                                           const hardware& hw)
+    {
+        return hw.print(os);
+    }
+
     hardware(const hardware&)            = delete;
     hardware& operator=(const hardware&) = delete;
     hardware(hardware&&)                 = delete;
