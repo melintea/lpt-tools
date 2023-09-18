@@ -303,7 +303,7 @@ public:
      *  counters scopedCtrs(
      *     "some data", 
      *     [](const counters& ctrs){
-     *          ctrs.print(std::cout) << std::endl;
+     *          std::cout << ctrs << std::endl;
      *     });
      *  @endcode
      */
@@ -399,6 +399,12 @@ public:
         }
 
         return os;
+    }
+
+    friend inline std::ostream& operator<<(std::ostream&   os,
+                                           const counters& ctrs)
+    {
+        return ctrs.print(os);
     }
 
     // Do nothing functor
