@@ -252,9 +252,21 @@ public:
     hardware(hardware&&)                 = delete;
     hardware& operator=(hardware&&)      = delete;
 
+    constexpr int num_counters() const { return _numHwCtrs; }
+
+    struct cpu_info
+    {
+        cpu_info(const PAPI_hw_info_t* hwInfo)
+            : _model(hwInfo->model_string)
+        { }
+
+        const char* _model;
+    };
+    const cpu_info cpu() const { return cpu_info(_hwInfo); }
+
 private:
 
-    int            _numHwCtrs{0};
+    int             _numHwCtrs{0};
     PAPI_hw_info_t* _hwInfo{nullptr};
 
 }; // hardware
