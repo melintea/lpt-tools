@@ -20,6 +20,7 @@
 #include <atomic>
 #include <cassert>
 #include <iostream>
+#include <functional>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -279,23 +280,37 @@ private:
  *
  */
 
-template <int... EVENTS> 
+template <int... EVENTS>
 class counters
 {
 public:
 
     static constexpr const size_t NUM_COUNTERS = sizeof...(EVENTS);
-    using event_t    = int;
-    using events_t   = std::array<event_t, NUM_COUNTERS>;
-    using eventset_t = int;
-    using name_t     = char[PAPI_MAX_STR_LEN + 1];
-    using names_t    = std::array<std::string, NUM_COUNTERS>;
-    using value_t    = long long;
-    using values_t   = std::array<value_t, NUM_COUNTERS>;
-    using percent_t  = double;
-    using percents_t = std::array<percent_t, NUM_COUNTERS>;
+    using event_t        = int;
+    using events_t       = std::array<event_t, NUM_COUNTERS>;
+    using eventset_t     = int;
+    using name_t         = char[PAPI_MAX_STR_LEN + 1];
+    using names_t        = std::array<std::string, NUM_COUNTERS>;
+    using value_t        = long long;
+    using values_t       = std::array<value_t, NUM_COUNTERS>;
+    using percent_t      = double;
+    using percents_t     = std::array<percent_t, NUM_COUNTERS>;
+    using eol_functor_t  = std::function<void(const counters&)>; // called in destructor
 
-    counters()
+
+    /**
+     *  @code
+     *  counters scopedCtrs(
+     *     "some data", 
+     *     [](const counters& ctrs){
+     *          ctrs.print(std::cout) << std::endl;
+     *     });
+     *  @endcode
+     */
+    counters(std::string   tag     = {},
+             eol_functor_t eolFunc = noop)
+        : _tag(std::move(tag))
+        , _eolFunc(std::move(eolFunc))
     {
         thread::init();
         
@@ -331,6 +346,8 @@ public:
         if (retval != PAPI_OK) {
             throw error("PAPI_stop", retval);
         }
+
+        _eolFunc(*this);
     }
 
     counters(const counters&)            = delete;
@@ -372,6 +389,10 @@ public:
 
     std::ostream& print(std::ostream& os) const
     {
+        if ( ! _tag.empty())
+        {
+            os << _tag << ": \n";
+        }
         for (size_t i = 0; i < NUM_COUNTERS; ++i )
         {
             os << name(i) << ": " << _accumulators[i] << '\n';
@@ -379,6 +400,9 @@ public:
 
         return os;
     }
+
+    // Do nothing functor
+    static void noop(const counters&) noexcept {}
 
     struct measurement_data
     {
@@ -439,13 +463,13 @@ public:
     {
     public:
 
-        /// Apply the @param func functor in the destructor
+        /// Apply the @param eolFunc functor in the destructor
         measurement(std::string      tag,
                     counters&        ctrs,
-                    FUNC             func)
+                    FUNC             eolFunc)
             : measurement_data{std::move(tag)}
             , _counters(ctrs)
-            , _func(std::move(func))
+            , _eolFunc(std::move(eolFunc))
         {
             int retval(PAPI_read(_counters.eventset(), measurement_data::_values.begin()));
             if (retval != PAPI_OK) {
@@ -465,7 +489,7 @@ public:
                     measurement_data::_values[i] = _second_read[i] - measurement_data::_values[i];
                 }
                 _counters.accumulate(measurement_data::_values);
-                _func(this);
+                _eolFunc(this);
             }
         }
 
@@ -494,7 +518,7 @@ public:
     private:
 
         counters&         _counters;
-        FUNC              _func;
+        FUNC              _eolFunc;
 
     }; // measurement
 
@@ -502,6 +526,8 @@ private:
 
     static constexpr const events_t   _events{ EVENTS... };
     //static constexpr const names_t    _names{};
+    const std::string                 _tag;
+    const eol_functor_t               _eolFunc{noop}; // called in destructor
     eventset_t                        _eventSet{PAPI_NULL};
     values_t                          _accumulators{0};
 
