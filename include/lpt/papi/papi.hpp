@@ -256,15 +256,19 @@ public:
 
     struct cpu_info
     {
-        cpu_info(const PAPI_hw_info_t* hwInfo)
-            : _model(hwInfo->model_string)
+        cpu_info(const hardware& hw)
+            : _model(hw._hwInfo->model_string)
+            , _numHwCtrs(hw._numHwCtrs)
         { }
 
         const char* _model;
+        const int   _numHwCtrs;
     };
-    const cpu_info cpu() const { return cpu_info(_hwInfo); }
+    const cpu_info cpu() const { return cpu_info(*this); }
 
 private:
+
+    friend cpu_info;
 
     int             _numHwCtrs{0};
     PAPI_hw_info_t* _hwInfo{nullptr};
