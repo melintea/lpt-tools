@@ -361,10 +361,11 @@ public:
     counters(counters&&)                 = delete;
     counters& operator=(counters&&)      = delete;
 
-    constexpr size_t     size()     const { return NUM_COUNTERS; }
-    const     events_t&  events()   const { return _events; }
-    const     values_t&  values()   const { return _accumulators; }
-              eventset_t eventset() const { return _eventSet; }
+    constexpr size_t       size()     const { return NUM_COUNTERS; }
+    const     events_t&    events()   const { return _events; }
+    const     values_t&    values()   const { return _accumulators; }
+              eventset_t   eventset() const { return _eventSet; }
+    const     std::string& tag()      const { return _tag; }
 
     static std::string name(size_t idx)
     {
@@ -468,6 +469,26 @@ public:
             return pcts;
         }
 
+        std::ostream& print(std::ostream& os) const
+        {
+            if ( ! _tag.empty())
+            {
+                os << _tag << ": \n";
+            }
+            for (size_t i = 0; i < NUM_COUNTERS; ++i )
+            {
+                os << counters::name(i) << ": " << _values[i] << '\n';
+            }
+            os << std::endl;
+
+            return os;
+        }
+
+        friend inline std::ostream& operator<<(std::ostream&           os,
+                                               const measurement_data& md)
+        {
+            return md.print(os);
+        }
     }; // measurement_data
 
     template <typename FUNC>
