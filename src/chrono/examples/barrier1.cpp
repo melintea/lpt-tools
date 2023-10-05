@@ -24,8 +24,8 @@ void lockfree(size_t numThreads, size_t numLoops)
     std::barrier startSync(numThreads);
     std::barrier stopSync(numThreads);
 
+    // Obviously an incorrect end value but the test is about barrier costs
     static volatile long long finalSum{0};
-    //std::atomic<unsigned long> finalSum{0};
 
     auto worker = [&](size_t nLoops)
     {
@@ -50,7 +50,8 @@ void lockfree(size_t numThreads, size_t numLoops)
     std::barrier startSync(numThreads);
     std::barrier stopSync(numThreads);
 
-    std::atomic<unsigned long long> finalSum{0};
+    // Obviously an incorrect end value but the test is about barrier costs
+    std::atomic<unsigned long long> finalSum{0}; 
 
     auto worker = [&](size_t nLoops)
     {
