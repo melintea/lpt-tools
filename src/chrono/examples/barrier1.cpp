@@ -86,7 +86,7 @@ int main()
                                         [](auto&& tag, auto&& dur) -> decltype(auto) {
                                             std::cout << std::setw(15) << tag << ": " << dur.count() << std::endl;
                                         });
-            lockfree(nThreads, numLoops);
+            lockfree(nThreads, numLoops/nThreads);
         }
     }
     
@@ -97,7 +97,7 @@ int main()
                                         [](auto&& tag, auto&& dur) -> decltype(auto) {
                                             std::cout << std::setw(15) << tag << ": " << dur.count() << std::endl;
                                         });
-            lockfree<std::memory_order_seq_cst, std::memory_order_seq_cst>(nThreads, numLoops);
+            lockfree<std::memory_order_seq_cst, std::memory_order_seq_cst>(nThreads, numLoops/nThreads);
         }
     }
 
@@ -108,7 +108,7 @@ int main()
                                         [](auto&& tag, auto&& dur) -> decltype(auto) {
                                             std::cout << std::setw(15) << tag << ": " << dur.count() << std::endl;
                                         });
-            lockfree<std::memory_order_acquire, std::memory_order_release>(nThreads, numLoops);
+            lockfree<std::memory_order_acquire, std::memory_order_release>(nThreads, numLoops/nThreads);
         }
     }
 
@@ -119,7 +119,7 @@ int main()
                                         [](auto&& tag, auto&& dur) -> decltype(auto) {
                                             std::cout << std::setw(15) << tag << ": " << dur.count() << std::endl;
                                         });
-            lockfree<std::memory_order_consume, std::memory_order_release>(nThreads, numLoops);
+            lockfree<std::memory_order_consume, std::memory_order_release>(nThreads, numLoops/nThreads);
         }
     }
 
@@ -130,7 +130,7 @@ int main()
                                         [](auto&& tag, auto&& dur) -> decltype(auto) {
                                             std::cout << std::setw(15) << tag << ": " << dur.count() << std::endl;
                                         });
-            lockfree<std::memory_order_acq_rel, std::memory_order_acq_rel>(nThreads, numLoops);
+            lockfree<std::memory_order_acq_rel, std::memory_order_acq_rel>(nThreads, numLoops/nThreads);
         }
     }
 
@@ -141,7 +141,7 @@ int main()
                                         [](auto&& tag, auto&& dur) -> decltype(auto) {
                                             std::cout << std::setw(15) << tag << ": " << dur.count() << std::endl;
                                         });
-            lockfree<std::memory_order_relaxed, std::memory_order_relaxed>(nThreads, numLoops);
+            lockfree<std::memory_order_relaxed, std::memory_order_relaxed>(nThreads, numLoops/nThreads);
         }
     }
 
