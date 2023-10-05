@@ -52,6 +52,7 @@ void lockfree(size_t numThreads, size_t numLoops)
 
     // Obviously an incorrect end value but the test is about barrier costs
     std::atomic<unsigned long long> finalSum{0}; 
+    static_assert(std::atomic<long long>::is_always_lock_free);
 
     auto worker = [&](size_t nLoops)
     {
