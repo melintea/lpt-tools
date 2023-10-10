@@ -8,6 +8,8 @@
  *
  *  Needs PAPI installed - see INSTALL.txt:
  *   ./configure && make && sudo make install-all
+ * 
+ *  Needs to run as root
  */
 
 #ifndef LPT_PAPI_H
@@ -26,6 +28,8 @@
 #include <utility>
 
 #include <papi.h> 
+
+#include <unistd.h>
 
 #if (__cplusplus < 201703L)
 #  error Minimum C++17 needed
@@ -318,6 +322,10 @@ public:
         : _tag(std::move(tag))
         , _eolFunc(std::move(eolFunc))
     {
+        if (0 != ::geteuid()) {
+            throw error("Must run with elevated priv", PAPI_EPERM);
+        }
+
         thread::init();
         
         int retval{PAPI_OK};
