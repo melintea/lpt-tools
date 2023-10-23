@@ -12,11 +12,12 @@
 namespace lpt { namespace intel {
 
 /*
- * p can be used to access all memory - placate optimizer for p
+ * "p can be used to access all memory" - placate optimizations for p
  * Usage:
  *   disable_optimizer(v.data());
  *   v.push_back(xyz);
  *   barrier();
+ * @see https://github.com/google/benchmark
  */
 inline void disable_optimizer(void* p) {
     asm volatile("" : : "g"(p) : "memory");
