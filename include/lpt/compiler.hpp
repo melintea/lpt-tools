@@ -23,7 +23,8 @@ inline void disable_optimizer(void* p) {
     asm volatile("" : : "g"(p) : "memory");
 }
 
-// Pretend all memory was read & written
+// Pretend all memory was read & written & force the compiler to flush pending 
+// writes to global memory.
 //#define barrier() __asm__ __volatile__("": : :"memory")
 inline void barrier() {
     asm volatile("" : : : "memory");
