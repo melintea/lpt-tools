@@ -31,7 +31,7 @@ void lockfree(size_t numThreads, size_t numLoops)
         startSync.arrive_and_wait();
 
         for (size_t i = 0; i < nLoops ; ++i) {
-            finalSum += i;
+            finalSum += i; // Wrong; TODO: try fetch_add(i, std::memory_order_relaxed)
         }
         
         stopSync.arrive_and_wait();

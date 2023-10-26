@@ -11,7 +11,7 @@ googleBenchmark=${HOME}/work/benchmark
 
 target=$(basename -s \.cpp $1)
 
-g++ $1 -std=c++20 \
+g++ $1 -std=c++20 -O3 \
   -isystem ${googleBenchmark}/include \
   -L${googleBenchmark}/build/src \
   -L${googleBenchmark}/build/lib \
