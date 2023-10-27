@@ -11,7 +11,9 @@ googleBenchmark=${HOME}/work/benchmark
 
 target=$(basename -s \.cpp $1)
 
+#TODO: -mavx2 -g
 g++ $1 -std=c++20 -O3 \
+  -Wall -Wextra -Werror -pedantic -Wno-deperecated-volatile \
   -isystem ${googleBenchmark}/include \
   -L${googleBenchmark}/build/src \
   -L${googleBenchmark}/build/lib \

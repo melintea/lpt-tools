@@ -30,8 +30,8 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-constexpr const int numTotalLoops = 1024*1024*32;
-constexpr const int maxNumThreads = 128;
+constexpr const size_t numTotalLoops = 1024*1024*32;
+constexpr const size_t maxNumThreads = 128;
 
 static void BM_Mutex(benchmark::State& state) {
   static unsigned long  counterMtx{0};
