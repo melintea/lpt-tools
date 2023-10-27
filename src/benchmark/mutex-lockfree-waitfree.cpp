@@ -47,10 +47,12 @@ static void BM_Mutex(benchmark::State& state) {
     }
   }
   state.counters["Rate"] = benchmark::Counter(numTotalLoops, benchmark::Counter::kAvgThreadsRate);
+  state.SetComplexityN(state.threads());
 }
 BENCHMARK(BM_Mutex)
     ->ThreadRange(1, maxNumThreads)
     ->UseRealTime()
+    ->Complexity(benchmark::oAuto)
     //->ComputeStatistics("max", [](const std::vector<double>& v) -> double {
     //      return *(std::max_element(std::begin(v), std::end(v)));
     //  })
@@ -70,10 +72,12 @@ static void BM_PtSpin(benchmark::State& state) {
     }
   }
   state.counters["Rate"] = benchmark::Counter(numTotalLoops, benchmark::Counter::kAvgThreadsRate);
+  state.SetComplexityN(state.threads());
 }
 BENCHMARK(BM_PtSpin)
     ->ThreadRange(1, maxNumThreads)
     ->UseRealTime()
+    ->Complexity(benchmark::oAuto)
     ;
 
 static void BM_LockFree(benchmark::State& state) {
@@ -89,10 +93,12 @@ static void BM_LockFree(benchmark::State& state) {
     }
   }
   state.counters["Rate"] = benchmark::Counter(numTotalLoops, benchmark::Counter::kAvgThreadsRate);
+  state.SetComplexityN(state.threads());
 }
 BENCHMARK(BM_LockFree)
     ->ThreadRange(1, maxNumThreads)
     ->UseRealTime()
+    ->Complexity(benchmark::oAuto)
     ;
 
 static void BM_WaitFree(benchmark::State& state) {
@@ -108,10 +114,12 @@ static void BM_WaitFree(benchmark::State& state) {
     }
   }
   state.counters["Rate"] = benchmark::Counter(numTotalLoops, benchmark::Counter::kAvgThreadsRate);
+  state.SetComplexityN(state.threads());
 }
 BENCHMARK(BM_WaitFree)
     ->ThreadRange(1, maxNumThreads)
     ->UseRealTime()
+    ->Complexity(benchmark::oAuto)
     ;
 
 BENCHMARK_MAIN();
