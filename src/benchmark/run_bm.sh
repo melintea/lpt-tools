@@ -21,8 +21,10 @@ g++ $1 -std=c++20 -g -O3 \
   -o ${target} 
 
 ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
-#perf c2c record -g ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
-#perf c2c report 
+#perf c2c record -g --all-user --call-graph ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
+#perf c2c report -NN -g --call-graph
+#perf lock record -g --all-user --call-graph dwarf,8192
+#perf lock report --combine-locks --threads
 #rm perf.data
 
 rm ./${target}
