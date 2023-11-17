@@ -8,6 +8,7 @@ set -x
 # 
 
 googleBenchmark=${HOME}/work/benchmark
+lptInc=../../include
 
 target=$(basename -s \.cpp $1)
 
@@ -15,6 +16,7 @@ target=$(basename -s \.cpp $1)
 g++ $1 -std=c++20 -g -O3 \
   -Wall -Wextra -Werror -pedantic -Wno-deperecated-volatile \
   -isystem ${googleBenchmark}/include \
+  -isystem ${lptInc} \
   -L${googleBenchmark}/build/src \
   -L${googleBenchmark}/build/lib \
   -lbenchmark -lpthread \
