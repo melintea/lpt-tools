@@ -23,14 +23,15 @@ class mca
 {
 public:
 
-    mca()  { LLVM-MCA-BEGIN; }
-    ~mca() { LLVM-MCA-END; }
+    mca()  { __asm volatile("# LLVM-MCA-BEGIN"); }
+    ~mca() { __asm volatile("# LLVM-MCA-END");   }
 
     mca( const mca& other )            = delete;
     mca& operator=( const mca& other ) = delete;
 
     mca( const mca& other )            = delete;
     mca& operator=( mca&& other )      = delete;
+
 }; // mca
 
 }} //namespace lpt::llvm
