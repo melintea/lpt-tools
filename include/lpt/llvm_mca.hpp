@@ -17,6 +17,7 @@ namespace lpt { namespace llvm {
 
 /*
  * Machine Code Analyzer wrapper
+ * https://llvm.org/docs/CommandGuide/llvm-mca.html
  */
 class mca
 {
