@@ -29,7 +29,7 @@ public:
     mca( const mca& other )            = delete;
     mca& operator=( const mca& other ) = delete;
 
-    mca( const mca& other )            = delete;
+    mca( cmca&& other )                = delete;
     mca& operator=( mca&& other )      = delete;
 
 }; // mca
