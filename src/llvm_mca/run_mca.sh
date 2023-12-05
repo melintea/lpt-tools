@@ -32,7 +32,7 @@ if [[ ${processor} == *"aarch64"* ]]; then
     -Wall -Wextra -Werror -pedantic -Wno-deprecated-volatile \
     -isystem ${googleBenchmark}/include \
     -isystem ${lptInc} \
-    -mllvm \
+    \
     -S -o - | llvm-mca-14  -timeline
 fi
 
