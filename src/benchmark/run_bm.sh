@@ -14,7 +14,7 @@ target=$(basename -s \.cpp $1)
 
 #TODO: -mavx2 
 g++ $1 -std=c++20 -g -O3 \
-  -Wall -Wextra -Werror -pedantic -Wno-deperecated-volatile \
+  -Wall -Wextra -Werror -pedantic -Wno-deprecated-volatile \
   -isystem ${googleBenchmark}/include \
   -isystem ${lptInc} \
   -L${googleBenchmark}/build/src \

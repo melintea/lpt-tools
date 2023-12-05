@@ -4,7 +4,7 @@
  *  Copyright 2023 Aurelian Melinte.
  *  Released under GPL 3.0 or later.
  *
- *  You need clang++.
+ *  LLVM MCA tools.
  *
  */
 
@@ -15,6 +15,9 @@
 
 namespace lpt { namespace llvm {
 
+inline void begin() { __asm volatile("# LLVM-MCA-BEGIN"); }
+inline void end()   { __asm volatile("# LLVM-MCA-END");   }
+
 /*
  * Machine Code Analyzer wrapper
  * https://llvm.org/docs/CommandGuide/llvm-mca.html
@@ -23,13 +26,13 @@ class mca
 {
 public:
 
-    mca()  { __asm volatile("# LLVM-MCA-BEGIN"); }
-    ~mca() { __asm volatile("# LLVM-MCA-END");   }
+    mca()  { begin(); }
+    ~mca() { end();   }
 
     mca( const mca& other )            = delete;
     mca& operator=( const mca& other ) = delete;
 
-    mca( cmca&& other )                = delete;
+    mca( mca&& other )                = delete;
     mca& operator=( mca&& other )      = delete;
 
 }; // mca
