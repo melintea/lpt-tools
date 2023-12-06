@@ -7,6 +7,11 @@ set -x
 # Usage: ./run_bm file.cpp
 # 
 
+if [ $# -ne 1 ]; then
+  echo "Usage: `basename $0` <cpp-file>"
+  exit 1
+fi
+
 googleBenchmark=${HOME}/work/benchmark
 lptInc=../../include
 
