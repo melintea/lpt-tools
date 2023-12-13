@@ -63,6 +63,11 @@ public:
     measurement(measurement&&)                 = default;
     measurement& operator=(measurement&&)      = default;
 
+    auto elapsed() const
+    {
+        return _start.elapsed();
+    }
+
 private:
 
     const std::string       _tag;
