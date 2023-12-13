@@ -63,6 +63,19 @@ struct accumulator_set
                << std::sqrt(boost::accumulators::variance(stat) * (n/(n-1.0)))
                << '\n';
         }
+
+        {
+            const auto& stat(dt._stats[NUM_COUNTERS]);
+            const auto  n(boost::accumulators::count(stat));
+            os  << "ElapsedTimeNs"                   << ", "
+                << boost::accumulators::min(stat)    << ", "
+                << boost::accumulators::max(stat)    << ", "
+                << boost::accumulators::mean(stat)   << ", "
+                << boost::accumulators::median(stat) << ", "
+                << std::sqrt(boost::accumulators::variance(stat) * (n/(n-1.0)))
+                << '\n';
+        }
+
         return os;
     }
 

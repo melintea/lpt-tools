@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <lpt/chrono.hpp>
+
 #include <array>
 #include <algorithm>
 #include <atomic>
@@ -303,8 +305,6 @@ public:
     using names_t        = std::array<std::string, NUM_COUNTERS>;
     using value_t        = long long;
     using values_t       = std::array<value_t, NUM_COUNTERS>;
-    using percent_t      = double;
-    using percents_t     = std::array<percent_t, NUM_COUNTERS>;
     using eol_functor_t  = std::function<void(const counters&)>; // called in destructor
 
 
@@ -425,10 +425,42 @@ public:
     // Do nothing functor
     static void noop(const counters&) noexcept {}
 
-    struct measurement_data
+
+    using percent_t      = double;
+
+    // FIXME: array is not really meant to be inheritable
+    struct percents : public std::array<percent_t, NUM_COUNTERS + 1/*_elapsedTime*/>
     {
-        std::string   _tag;
-        values_t      _values{0};
+        using typename std::array<percent_t, NUM_COUNTERS + 1/*_elapsedTime*/>::array;
+
+        std::ostream& print(std::ostream& os) const
+        {
+            for (size_t i = 0; i < NUM_COUNTERS; ++i )
+            {
+                //std::cout << std::format("{:10} : {:.2f} %\n", counters::name(i), this->at(i) );
+                os << counters::name(i) << ": " << this->at(i) << " % \n";
+            }
+
+            os << "ElapsedTimeNs: " << this->at(NUM_COUNTERS) << " % \n";
+
+            os << std::endl;
+
+            return os;
+        }
+
+        friend inline std::ostream& operator<<(std::ostream&   os,
+                                               const percents& pcts)
+        {
+            return pcts.print(os);
+        }
+    }; //percents
+    using percents_t      = percents;
+
+    struct measurement_data 
+    {
+        std::string                         _tag;
+        values_t                            _values{0};
+        lpt::chrono::timepoint::duration_t  _elapsedTime{0}; 
 
         measurement_data(const std::string& tag,
                          const values_t&    values)
@@ -452,6 +484,7 @@ public:
         constexpr size_t       size()   const { return NUM_COUNTERS; }
         const     values_t&    values() const { return _values; }
         const     std::string& tag()    const { return _tag; }
+        constexpr lpt::chrono::timepoint::duration_t  elapsed_time() const { return _elapsedTime; }
 
         measurement_data operator-(const measurement_data& r) const
         {
@@ -460,20 +493,28 @@ public:
             {
                 ret._values[i] = _values[i] - r._values[i];
             }
+
+            ret._elapsedTime = _elapsedTime - r._elapsedTime;
+
             return ret;
         }
 
-        percents_t as_percent_of(const measurement_data& base) const
+        percents as_percent_of(const measurement_data& base) const
         {
-            percents_t pcts{0};
+            percents pcts;
             for (auto i = 0; i < NUM_COUNTERS; ++i )
             {
-                double dataPoint(_values[i]);
-                double basePoint(base._values[i]);
+                percent_t dataPoint(_values[i]);
+                percent_t basePoint(base._values[i]);
                 pcts[i] = basePoint != 0
-                        ? (((dataPoint - basePoint)/basePoint) * 100)
+                        ? (((dataPoint - basePoint)/basePoint) * 100.0)
                         : 0 ;
             }
+
+            percent_t dataPoint(std::chrono::duration_cast<lpt::chrono::timepoint::duration_t>(_elapsedTime).count());
+            percent_t basePoint(std::chrono::duration_cast<lpt::chrono::timepoint::duration_t>(base._elapsedTime).count());
+            pcts[NUM_COUNTERS] = ((dataPoint - basePoint)/basePoint) * 100.0;
+
             return pcts;
         }
 
@@ -487,6 +528,9 @@ public:
             {
                 os << counters::name(i) << ": " << _values[i] << '\n';
             }
+
+            os << "ElapsedTimeNs: " << _elapsedTime.count() << '\n';
+
             os << std::endl;
 
             return os;
@@ -509,6 +553,7 @@ public:
                     counters&        ctrs,
                     FUNC             eolFunc)
             : measurement_data{std::move(tag)}
+            , _startTime(lpt::chrono::timepoint::clock_t::now())
             , _counters(ctrs)
             , _eolFunc(std::move(eolFunc))
         {
@@ -530,6 +575,9 @@ public:
                     measurement_data::_values[i] = _second_read[i] - measurement_data::_values[i];
                 }
                 _counters.accumulate(measurement_data::_values);
+
+                measurement_data::_elapsedTime = std::chrono::duration_cast<lpt::chrono::timepoint::duration_t>(lpt::chrono::timepoint::clock_t::now() - _startTime);
+
                 _eolFunc(this);
             }
         }
@@ -553,13 +601,16 @@ public:
                 dnow._values[i] -= measurement_data::_values[i];
             }
 
+            dnow._elapsedTime =  lpt::chrono::timepoint::clock_t::now() - _startTime;
+
             return dnow;
         }
 
     private:
 
-        counters&         _counters;
-        FUNC              _eolFunc;
+        counters&                            _counters;
+        lpt::chrono::timepoint::timepoint_t  _startTime;
+        FUNC                                 _eolFunc;
 
     }; // measurement
 
