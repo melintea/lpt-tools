@@ -138,7 +138,7 @@ void as_percent(const std::string&                tag,
     if ( ! tag.empty()) { std::cout << tag << ": "; };
     std::cout << "Percents of: "<< data.tag() << " based over " << base.tag() << "\n"
               << "Negative: data is smaller than base\n";
-    counters::percents pcts(data.as_percent_of(base));
+    counters::datapoint::percents pcts(data.as_percent_of(base));
     std::cout << pcts << std::endl;
 }
 
@@ -272,7 +272,7 @@ int main()
         cout_measurement(&copyLessMoveConstructRead);
         as_percent("Diffusion (positive: move is worse)", moveConstructRead, copyConstructRead);
 
-        counters::percents pcts(moveConstructRead.as_percent_of(copyConstructRead));
+        counters::datapoint::percents pcts(moveConstructRead.as_percent_of(copyConstructRead));
         stats(pcts);
 
         std::cout << std::endl;

@@ -27,9 +27,8 @@ template<typename PAPI_COUNTERS>
 struct accumulator_set 
 {  
     using counters_t        = PAPI_COUNTERS;
-    static constexpr const size_t NUM_COUNTERS = counters_t::NUM_COUNTERS;
     using percent_t         = counters_t::percent_t;
-    using percents_t        = counters_t::percents;
+    using percents_t        = counters_t::datapoint::percents;
 
     using accumulator_set_t = boost::accumulators::accumulator_set< percent_t,
                                                                     boost::accumulators::features <
@@ -52,10 +51,10 @@ struct accumulator_set
     friend std::ostream& operator<<(std::ostream& os, const accumulator_set& dt)
     {
         os << "Counter, min%, max%, mean%, median%, stddev\n";
-        for (auto i = 0; i < NUM_COUNTERS; ++i) {
+        for (auto i = 0; i < percents_t::size(); ++i) {
             const auto& stat(dt._stats[i]);
             const auto  n(boost::accumulators::count(stat));
-            os << counters_t::name(i)               << ", "
+            os << percents_t::name(i)               << ", "
                << boost::accumulators::min(stat)    << ", "
                << boost::accumulators::max(stat)    << ", "
                << boost::accumulators::mean(stat)   << ", "
@@ -64,22 +63,10 @@ struct accumulator_set
                << '\n';
         }
 
-        {
-            const auto& stat(dt._stats[NUM_COUNTERS]);
-            const auto  n(boost::accumulators::count(stat));
-            os  << "ElapsedTimeNs"                   << ", "
-                << boost::accumulators::min(stat)    << ", "
-                << boost::accumulators::max(stat)    << ", "
-                << boost::accumulators::mean(stat)   << ", "
-                << boost::accumulators::median(stat) << ", "
-                << std::sqrt(boost::accumulators::variance(stat) * (n/(n-1.0)))
-                << '\n';
-        }
-
         return os;
     }
 
-    accumulator_set_t _stats[NUM_COUNTERS];
+    accumulator_set_t _stats[percents_t::size()];
 };
 
 } // namespace lpt::papi

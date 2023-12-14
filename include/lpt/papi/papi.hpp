@@ -40,6 +40,8 @@
 #  error Needs minimum PAPI version(7,0,1,0)
 #endif
 
+using namespace std::string_literals;
+
 namespace lpt::papi
 {
 
@@ -369,7 +371,8 @@ public:
     counters(counters&&)                 = delete;
     counters& operator=(counters&&)      = delete;
 
-    constexpr size_t       size()     const { return NUM_COUNTERS; }
+    static constexpr const size_t  size() { return NUM_COUNTERS; }
+
     const     events_t&    events()   const { return _events; }
     const     values_t&    values()   const { return _accumulators; }
               eventset_t   eventset() const { return _eventSet; }
@@ -379,7 +382,7 @@ public:
     {
         static const names_t _names = [&](){
             names_t ns2;
-            for (auto idx = 0; idx < NUM_COUNTERS; ++idx) {
+            for (auto idx = 0; idx < size(); ++idx) {
                 name_t n = {0};
                 PAPI_event_code_to_name(_events[idx], n);
                 ns2[idx] = n;
@@ -390,13 +393,13 @@ public:
             return ns2;
         }();
 
-        assert(idx < NUM_COUNTERS);
+        assert(idx < size());
         return _names[idx];
     }
 
     void accumulate(const values_t& vals)
     {
-        for (size_t i = 0; i < NUM_COUNTERS; ++i )
+        for (size_t i = 0; i < size(); ++i )
         {
             _accumulators[i] += vals[i];
         }
@@ -408,7 +411,7 @@ public:
         {
             os << _tag << ": \n";
         }
-        for (size_t i = 0; i < NUM_COUNTERS; ++i )
+        for (size_t i = 0; i < size(); ++i )
         {
             os << name(i) << ": " << _accumulators[i] << '\n';
         }
@@ -428,40 +431,48 @@ public:
 
     using percent_t      = double;
 
-    // FIXME: array is not really meant to be inheritable
-    struct percents : public std::array<percent_t, NUM_COUNTERS + 1/*_elapsedTime*/>
-    {
-        using typename std::array<percent_t, NUM_COUNTERS + 1/*_elapsedTime*/>::array;
-
-        static constexpr const size_t size() { return NUM_COUNTERS + 1; }
-
-        std::ostream& print(std::ostream& os) const
-        {
-            for (size_t i = 0; i < NUM_COUNTERS; ++i )
-            {
-                //std::cout << std::format("{:10} : {:.2f} %\n", counters::name(i), this->at(i) );
-                os << counters::name(i) << ": " << this->at(i) << " % \n";
-            }
-
-            os << "ElapsedTimeNs: " << this->at(NUM_COUNTERS) << " % \n";
-
-            os << std::endl;
-
-            return os;
-        }
-
-        friend inline std::ostream& operator<<(std::ostream&   os,
-                                               const percents& pcts)
-        {
-            return pcts.print(os);
-        }
-    }; //percents
 
     struct datapoint 
     {
         std::string                         _tag;
         values_t                            _values{0};
         lpt::chrono::timepoint::duration_t  _elapsedTime{0}; 
+
+        // FIXME: array is not really meant to be inheritable
+        struct percents : public std::array<percent_t, counters::size() + 1/*_elapsedTime*/>
+        {
+            using typename std::array<percent_t, NUM_COUNTERS + 1/*_elapsedTime*/>::array;
+
+            static constexpr const size_t POS_TIME = NUM_COUNTERS; // last entry in the array is for time
+
+            static constexpr const size_t size() { return NUM_COUNTERS + 1; }
+
+            static std::string name(size_t idx)
+            {
+                assert(idx < size());
+                static const std::string timeLabel = "ElapsedTime("s + lpt::chrono::timepoint::unit + ")"s;
+                return idx < counters::size() ? counters::name(idx) : timeLabel;
+            }
+
+            std::ostream& print(std::ostream& os) const
+            {
+                for (size_t i = 0; i < size(); ++i )
+                {
+                    //std::cout << std::format("{:10} : {:.2f} %\n", counters::name(i), this->at(i) );
+                    os << name(i) << ": " << this->at(i) << " % \n";
+                }
+
+                os << std::endl;
+
+                return os;
+            }
+
+            friend inline std::ostream& operator<<(std::ostream&   os,
+                                                const percents& pcts)
+            {
+                return pcts.print(os);
+            }
+        }; //percents
 
         datapoint(const std::string& tag,
                   const values_t&    values)
@@ -476,13 +487,13 @@ public:
         {           
         }
 
-        datapoint()                                   = default;
+        datapoint()                            = default;
         datapoint(const datapoint&)            = default;
         datapoint& operator=(const datapoint&) = default;
         datapoint(datapoint&&)                 = default;
         datapoint& operator=(datapoint&&)      = default;
 
-        constexpr size_t       size()   const { return NUM_COUNTERS; }
+        constexpr size_t       size()   const { return counters::size(); }
         const     values_t&    values() const { return _values; }
         const     std::string& tag()    const { return _tag; }
         constexpr lpt::chrono::timepoint::duration_t  elapsed_time() const { return _elapsedTime; }
@@ -490,7 +501,7 @@ public:
         datapoint operator-(const datapoint& r) const
         {
             datapoint ret;
-            for (auto i = 0; i < NUM_COUNTERS; ++i )
+            for (auto i = 0; i < size(); ++i )
             {
                 ret._values[i] = _values[i] - r._values[i];
             }
@@ -503,7 +514,7 @@ public:
         percents as_percent_of(const datapoint& base) const
         {
             percents pcts;
-            for (auto i = 0; i < NUM_COUNTERS; ++i )
+            for (auto i = 0; i < size(); ++i )
             {
                 percent_t dataPoint(_values[i]);
                 percent_t basePoint(base._values[i]);
@@ -512,9 +523,9 @@ public:
                         : 0 ;
             }
 
-            percent_t dataPoint(std::chrono::duration_cast<lpt::chrono::timepoint::duration_t>(_elapsedTime).count());
-            percent_t basePoint(std::chrono::duration_cast<lpt::chrono::timepoint::duration_t>(base._elapsedTime).count());
-            pcts[NUM_COUNTERS] = ((dataPoint - basePoint)/basePoint) * 100.0;
+            percent_t dataPoint(_elapsedTime.count());
+            percent_t basePoint(base._elapsedTime.count());
+            pcts[percents::POS_TIME] = ((dataPoint - basePoint)/basePoint) * 100.0;
 
             return pcts;
         }
@@ -530,7 +541,7 @@ public:
                 os << counters::name(i) << ": " << _values[i] << '\n';
             }
 
-            os << "ElapsedTimeNs: " << _elapsedTime.count() << '\n';
+            os << percents::name(percents::POS_TIME) << ": " << _elapsedTime.count() << '\n';
 
             os << std::endl;
 
@@ -571,7 +582,7 @@ public:
             int retval(PAPI_read(_counters.eventset(), _second_read.begin()));
             if (retval == PAPI_OK)
             {
-                for (auto i = 0; i < NUM_COUNTERS; ++i )
+                for (auto i = 0; i < counters::size(); ++i )
                 {
                     datapoint::_values[i] = _second_read[i] - datapoint::_values[i];
                 }
@@ -597,7 +608,7 @@ public:
                 throw error("PAPI_read", retval);
             }
                 
-            for (auto i = 0; i < NUM_COUNTERS; ++i )
+            for (auto i = 0; i < counters::size(); ++i )
             {
                 dnow._values[i] -= datapoint::_values[i];
             }
