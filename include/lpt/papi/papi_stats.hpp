@@ -44,7 +44,7 @@ struct accumulator_set
 
     void operator()(const percents_t& data)
     {
-        for (auto i = 0; i < NUM_COUNTERS; ++i) {
+        for (auto i = 0; i < percents_t::size(); ++i) {
             _stats[i](data[i]);
         }
     }

@@ -433,6 +433,8 @@ public:
     {
         using typename std::array<percent_t, NUM_COUNTERS + 1/*_elapsedTime*/>::array;
 
+        static constexpr const size_t size() { return NUM_COUNTERS + 1; }
+
         std::ostream& print(std::ostream& os) const
         {
             for (size_t i = 0; i < NUM_COUNTERS; ++i )
