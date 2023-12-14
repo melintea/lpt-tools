@@ -29,7 +29,7 @@ struct accumulator_set
     using counters_t        = PAPI_COUNTERS;
     static constexpr const size_t NUM_COUNTERS = counters_t::NUM_COUNTERS;
     using percent_t         = counters_t::percent_t;
-    using percents_t        = counters_t::percents_t;
+    using percents_t        = counters_t::percents;
 
     using accumulator_set_t = boost::accumulators::accumulator_set< percent_t,
                                                                     boost::accumulators::features <

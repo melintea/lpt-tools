@@ -454,7 +454,6 @@ public:
             return pcts.print(os);
         }
     }; //percents
-    using percents_t      = percents;
 
     struct measurement_data 
     {

@@ -128,7 +128,7 @@ void as_percent(const std::string&                tag,
     if ( ! tag.empty()) { std::cout << tag << ": "; };
     std::cout << "Percents of: "<< data.tag() << " based over " << base.tag() << "\n"
               << "Negative: data is smaller than base\n";
-    counters::percents_t pcts(data.as_percent_of(base));
+    counters::percents pcts(data.as_percent_of(base));
     for (auto i = 0; i < data.size(); ++i) {
         std::cout << counters::name(i) << ": " << pcts[i] << " % \n";
         //std::cout << std::format("{:10} : {:.2f} %\n", counters::name(i), pcts[i]);
