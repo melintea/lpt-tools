@@ -74,8 +74,8 @@ void fill(strvec& vec, const char* data, size_t dataSize)
 
 //-----------------------------------------------------------------------------
 void as_percent(const std::string&                tag,
-                const counters::measurement_data& data,
-                const counters::measurement_data& base)
+                const counters::datapoint& data,
+                const counters::datapoint& base)
 {
     if ( ! tag.empty()) { std::cout << tag << ": "; };
     std::cout << "Percents of: "<< data.tag() << " based over " << base.tag() << "\n";
@@ -90,8 +90,8 @@ void as_percent(const std::string&                tag,
     std::cout << std::endl;
 }
 
-void as_percent(const counters::measurement_data& data,
-                const counters::measurement_data& base)
+void as_percent(const counters::datapoint& data,
+                const counters::datapoint& base)
 {
     return as_percent({}, data, base);
 }
@@ -137,7 +137,7 @@ int main()
    lpt::papi::hardware().print(std::cout);
 
    counters ctrs;
-   auto cout_measurement = [](const counters::measurement_data* measure) -> void {
+   auto cout_measurement = [](const counters::datapoint* measure) -> void {
                                   const auto& vals(measure->values());
                                   std::cout << measure->tag() << '\n';
                                   for (auto i = 0; i < measure->size(); ++i) {
@@ -153,10 +153,10 @@ int main()
        copyConstructed.clear();
        moveConstructed.clear();
 
-       counters::measurement_data copyConstruct;
-       counters::measurement_data moveConstruct;
-       counters::measurement_data copyConstructRead;
-       counters::measurement_data moveConstructRead;
+       counters::datapoint copyConstruct;
+       counters::datapoint moveConstruct;
+       counters::datapoint copyConstructRead;
+       counters::datapoint moveConstructRead;
 
        {
            counters::measurement pc("Baseline copy >64 constructed",
@@ -209,11 +209,11 @@ int main()
        std::cout << "*\n"
                     "* Copy less move over cache line size \n"
                     "*\n";
-        counters::measurement_data copyLessMoveConstruct(copyConstruct - moveConstruct);
+        counters::datapoint copyLessMoveConstruct(copyConstruct - moveConstruct);
         copyLessMoveConstruct._tag = "Construct: copy - move";
         cout_measurement(&copyLessMoveConstruct);
         as_percent(moveConstruct, copyConstruct);
-        counters::measurement_data copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
+        counters::datapoint copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
         copyLessMoveConstructRead._tag = "Read: copy - move";
         cout_measurement(&copyLessMoveConstructRead);
         as_percent(moveConstructRead, copyConstructRead);
@@ -232,7 +232,7 @@ int main()
 
            moveConstructRead = pc.data();
         }
-        counters::measurement_data copyLessMoveConstructRead2(copyConstructRead - moveConstructRead);
+        counters::datapoint copyLessMoveConstructRead2(copyConstructRead - moveConstructRead);
         copyLessMoveConstructRead2._tag = "Diffusion read: copy - move";
         cout_measurement(&copyLessMoveConstructRead2);
         as_percent("Diffusion", moveConstructRead, copyConstructRead);
@@ -245,10 +245,10 @@ int main()
        copyConstructed.clear();
        moveConstructed.clear();
 
-       counters::measurement_data copyConstruct;
-       counters::measurement_data moveConstruct;
-       counters::measurement_data copyConstructRead;
-       counters::measurement_data moveConstructRead;
+       counters::datapoint copyConstruct;
+       counters::datapoint moveConstruct;
+       counters::datapoint copyConstructRead;
+       counters::datapoint moveConstructRead;
 
        {
            counters::measurement pc("Baseline copy <64 constructed",
@@ -300,11 +300,11 @@ int main()
        std::cout << "*\n"
                     "* Copy less move under cache line size \n"
                     "*\n";
-        counters::measurement_data copyLessMoveConstruct(copyConstruct - moveConstruct);
+        counters::datapoint copyLessMoveConstruct(copyConstruct - moveConstruct);
         copyLessMoveConstruct._tag = "Construct: copy - move";
         cout_measurement(&copyLessMoveConstruct);
         as_percent(moveConstruct, copyConstruct);
-        counters::measurement_data copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
+        counters::datapoint copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
         copyLessMoveConstructRead._tag = "Read: copy - move";
         cout_measurement(&copyLessMoveConstructRead);
         as_percent(moveConstructRead, copyConstructRead);
@@ -323,7 +323,7 @@ int main()
 
            moveConstructRead = pc.data();
         }
-        counters::measurement_data copyLessMoveConstructRead2(copyConstructRead - moveConstructRead);
+        counters::datapoint copyLessMoveConstructRead2(copyConstructRead - moveConstructRead);
         copyLessMoveConstructRead2._tag = "Diffusion read: copy - move";
         cout_measurement(&copyLessMoveConstructRead2);
         as_percent("Diffusion", moveConstructRead, copyConstructRead);

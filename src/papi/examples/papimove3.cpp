@@ -132,8 +132,8 @@ void fill_move(strvec& vec, const char* data, size_t dataSize)
 
 //-----------------------------------------------------------------------------
 void as_percent(const std::string&                tag,
-                const counters::measurement_data& data,
-                const counters::measurement_data& base)
+                const counters::datapoint& data,
+                const counters::datapoint& base)
 {
     if ( ! tag.empty()) { std::cout << tag << ": "; };
     std::cout << "Percents of: "<< data.tag() << " based over " << base.tag() << "\n"
@@ -142,8 +142,8 @@ void as_percent(const std::string&                tag,
     std::cout << pcts << std::endl;
 }
 
-void as_percent(const counters::measurement_data& data,
-                const counters::measurement_data& base)
+void as_percent(const counters::datapoint& data,
+                const counters::datapoint& base)
 {
     return as_percent({}, data, base);
 }
@@ -179,8 +179,8 @@ int main()
 
    strvec  copyConstructedData;
    strvec  moveConstructedData;
-   counters::measurement_data copyConstructRead;
-   counters::measurement_data moveConstructRead;
+   counters::datapoint copyConstructRead;
+   counters::datapoint moveConstructRead;
 
    accumulator_set stats;
 
@@ -193,7 +193,7 @@ int main()
    lpt::papi::hardware().print(std::cout);
 
    counters ctrs;
-   auto cout_measurement = [](const counters::measurement_data* measure) -> void {
+   auto cout_measurement = [](const counters::datapoint* measure) -> void {
                                   std::cout << *measure << std::endl;
                             };
 
@@ -206,7 +206,7 @@ int main()
                         "**\n";
         {
             strvec& data(copyConstructedData);
-            counters::measurement_data& measurement(copyConstructRead);
+            counters::datapoint& measurement(copyConstructRead);
 
             // prefill
             data.clear();
@@ -237,7 +237,7 @@ int main()
         }
         {
             strvec& data(moveConstructedData);
-            counters::measurement_data& measurement(moveConstructRead);
+            counters::datapoint& measurement(moveConstructRead);
 
             // prefill
             data.clear();
@@ -267,7 +267,7 @@ int main()
             data.clear(); // Comment out for maximum cache thrashing
         }
 
-        counters::measurement_data copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
+        counters::datapoint copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
         copyLessMoveConstructRead._tag = "Diffusion read: copy - move (negative if move > copy)";
         cout_measurement(&copyLessMoveConstructRead);
         as_percent("Diffusion (positive: move is worse)", moveConstructRead, copyConstructRead);

@@ -455,39 +455,39 @@ public:
         }
     }; //percents
 
-    struct measurement_data 
+    struct datapoint 
     {
         std::string                         _tag;
         values_t                            _values{0};
         lpt::chrono::timepoint::duration_t  _elapsedTime{0}; 
 
-        measurement_data(const std::string& tag,
-                         const values_t&    values)
+        datapoint(const std::string& tag,
+                  const values_t&    values)
             : _tag(tag)
             //, _values(values)
         {           
             std::copy(std::begin(values), std::end(values), std::begin(_values));
         }
 
-        measurement_data(std::string tag)
+        datapoint(std::string tag)
             : _tag(std::move(tag))
         {           
         }
 
-        measurement_data()                                   = default;
-        measurement_data(const measurement_data&)            = default;
-        measurement_data& operator=(const measurement_data&) = default;
-        measurement_data(measurement_data&&)                 = default;
-        measurement_data& operator=(measurement_data&&)      = default;
+        datapoint()                                   = default;
+        datapoint(const datapoint&)            = default;
+        datapoint& operator=(const datapoint&) = default;
+        datapoint(datapoint&&)                 = default;
+        datapoint& operator=(datapoint&&)      = default;
 
         constexpr size_t       size()   const { return NUM_COUNTERS; }
         const     values_t&    values() const { return _values; }
         const     std::string& tag()    const { return _tag; }
         constexpr lpt::chrono::timepoint::duration_t  elapsed_time() const { return _elapsedTime; }
 
-        measurement_data operator-(const measurement_data& r) const
+        datapoint operator-(const datapoint& r) const
         {
-            measurement_data ret;
+            datapoint ret;
             for (auto i = 0; i < NUM_COUNTERS; ++i )
             {
                 ret._values[i] = _values[i] - r._values[i];
@@ -498,7 +498,7 @@ public:
             return ret;
         }
 
-        percents as_percent_of(const measurement_data& base) const
+        percents as_percent_of(const datapoint& base) const
         {
             percents pcts;
             for (auto i = 0; i < NUM_COUNTERS; ++i )
@@ -536,14 +536,14 @@ public:
         }
 
         friend inline std::ostream& operator<<(std::ostream&           os,
-                                               const measurement_data& md)
+                                               const datapoint& md)
         {
             return md.print(os);
         }
-    }; // measurement_data
+    }; // datapoint
 
     template <typename FUNC>
-    class measurement : public measurement_data
+    class measurement : public datapoint
     {
     public:
 
@@ -551,12 +551,12 @@ public:
         measurement(std::string      tag,
                     counters&        ctrs,
                     FUNC             eolFunc)
-            : measurement_data{std::move(tag)}
+            : datapoint{std::move(tag)}
             , _startTime(lpt::chrono::timepoint::clock_t::now())
             , _counters(ctrs)
             , _eolFunc(std::move(eolFunc))
         {
-            int retval(PAPI_read(_counters.eventset(), measurement_data::_values.begin()));
+            int retval(PAPI_read(_counters.eventset(), datapoint::_values.begin()));
             if (retval != PAPI_OK) {
                 throw error("PAPI_read", retval);
             }
@@ -571,11 +571,11 @@ public:
             {
                 for (auto i = 0; i < NUM_COUNTERS; ++i )
                 {
-                    measurement_data::_values[i] = _second_read[i] - measurement_data::_values[i];
+                    datapoint::_values[i] = _second_read[i] - datapoint::_values[i];
                 }
-                _counters.accumulate(measurement_data::_values);
+                _counters.accumulate(datapoint::_values);
 
-                measurement_data::_elapsedTime = std::chrono::duration_cast<lpt::chrono::timepoint::duration_t>(lpt::chrono::timepoint::clock_t::now() - _startTime);
+                datapoint::_elapsedTime = std::chrono::duration_cast<lpt::chrono::timepoint::duration_t>(lpt::chrono::timepoint::clock_t::now() - _startTime);
 
                 _eolFunc(this);
             }
@@ -586,9 +586,9 @@ public:
         measurement(measurement&&)                 = default;
         measurement& operator=(measurement&&)      = default;
 
-        measurement_data data() const
+        datapoint data() const
         {
-            measurement_data dnow{measurement_data::_tag};
+            datapoint dnow{datapoint::_tag};
 
             int retval(PAPI_read(_counters.eventset(), dnow._values.begin()));
             if (retval != PAPI_OK) {
@@ -597,7 +597,7 @@ public:
                 
             for (auto i = 0; i < NUM_COUNTERS; ++i )
             {
-                dnow._values[i] -= measurement_data::_values[i];
+                dnow._values[i] -= datapoint::_values[i];
             }
 
             dnow._elapsedTime =  lpt::chrono::timepoint::clock_t::now() - _startTime;

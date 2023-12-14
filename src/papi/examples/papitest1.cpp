@@ -74,7 +74,7 @@ int main()
    >;
 
    counters ctrs;
-   auto cout_measurement = [](const counters::measurement_data* measure) -> void {
+   auto cout_measurement = [](const counters::datapoint* measure) -> void {
                                   const auto& vals(measure->values());
                                   std::cout << measure->tag() << '\n';
                                   for (auto i = 0; i < measure->size(); ++i) {
