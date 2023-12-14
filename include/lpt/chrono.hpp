@@ -22,6 +22,8 @@ public:
     using timepoint_t = clock_t::time_point;
     using duration_t  = std::chrono::nanoseconds;
 
+    static constexpr const char* unit = "ns";
+
     timepoint() : _point(clock_t::now()) {}
 
     ~timepoint()                           = default;
