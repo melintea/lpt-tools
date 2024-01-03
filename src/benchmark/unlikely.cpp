@@ -120,7 +120,7 @@ void BM_branched2_unlikely(benchmark::State& state) {
         for (size_t i = 0; i < N; ++i) {
             if ( ! b1[i]) [[unlikely]] {
                 a1 += p1[i] - p2[i];
-            } else {
+            } else [[likely]] {
                 a2 += p1[i] * p2[i];
             }
         }
