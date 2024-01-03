@@ -26,6 +26,7 @@ g++ $1 -std=c++20 -g -O3 \
   -L${googleBenchmark}/build/lib \
   -lbenchmark -lpthread \
   -o ${target} 
+g++ --version
 
 ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
 #perf c2c record -g --all-user --call-graph ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
