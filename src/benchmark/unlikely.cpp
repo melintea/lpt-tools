@@ -72,6 +72,7 @@ void BM_branchless1(benchmark::State& state) {
     //state.SetBytesProcessed(N*sizeof(unsigned long)*state.iterations());
 }
 
+// randomish reference 
 void BM_branched2(benchmark::State& state) {
     srand(1);
     const unsigned int N = state.range(0);
@@ -102,6 +103,7 @@ void BM_branched2(benchmark::State& state) {
     //state.SetBytesProcessed(N*sizeof(unsigned long)*state.iterations());
 }
 
+// randomish un/likely tagged
 void BM_branched2_unlikely(benchmark::State& state) {
     srand(1);
     const unsigned int N = state.range(0);
@@ -132,6 +134,7 @@ void BM_branched2_unlikely(benchmark::State& state) {
     //state.SetBytesProcessed(N*sizeof(unsigned long)*state.iterations());
 }
 
+// CPU branch predictor in full on unrandomish - this is the limit to aim for
 void BM_branched2_predicted(benchmark::State& state) {
     srand(1);
     const unsigned int N = state.range(0);
@@ -162,6 +165,7 @@ void BM_branched2_predicted(benchmark::State& state) {
     //state.SetBytesProcessed(N*sizeof(unsigned long)*state.iterations());
 }
 
+// randomish branchless
 void BM_branchless2(benchmark::State& state) {
     srand(1);
     const unsigned int N = state.range(0);
