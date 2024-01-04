@@ -12,13 +12,15 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
+compiler=g++
+
 googleBenchmark=${HOME}/work/benchmark
 lptInc=../../include
 
 target=$(basename -s \.cpp $1)
 
 #TODO: -mavx2 
-g++ $1 -std=c++20 -g -O3 \
+${compiler} $1 -std=c++20 -g -O3 \
   -Wall -Wextra -Werror -pedantic -Wno-deprecated-volatile \
   -isystem ${googleBenchmark}/include \
   -isystem ${lptInc} \
@@ -26,7 +28,7 @@ g++ $1 -std=c++20 -g -O3 \
   -L${googleBenchmark}/build/lib \
   -lbenchmark -lpthread \
   -o ${target} 
-g++ --version
+${compiler} --version
 
 ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
 #perf c2c record -g --all-user --call-graph ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
