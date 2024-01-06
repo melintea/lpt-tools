@@ -15,11 +15,9 @@
 
 
 //-----------------------------------------------------------------------------
-//constexpr unsigned int L = 1 << 18; // lenght
+//constexpr unsigned int L = 1 << 18; // str length
 //constexpr unsigned int N = 1 << 14; // number of (sub)strings to compare
 
-#define ARGS \
-    ->Arg(1<<20)
 
 template <typename IDX_T>
 bool compare(const char* s1, const char* s2) 
@@ -53,9 +51,9 @@ void BM_loop(benchmark::State& state) {
     }
     state.SetItemsProcessed(N*state.iterations());
 }
-BENCHMARK(BM_loop<int>) ARGS;
-BENCHMARK(BM_loop<unsigned int>) ARGS;
-BENCHMARK(BM_loop<size_t>) ARGS;
+BENCHMARK(BM_loop<int>)->Arg(1<<20);
+BENCHMARK(BM_loop<unsigned int>)->Arg(1<<20);
+BENCHMARK(BM_loop<size_t>)->Arg(1<<20);
 
 void BM_loop_int(benchmark::State& state) {
     int N = state.range(0);
@@ -69,7 +67,7 @@ void BM_loop_int(benchmark::State& state) {
     }
     state.SetItemsProcessed(N*state.iterations());
 }
-BENCHMARK(BM_loop_int) ARGS;
+BENCHMARK(BM_loop_int)->Arg(1<<20);
 
 void BM_loop_size_t(benchmark::State& state) {
     size_t N = state.range(0);
@@ -83,7 +81,7 @@ void BM_loop_size_t(benchmark::State& state) {
     }
     state.SetItemsProcessed(N*state.iterations());
 }
-BENCHMARK(BM_loop_size_t) ARGS;
+BENCHMARK(BM_loop_size_t)->Arg(1<<20);
 
 void BM_loop_uint(benchmark::State& state) {
     const unsigned int N = state.range(0);
@@ -97,6 +95,6 @@ void BM_loop_uint(benchmark::State& state) {
     }
     state.SetItemsProcessed(N*state.iterations());
 }
-BENCHMARK(BM_loop_uint) ARGS;
+BENCHMARK(BM_loop_uint)->Arg(1<<20);
 
 BENCHMARK_MAIN();
