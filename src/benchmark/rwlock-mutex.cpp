@@ -20,10 +20,12 @@ static void BM_Mutex(benchmark::State& state) {
 
   const auto nLoops{numTotalLoops/state.threads()};
   
+  unsigned long val;
+  
   for (auto _ : state) {
     for (size_t n = 0; n < nLoops; ++n) {
       std::lock_guard<std::mutex> lock(mutexCounterMtx);
-      benchmark::DoNotOptimize( ++counterMtx );
+      benchmark::DoNotOptimize( val = counterMtx );
     }
   }
   state.counters["Rate"] = benchmark::Counter(numTotalLoops, benchmark::Counter::kAvgThreadsRate);
@@ -45,10 +47,12 @@ static void BM_RWLock(benchmark::State& state) {
 
   const auto nLoops{numTotalLoops/state.threads()};
   
+  unsigned long val;
+  
   for (auto _ : state) {
     for (size_t n = 0; n < nLoops; ++n) {
       std::shared_lock lock(mutexCounterMtx);
-      benchmark::DoNotOptimize( ++counterMtx );
+      benchmark::DoNotOptimize( val = counterMtx );
     }
   }
   state.counters["Rate"] = benchmark::Counter(numTotalLoops, benchmark::Counter::kAvgThreadsRate);
