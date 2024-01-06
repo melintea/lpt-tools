@@ -40,6 +40,23 @@ bool compare(const char* s1, const char* s2, IDX_T l) {
     return false;
 }
 
+template <typename IDX_T>
+void BM_loop(benchmark::State& state) {
+    IDX_T N = state.range(0);
+    std::unique_ptr<char[]> s(new char[2*N]);
+    ::memset(s.get(), 'a', 2*N*sizeof(char));
+    s[2*N-1] = 0;
+    const char* s1 = s.get(), *s2 = s1 + N;
+    
+    for (auto _ : state) {
+        benchmark::DoNotOptimize(compare<IDX_T>(s1, s2, N));
+    }
+    state.SetItemsProcessed(N*state.iterations());
+}
+BENCHMARK(BM_loop<int>) ARGS;
+BENCHMARK(BM_loop<unsigned int>) ARGS;
+BENCHMARK(BM_loop<size_t>) ARGS;
+
 void BM_loop_int(benchmark::State& state) {
     int N = state.range(0);
     std::unique_ptr<char[]> s(new char[2*N]);
