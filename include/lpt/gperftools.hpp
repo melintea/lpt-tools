@@ -18,17 +18,14 @@
 
 namespace lpt { namespace gperftools {
 
-inline void begin() { __asm volatile("# LLVM-MCA-BEGIN"); }
-inline void end()   { __asm volatile("# LLVM-MCA-END");   }
-
 /*
  *
  */
-class profiler
+class cpu_profiler
 {
 public:
 
-    profiler(const char* fileName)  
+    cpu_profiler(const char* fileName)  
     { 
         ProfilerStart(fileName); 
     }
@@ -40,13 +37,13 @@ public:
 	ProfilerStop();   
     }
 
-    profiler( const profiler& other )            = delete;
-    profiler& operator=( const profiler& other ) = delete;
+    cpu_profiler( const cpu_profiler& other )            = delete;
+    cpu_profiler& operator=( const cpu_profiler& other ) = delete;
 
-    profiler( profiler&& other )                 = delete;
-    profiler& operator=( profiler&& other )      = delete;
+    cpu_profiler( cpu_profiler&& other )                 = delete;
+    cpu_profiler& operator=( cpu_profiler&& other )      = delete;
 
-}; // profiler
+}; // cpu_profiler
 
 }} //namespace lpt::gperftools
 
