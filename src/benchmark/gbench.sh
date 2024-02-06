@@ -4,7 +4,7 @@ set -x
 
 #
 # Google benchmark wrapper
-# Usage: ./run_bm file.cpp
+# Usage: ./gbench file.cpp
 # 
 
 if [ $# -ne 1 ]; then
