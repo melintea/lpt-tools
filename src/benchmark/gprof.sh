@@ -38,6 +38,7 @@ ${compiler} $1 -std=c++20 -g -O3 \
   -o ${target} 
 ${compiler} --version
 
+#LDPRELOAD=/lib/x86_64-linux-gnu/libprofiler.so \
 CPUPROFILE=${profdata} ./${target} 
 google-pprof --text ./${target} ${profdata}
 
