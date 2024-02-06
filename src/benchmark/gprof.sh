@@ -17,6 +17,16 @@ set -x
 #   CPUPROFILE_FREQUENCY=x-- how many interrupts/second the cpu-profiler samples.
 #   PERFTOOLS_VERBOSE=<level> -- the higher level, the more messages malloc emits
 #   MALLOCSTATS=<level>    -- prints memory-use stats at program-exit
+#
+# Usage:
+#   google-pprof /path/to/bin out.prof                                    #Enters "interactive" mode
+#   google-pprof --text /path/to/bin out.prof                             #Outputs one line per procedure
+#   google-pprof --gv /path/to/bin out.prof                               #Displays annotated call-graph via 'gv'
+#   google-pprof --gv --focus=Mutex /path/to/bin out.prof                 #Restricts to code paths including a .*Mutex.* entry
+#   google-pprof --gv --focus=Mutex --ignore=string /path/to/bin out.prof #Code paths including Mutex but not string
+#   google-pprof --list=getdir /path/to/bin out.prof                      #(Per-line) annotated source listing for getdir()
+#   google-pprof --disasm=getdir /path/to/bin out.prof                    #(Per-PC) annotated disassembly for getdir()
+#   google-pprof --callgrind /path/to/bin out.prof                        #Outputs the call information in callgrind format
 # 
 
 if [ $# -ne 1 ]; then
