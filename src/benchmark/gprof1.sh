@@ -3,7 +3,7 @@ set -e
 set -x
 
 #
-# Google perf tools wrapper
+# Google perf tools wrapper; external
 # https://github.com/gperftools/gperftools
 #
 # Usage: ./gperf file.cpp
