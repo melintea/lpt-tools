@@ -16,6 +16,8 @@
 
 #include <gperftools/profiler.h>
 
+#include <stdlib.h>
+
 namespace lpt { namespace gperftools {
 
 /*
@@ -30,7 +32,9 @@ public:
         ProfilerStart(fileName); 
     }
     
-    profiler() 
+    cpu_profiler() : cpu_profiler(::getenv("LPT_CPUPROFILE")) {}
+    
+    ~cpu_profiler() 
     { 
         //TODO: should be a sigleton?
         ProfilerFlush();
