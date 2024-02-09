@@ -4,23 +4,10 @@
  *  Copyright 2023 Aurelian Melinte. 
  *  Released under LGPL 3.0 or later. 
  *
- *  Check std::move damage with PAPI.
- *  Churn a copy-contructed versus a move-constructed stucture for some time 
- *  then compare structure's read performance
- * 
- *  Notes:
- *  * measurements on an 4-cpu Intel(R) Pentium(R) Gold G5420 CPU @ 3.80GHz
- *      Stats for 50 tests stats; positive%: move is worse than copy:
- *      Counter,      min%,     max%,   mean%,   median%, stddev
- *      PAPI_TOT_INS, 11.2532,  11.2538, 11.2534, 11.2534, 0.000113846
- *      PAPI_TOT_CYC, -12.6177, 253.974, 10.5825, 5.11862, 37.2027
- *      PAPI_L1_DCM,  3.77828,  216.783, 8.22858, 4.19694, 30.0962
- *      PAPI_L2_DCM,  3.71539,  327.555, 11.0606, 4.35712, 45.6747
- *      PAPI_BR_MSP, 0, 0, 0, 0, 0
  */
 
+#include <lpt/chrono_stats.hpp>
 #include <lpt/compiler.hpp>
-#include <lpt/papi/papi_stats.hpp>
 
 #include <atomic>
 #include <barrier>
@@ -48,18 +35,7 @@ constexpr const int    numLoops = 50;
 
 using strvec = std::vector<std::string>;
 
-using counters = lpt::papi::counters<
-        PAPI_TOT_INS // Total instructions"
-    , PAPI_TOT_CYC // "Total cpu cycles"
-    , PAPI_L1_DCM  // "L1 load  misses"
-    // , PAPI_L1_STM  // "L1 store  missess"
-    , PAPI_L2_DCM  // "L2 load  misses"
-    //, PAPI_L3_DCM  // "L3 load  misses"
-    // , PAPI_L2_STM  // "L2 store  missess"
-    , PAPI_BR_MSP  // "Branch mispredictions"
->;
-
-using accumulator_set = lpt::papi::accumulator_set<counters>;
+using accumulator_set = lpt::chrono::accumulator_set;
 
 //-----------------------------------------------------------------------------
 /*
@@ -131,21 +107,11 @@ void fill_move(strvec& vec, const char* data, size_t dataSize)
 }
 
 //-----------------------------------------------------------------------------
-void as_percent(const std::string&                tag,
-                const counters::datapoint& data,
-                const counters::datapoint& base)
+lpt::chrono::timepoint::percent_t
+as_percent(const lpt::chrono::timepoint::duration_t& data,
+           const lpt::chrono::timepoint::duration_t& base)
 {
-    if ( ! tag.empty()) { std::cout << tag << ": "; };
-    std::cout << "Percents of: "<< data.tag() << " based over " << base.tag() << "\n"
-              << "Negative: data is smaller than base\n";
-    counters::datapoint::percents pcts(data.as_percent_of(base));
-    std::cout << pcts << std::endl;
-}
-
-void as_percent(const counters::datapoint& data,
-                const counters::datapoint& base)
-{
-    return as_percent({}, data, base);
+    return (100 * (data.count() - base.count()) / (double)base.count());
 }
 
 //-----------------------------------------------------------------------------
@@ -200,49 +166,43 @@ int main()
 
    strvec  copyConstructedData;
    strvec  moveConstructedData;
-   counters::datapoint copyConstructRead;
-   counters::datapoint moveConstructRead;
-
-   accumulator_set stats;
 
    copyConstructedData.reserve(vecSize);
    moveConstructedData.reserve(vecSize);
 
-   std::cout << "*\n"
-                "* Hardware: \n"
-                "*\n";
-   lpt::papi::hardware().print(std::cout);
-
-   counters ctrs;
-   auto cout_measurement = [](const counters::datapoint* measure) -> void {
-                                  std::cout << *measure << std::endl;
-                            };
+   accumulator_set stats;
 
    for (auto loop : std::views::iota(1, numLoops+1))
    {
        std::cout << loop << " -------------------------------------\n";
 
-           std::cout << "**\n"
-                        "** Under cache line size \n"
-                        "**\n";
+       lpt::chrono::timepoint::duration_t copyConstructionDuration;
+       lpt::chrono::timepoint::duration_t moveConstructionDuration;
+
+        std::cout << "**\n"
+                     "** Copy vs Move Constructed Under Cache Line Size \n"
+                     "**\n";
         {
             strvec& data(copyConstructedData);
-            counters::datapoint& measurement(copyConstructRead);
 
             // prefill
             data.clear();
-            for (auto i = 0; i < vecSize; ++i)
             {
-                data.push_back(underCacheLineStr);
+                lpt::chrono::measurement tm("Copy Construction Duration",
+                                            [](auto&& tag, auto&& dur) -> decltype(auto) {});
+
+                for (auto i = 0; i < vecSize; ++i)
+                {
+                    data.push_back(underCacheLineStr);
+                }
+
+                copyConstructionDuration = tm.elapsed();
             }
 
-            // Churn memory for churnTime
-            fill_copy(data, underCacheLineStr);
+            //// Churn memory for churnTime
+            //fill_copy(data, underCacheLineStr);
 
             {
-                counters::measurement pc("Baseline read of copy <64 constructed",
-                                         ctrs,
-                                         cout_measurement);
                 for (auto i = 0; i < vecSize; ++i)
                 {
                     auto& str = data[i];
@@ -250,59 +210,69 @@ int main()
                     for (auto j = 0; j < str.size(); ++j) { volatile char c = str[j]; }
                 }
                 lpt::intel::barrier();
-
-                measurement = pc.data();
             }
 
             data.clear(); // Comment out for maximum cache thrashing
         }
         {
             strvec& data(moveConstructedData);
-            counters::datapoint& measurement(moveConstructRead);
 
             // prefill
             data.clear();
-            for (auto i = 0; i < vecSize; ++i)
             {
-                data.push_back(underCacheLineStr);
+                lpt::chrono::measurement tm("Move Construction Duration",
+                                            [](auto&& tag, auto&& dur) -> decltype(auto) {});
+
+                for (auto i = 0; i < vecSize; ++i)
+                {
+                    data.emplace_back(underCacheLine, underCacheLineSize);
+                }
+
+                moveConstructionDuration = tm.elapsed();
             }
+
+            std::cout << "Move gain (negative: move is faster) % : " << as_percent(moveConstructionDuration, copyConstructionDuration) << "\n"
+                      << "copyConstructionDuration: " << copyConstructionDuration.count() << "\n"
+                      << "moveConstructionDuration: " << moveConstructionDuration.count() << "\n"
+                      << "\n";
+            stats(as_percent(moveConstructionDuration, copyConstructionDuration));
 
             // Churn memory for churnTime
             fill_move(data, overCacheLine, overCacheLineSize);
 
+            size_t  numReads(0); // when reads catch up the gained time
             {
-                counters::measurement pc("Baseline read of move <64 constructed",
-                                         ctrs,
-                                         cout_measurement);
-                for (auto i = 0; i < vecSize; ++i)
-                {
-                    auto& str = data[i];
-                    lpt::intel::disable_optimizer(str.data());
-                    for (auto j = 0; j < str.size(); ++j) { volatile char c = str[j]; }
-                }
-                lpt::intel::barrier();
+                const auto     gain(copyConstructionDuration.count() - moveConstructionDuration.count());
 
-                measurement = pc.data();
+                lpt::chrono::measurement tm("Read Moved Duration",
+                                            [](auto&& tag, auto&& dur) -> decltype(auto) {});
+
+                while (tm.elapsed().count() < gain)
+                {
+                    for (auto i = 0; i < vecSize; ++i)
+                    {
+                        auto& str = data[i];
+                        lpt::intel::disable_optimizer(str.data());
+                        for (auto j = 0; j < str.size(); ++j) { volatile char c = str[j]; }
+                    }
+                    lpt::intel::barrier();
+
+                    ++numReads;
+                    //std::cout << numReads << "\n";
+                }
             }
+
+            std::cout << "Gain equivalent to " << numReads << " reads \n";
 
             data.clear(); // Comment out for maximum cache thrashing
         }
-
-        counters::datapoint copyLessMoveConstructRead(copyConstructRead - moveConstructRead);
-        copyLessMoveConstructRead._tag = "Diffusion read: copy - move (negative if move > copy)";
-        cout_measurement(&copyLessMoveConstructRead);
-        as_percent("Diffusion (positive: move is worse)", moveConstructRead, copyConstructRead);
-
-        counters::datapoint::percents pcts(moveConstructRead.as_percent_of(copyConstructRead));
-        stats(pcts);
 
         std::cout << std::endl;
     } // for tests' loop
 
     std::cout << "\n" << numLoops << " tests stats:\nPositive%: move is worse than copy\n"
-               << stats
-               << std::endl;
-
+              << stats
+              << std::endl;
 
    exit(EXIT_SUCCESS);    
 }

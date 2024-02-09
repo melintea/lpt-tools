@@ -46,16 +46,16 @@ constexpr const int    numLoops = 50;
 
 using strvec = std::vector<std::string>;
 
-   using counters = lpt::papi::counters<
-         PAPI_TOT_INS // Total instructions"
-       , PAPI_TOT_CYC // "Total cpu cycles"
-       , PAPI_L1_DCM  // "L1 load  misses"
-       // , PAPI_L1_STM  // "L1 store  missess"
-       , PAPI_L2_DCM  // "L2 load  misses"
-       //, PAPI_L3_DCM  // "L3 load  misses"
-       // , PAPI_L2_STM  // "L2 store  missess"
-       , PAPI_BR_MSP  // "Branch mispredictions"
-   >;
+using counters = lpt::papi::counters<
+        PAPI_TOT_INS // Total instructions"
+    , PAPI_TOT_CYC // "Total cpu cycles"
+    , PAPI_L1_DCM  // "L1 load  misses"
+    // , PAPI_L1_STM  // "L1 store  missess"
+    , PAPI_L2_DCM  // "L2 load  misses"
+    //, PAPI_L3_DCM  // "L3 load  misses"
+    // , PAPI_L2_STM  // "L2 store  missess"
+    , PAPI_BR_MSP  // "Branch mispredictions"
+>;
 
 //-----------------------------------------------------------------------------
 /*
@@ -158,6 +158,7 @@ int main()
        "123456789."
        "123456"
        ;
+    std::cout << "hardware_destructive_interference_size=" << hardware_destructive_interference_size << "\n";
     constexpr const size_t overCacheLineSize(sizeof(overCacheLine));
     static_assert(overCacheLineSize > hardware_destructive_interference_size);
     const std::string overCacheLineStr(overCacheLine, overCacheLineSize);
@@ -170,6 +171,7 @@ int main()
        "123456789."
        "123456789"
        ;
+    std::cout << "hardware_constructive_interference_size=" << hardware_constructive_interference_size << "\n";
     constexpr const size_t underCacheLineSize(sizeof(underCacheLine));
     const std::string underCacheLineStr(underCacheLine, underCacheLineSize);
     static_assert(underCacheLineSize <= hardware_constructive_interference_size);

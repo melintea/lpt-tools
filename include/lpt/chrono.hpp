@@ -12,6 +12,8 @@
 #include <chrono>
 #include <string>
 
+using namespace std::string_literals;
+
 namespace lpt { namespace chrono {
 
 class timepoint 
@@ -21,6 +23,7 @@ public:
     using clock_t     = std::chrono::steady_clock;
     using timepoint_t = clock_t::time_point;
     using duration_t  = std::chrono::nanoseconds;
+    using percent_t   = double;
 
     static constexpr const char* unit = "ns";
 
@@ -36,6 +39,19 @@ public:
     {
         return std::chrono::duration_cast<duration_t>(clock_t::now() - _point);
     }
+
+    percent_t as_percent_of(duration_t baseDuration) const
+    {
+        duration_t elapsedDuration(elapsed());
+        return ((elapsedDuration - baseDuration)/baseDuration) * 100.0;
+    }
+
+    static const std::string& name()
+    {
+        static const std::string timeLabel = "ElapsedTime("s + unit + ")"s;
+        return timeLabel;
+    }
+
 
 protected:
 
