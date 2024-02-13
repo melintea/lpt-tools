@@ -17,6 +17,22 @@
 namespace lpt::chrono
 {
 
+/**
+\code
+
+   lpt::chrono::timepoint::duration_t copyConstructionDuration;
+   lpt::chrono::timepoint::duration_t moveConstructionDuration;
+
+   lpt::chrono::dataset statsAsVals(lpt::chrono::timepoint::name());
+   statsAsVals(moveConstructionDuration);
+
+   lpt::chrono::dataset statsAsPcts("% Move/Copy");
+   statsAsPcts(moveConstructionDuration, copyConstructionDuration);
+
+   std::cout << statsAsVals << "\n" << statsAsPcts;
+
+\endcode
+ */
 struct dataset : public lpt::stats::dataset
 {  
     using value_t = lpt::stats::dataset::value_t;
