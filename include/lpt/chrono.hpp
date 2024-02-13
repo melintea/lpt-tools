@@ -40,10 +40,14 @@ public:
         return std::chrono::duration_cast<duration_t>(clock_t::now() - _point);
     }
 
+    static percent_t as_percent_of(duration_t dataPoint, duration_t baseDuration)
+    {
+        return ((dataPoint - baseDuration)/(baseDuration*(percent_t)1.0)) * 100.0;
+    }
+
     percent_t as_percent_of(duration_t baseDuration) const
     {
-        duration_t elapsedDuration(elapsed());
-        return ((elapsedDuration - baseDuration)/baseDuration) * 100.0;
+        return as_percent_of(elapsed(), baseDuration);
     }
 
     static const std::string& name()

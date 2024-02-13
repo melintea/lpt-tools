@@ -35,8 +35,6 @@ constexpr const int    numLoops = 50;
 
 using strvec = std::vector<std::string>;
 
-using accumulator_set = lpt::chrono::accumulator_set;
-
 //-----------------------------------------------------------------------------
 /*
  * Fill-move a vector via a number of producer threads.
@@ -107,14 +105,6 @@ void fill_move(strvec& vec, const char* data, size_t dataSize)
 }
 
 //-----------------------------------------------------------------------------
-lpt::chrono::timepoint::percent_t
-as_percent(const lpt::chrono::timepoint::duration_t& data,
-           const lpt::chrono::timepoint::duration_t& base)
-{
-    return (100 * (data.count() - base.count()) / (double)base.count());
-}
-
-//-----------------------------------------------------------------------------
 int main()
 {
 
@@ -170,7 +160,8 @@ int main()
    copyConstructedData.reserve(vecSize);
    moveConstructedData.reserve(vecSize);
 
-   accumulator_set stats;
+   lpt::chrono::dataset statsAsVals(lpt::chrono::timepoint::name());
+   lpt::chrono::dataset statsAsPcts("% Move/Copy");
 
    for (auto loop : std::views::iota(1, numLoops+1))
    {
@@ -229,13 +220,13 @@ int main()
                 }
 
                 moveConstructionDuration = tm.elapsed();
+                statsAsPcts(moveConstructionDuration, copyConstructionDuration);
+                statsAsVals(moveConstructionDuration);
+                std::cout << "Move gain (negative: move is faster) % : " << lpt::chrono::timepoint::as_percent_of(moveConstructionDuration, copyConstructionDuration) << "\n"
+                          << "copyConstructionDuration: " << copyConstructionDuration.count() << "\n"
+                          << "moveConstructionDuration: " << moveConstructionDuration.count() << "\n"
+                          << "\n";
             }
-
-            std::cout << "Move gain (negative: move is faster) % : " << as_percent(moveConstructionDuration, copyConstructionDuration) << "\n"
-                      << "copyConstructionDuration: " << copyConstructionDuration.count() << "\n"
-                      << "moveConstructionDuration: " << moveConstructionDuration.count() << "\n"
-                      << "\n";
-            stats(as_percent(moveConstructionDuration, copyConstructionDuration));
 
             // Churn memory for churnTime
             fill_move(data, overCacheLine, overCacheLineSize);
@@ -271,7 +262,8 @@ int main()
     } // for tests' loop
 
     std::cout << "\n" << numLoops << " tests stats:\nPositive%: move is worse than copy\n"
-              << stats
+              << statsAsVals
+              << statsAsPcts
               << std::endl;
 
    exit(EXIT_SUCCESS);    

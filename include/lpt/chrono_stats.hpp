@@ -1,7 +1,7 @@
 /*
  *  $Id: $
  *
- *  Copyright 2023 Aurelian Melinte. 
+ *  Copyright 2024 Aurelian Melinte. 
  *  Released under LGPL 3.0 or later. 
  * 
  *  Time measurement stats container
@@ -10,61 +10,36 @@
 #pragma once
 
 #include <lpt/chrono.hpp>
+#include <lpt/stats.hpp>
 
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics.hpp>
-#include <boost/accumulators/statistics/count.hpp>
-#include <boost/accumulators/statistics/mean.hpp>
-#include <boost/accumulators/statistics/moment.hpp>
-#include <boost/accumulators/statistics/variance.hpp>
+#include <type_traits>
 
 namespace lpt::chrono
 {
 
-struct accumulator_set 
+struct dataset : public lpt::stats::dataset
 {  
-    using percent_t         = timepoint::percent_t;
-    using value_t           = timepoint::duration_t;
+    using value_t = lpt::stats::dataset::value_t;
+    static_assert(std::is_same_v<value_t, lpt::chrono::timepoint::percent_t>, "Both should be double");
 
-    using accumulator_set_t = boost::accumulators::accumulator_set< percent_t,
-                                                                    boost::accumulators::features <
-                                                                        boost::accumulators::tag::min
-                                                                      , boost::accumulators::tag::max
-                                                                      , boost::accumulators::tag::median
-                                                                      , boost::accumulators::tag::mean
-                                                                      , boost::accumulators::tag::variance
-                                                                      , boost::accumulators::tag::count
-                                                                    >
-                                                                  >;
+    using lpt::stats::dataset::dataset;
 
-    void operator()(const percent_t& data)
+    void operator()(const lpt::chrono::timepoint& data)
     {
-        _stats[0](data);
+        _stats(static_cast<value_t>(data.elapsed().count()));
     }
 
-    //void operator()(const timepoint& data)
-    //{
-    //    _stats[0](data.elapsed());
-    //}
-
-    friend std::ostream& operator<<(std::ostream& os, const accumulator_set& dt)
+    void operator()(const lpt::chrono::timepoint::duration_t& data)
     {
-        const auto& stat(dt._stats[0]);
-        const auto  n(boost::accumulators::count(stat));
-        os << boost::accumulators::count(stat) << " samples\n"
-           << "Name, min%, max%, mean%, median%, stddev\n";
-        os << timepoint::name()                 << ", "
-           << boost::accumulators::min(stat)    << ", "
-           << boost::accumulators::max(stat)    << ", "
-           << boost::accumulators::mean(stat)   << ", "
-           << boost::accumulators::median(stat) << ", "
-           << std::sqrt(boost::accumulators::variance(stat) * (n/(n-1.0)))
-           << '\n';
-
-        return os;
+        _stats(static_cast<value_t>(data.count()));
     }
 
-    accumulator_set_t _stats[1];
+    /// As percents over @param base
+    void operator()(const lpt::chrono::timepoint::duration_t& data,
+                    const lpt::chrono::timepoint::duration_t& base)
+    {
+        _stats(lpt::chrono::timepoint::as_percent_of(data, base));
+    }
 };
 
 } // namespace lpt::chrono
