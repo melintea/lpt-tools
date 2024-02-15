@@ -19,15 +19,32 @@ using namespace std::string_literals;
 
 namespace lpt { namespace chrono {
 
-class std_timepoint 
+struct timepoint_base
 {
-public:
-
     using clock_t     = std::chrono::steady_clock;
     using timepoint_t = clock_t::time_point;
     using duration_t  = std::chrono::nanoseconds;
     using percent_t   = double;
 
+    static constexpr const uint64_t NANOSECS = 1'000'000'000L;
+
+    static const std::string& unit()
+    {
+        static const std::string ns{"ns"};
+        return ns;
+    }
+
+    static const std::string& name()
+    {
+        static const std::string timeLabel = "ElapsedTime("s + unit() + ")"s;
+        return timeLabel;
+    }
+
+}; // timepoint_base
+
+class std_timepoint : public timepoint_base
+{
+public:
 
     std_timepoint() : _point(clock_t::now()) {}
 
@@ -36,12 +53,6 @@ public:
     std_timepoint& operator=(const std_timepoint&) = default;
     std_timepoint(std_timepoint&&)                 = default;
     std_timepoint& operator=(std_timepoint&&)      = default;
-
-    static const std::string& unit()
-    {
-        static const std::string ns{"ns"};
-        return ns;
-    }
 
     auto elapsed() const
     {
@@ -58,28 +69,15 @@ public:
         return as_percent_of(elapsed(), baseDuration);
     }
 
-    static const std::string& name()
-    {
-        static const std::string timeLabel = "ElapsedTime("s + unit() + ")"s;
-        return timeLabel;
-    }
-
-
 protected:
 
     const timepoint_t       _point;
 }; // std_timepoint
 
 // About the same precision as std_timepoint
-class posix_timepoint 
+class posix_timepoint : public timepoint_base
 {
 public:
-
-    using duration_t  = std::chrono::nanoseconds;
-    using percent_t   = double;
-
-    static constexpr const uint64_t NANOSECS = 1'000'000'000L;
-
 
     posix_timepoint() 
     {
@@ -91,12 +89,6 @@ public:
     posix_timepoint& operator=(const posix_timepoint&) = default;
     posix_timepoint(posix_timepoint&&)                 = default;
     posix_timepoint& operator=(posix_timepoint&&)      = default;
-
-    static const std::string& unit()
-    {
-        static const std::string ns{"ns"};
-        return ns;
-    }
 
     auto elapsed() const
     {
@@ -116,13 +108,6 @@ public:
     {
         return as_percent_of(elapsed(), baseDuration);
     }
-
-    static const std::string& name()
-    {
-        static const std::string timeLabel = "ElapsedTime("s + unit() + ")"s;
-        return timeLabel;
-    }
-
 
 protected:
 
