@@ -13,11 +13,13 @@
 #include <functional>
 #include <string>
 
+#include <unistd.h>  // _POSIX_TIMERS
+
 using namespace std::string_literals;
 
 namespace lpt { namespace chrono {
 
-class timepoint 
+class std_timepoint 
 {
 public:
 
@@ -27,13 +29,13 @@ public:
     using percent_t   = double;
 
 
-    timepoint() : _point(clock_t::now()) {}
+    std_timepoint() : _point(clock_t::now()) {}
 
-    ~timepoint()                           = default;
-    timepoint(const timepoint&)            = default;
-    timepoint& operator=(const timepoint&) = default;
-    timepoint(timepoint&&)                 = default;
-    timepoint& operator=(timepoint&&)      = default;
+    ~std_timepoint()                               = default;
+    std_timepoint(const std_timepoint&)            = default;
+    std_timepoint& operator=(const std_timepoint&) = default;
+    std_timepoint(std_timepoint&&)                 = default;
+    std_timepoint& operator=(std_timepoint&&)      = default;
 
     static const std::string& unit()
     {
@@ -66,7 +68,73 @@ public:
 protected:
 
     const timepoint_t       _point;
-};
+}; // std_timepoint
+
+// About the same precision as std_timepoint
+class posix_timepoint 
+{
+public:
+
+    using duration_t  = std::chrono::nanoseconds;
+    using percent_t   = double;
+
+    static constexpr const uint64_t NANOSECS = 1'000'000'000L;
+
+
+    posix_timepoint() 
+    {
+        ::clock_gettime(CLOCK_MONOTONIC, &_start);
+    }
+
+    ~posix_timepoint()                                 = default;
+    posix_timepoint(const posix_timepoint&)            = default;
+    posix_timepoint& operator=(const posix_timepoint&) = default;
+    posix_timepoint(posix_timepoint&&)                 = default;
+    posix_timepoint& operator=(posix_timepoint&&)      = default;
+
+    static const std::string& unit()
+    {
+        static const std::string ns{"ns"};
+        return ns;
+    }
+
+    auto elapsed() const
+    {
+        struct timespec now;
+        ::clock_gettime(CLOCK_MONOTONIC, &now);
+
+        uint64_t nanoDiff(NANOSECS*(now.tv_sec - _start.tv_sec) + (now.tv_nsec - _start.tv_nsec));
+        return duration_t(nanoDiff);
+    }
+
+    static percent_t as_percent_of(duration_t dataPoint, duration_t baseDuration)
+    {
+        return ((dataPoint - baseDuration)/(baseDuration*(percent_t)1.0)) * 100.0;
+    }
+
+    percent_t as_percent_of(duration_t baseDuration) const
+    {
+        return as_percent_of(elapsed(), baseDuration);
+    }
+
+    static const std::string& name()
+    {
+        static const std::string timeLabel = "ElapsedTime("s + unit() + ")"s;
+        return timeLabel;
+    }
+
+
+protected:
+
+    struct timespec         _start;
+}; // std_timepoint
+
+#ifdef _POSIX_TIMERS
+using timepoint = std_timepoint; //posix_timepoint;
+#else
+using timepoint = std_timepoint;
+#endif  // _POSIX_TIMERS
+
 
 // Do nothing functor
 static void noop(const std::string& /*tag*/, const timepoint::duration_t& /*dur*/) noexcept {}
