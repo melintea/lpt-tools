@@ -450,7 +450,7 @@ public:
             static std::string name(size_t idx)
             {
                 assert(idx < size());
-                static const std::string timeLabel = "ElapsedTime("s + lpt::chrono::timepoint::unit + ")"s;
+                static const std::string timeLabel = "ElapsedTime("s + lpt::chrono::timepoint::unit() + ")"s;
                 return idx < counters::size() ? counters::name(idx) : timeLabel;
             }
 

@@ -88,8 +88,8 @@ public:
         _func(_tag, tdiff);
     }
 
-    measurement(const measurement&)            = default;
-    measurement& operator=(const measurement&) = default;
+    measurement(const measurement&)            = delete;
+    measurement& operator=(const measurement&) = delete;
     measurement(measurement&&)                 = default;
     measurement& operator=(measurement&&)      = default;
 
