@@ -31,7 +31,7 @@ namespace lpt {
 
 namespace impl {
 
-constexpr std::string_view pretty_name(std::string_view name, bool remove_suffix = true) noexcept 
+constexpr std::string_view pretty_name(std::string_view name) noexcept 
 {
     return name;
 }
@@ -40,6 +40,8 @@ template <typename E, E V>
 constexpr auto idx() noexcept 
 {
     static_assert(std::is_enum_v<E>, "not an enum");
+
+    //TODO: use std::source_location::current().function_name();
 
 #if defined(__clang__) || defined(__GNUC__)
     constexpr auto name = pretty_name({__PRETTY_FUNCTION__, sizeof(__PRETTY_FUNCTION__) - 2});
@@ -72,10 +74,10 @@ template <auto V>
 requires (std::is_enum_v<decltype(V)>)
 [[nodiscard]] constexpr auto to_string() noexcept 
 {
-  using D = std::decay_t<decltype(V)>;
-  constexpr std::string_view name = impl::enum_name_v<D, V>;
-  static_assert(!name.empty(), "enum value has no name");
-  return name;
+    using D = std::decay_t<decltype(V)>;
+    constexpr std::string_view name = impl::enum_name_v<D, V>;
+    static_assert( ! name.empty(), "enum value has no name");
+    return name;
 }
 
 /*
