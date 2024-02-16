@@ -19,6 +19,7 @@
 #include <cassert>
 #include <cstdint>
 #include <cstddef>
+#include <source_location>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -33,30 +34,21 @@ namespace impl {
 
 constexpr std::string_view pretty_name(std::string_view name) noexcept 
 {
+    // TODO cut:
     return name;
 }
 
 template <typename E, E V>
-constexpr auto idx() noexcept 
+constexpr auto any_name() noexcept 
 {
     static_assert(std::is_enum_v<E>, "not an enum");
-
-    //TODO: use std::source_location::current().function_name();
-
-#if defined(__clang__) || defined(__GNUC__)
-    constexpr auto name = pretty_name({__PRETTY_FUNCTION__, sizeof(__PRETTY_FUNCTION__) - 2});
-#elif defined(_MSC_VER)
-    constexpr auto name = pretty_name({__FUNCSIG__, sizeof(__FUNCSIG__) - 17});
-#else
-    constexpr auto name = std::string_view{};
-#endif
-    return name;
+    return pretty_name(std::source_location::current().function_name());
 }
 
 template <typename E, E V>
 constexpr auto enum_name() noexcept 
 {
-    constexpr auto name = idx<E, V>();
+    constexpr auto name = any_name<E, V>();
     return constexpr_string<name.size()>{name};
 }
 
