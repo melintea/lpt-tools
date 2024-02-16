@@ -12,15 +12,17 @@ int main()
 {
     enum class Color { eRED=0, eGREEN, eYELLOW=5 };
     {
-        auto color = Color::eRED;
-        std::cout << lpt::to_string(color) << std::endl; // 'eRED'
+        //auto color = Color::eRED;
+        //std::cout << lpt::to_string(color) << std::endl; // 'eRED'
+        std::cout << lpt::to_string<Color::eRED>() << std::endl; // 'eRED'
     }
     {
-        std::cout << lpt::to_string(Color::eGREEN) << std::endl; // 'eGREEN'
+        std::cout << lpt::to_string<Color::eGREEN>() << std::endl; // 'eGREEN'
     }
     {
-        auto color = Color::eYELLOW;
-        std::cout << lpt::to_string(color) << std::endl; // 'eYELLOW'
+        //auto color = Color::eYELLOW;
+        //std::cout << lpt::to_string(color) << std::endl; // 'eYELLOW'
+        std::cout << lpt::to_string<Color::eYELLOW>() << std::endl; // 'eYELLOW'
     }
 
     return EXIT_SUCCESS;
