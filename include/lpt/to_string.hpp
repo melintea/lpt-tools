@@ -14,11 +14,24 @@
 
 #pragma once
 
+#include <string>
+#include <type_traits>
+
 namespace lpt {
 
+namespace impl {
+
+}  // namespace impl
+
 /*
- *
+ * Stringizing an enum:
  */
+template <typename E>
+requires (std::is_enum_v<E>)
+auto to_string(E v)
+{
+    return std::string("here");
+}
 
 } //namespace lpt
 
