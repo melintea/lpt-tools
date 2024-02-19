@@ -67,8 +67,13 @@ inline constexpr auto enum_name_v = enum_name<E, V>();
 }  // namespace impl
 
 
-/*
- * Stringizing an enum:
+/**
+   Stringizing an enum
+   \code
+       #include <lpt/to_string.hpp>
+       enum class Color { eRED=-199, eGREEN=0, eYELLOW=5 };
+       std::cout << lpt::to_string<Color::eRED>();
+   \endcode
  */
 
 template <auto V>
