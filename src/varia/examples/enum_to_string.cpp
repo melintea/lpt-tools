@@ -30,5 +30,10 @@ int main()
         if ( false == lpt::is_valid_enum_value<Color, -200>() ) {std::cout << "pass\n"; };
     }
 
+    {
+        //template<>
+        //struct enum_reflection<Color> { static constexpr const std::array _vals = { Color::eRED, Color::eGREEN, Color::eYELLOW }; };
+    }
+
     return EXIT_SUCCESS;
 }
