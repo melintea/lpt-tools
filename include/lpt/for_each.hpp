@@ -39,7 +39,7 @@ void for_each(TUPLE&& tuple, F&& func, std::index_sequence<IDXs...>)
     if constexpr (sizeof...(IDXs) > 0)
     {
         (void)forceInst{ ( func(std::get<IDXs>(std::forward<TUPLE>(tuple))), 
-	                   void,
+	                       void,
                            int{} )...  
         };
     }

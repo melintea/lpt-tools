@@ -65,19 +65,8 @@ constexpr auto enum_name() noexcept
 template <typename E, E V>
 inline constexpr auto enum_name_v = enum_name<E, V>();
 
-}  // namespace impl
 
-
-/**
-   Stringizing an enum
-   \code
-       #include <lpt/to_string.hpp>
-       enum class Color { eRED=-199, eGREEN=0, eYELLOW=5 };
-       std::cout << lpt::to_string<Color::eRED>();
-   \endcode
- */
 template <auto V>
-requires (std::is_enum_v<decltype(V)>)
 [[nodiscard]] constexpr auto to_string() noexcept 
 {
     using D = std::decay_t<decltype(V)>;
@@ -101,6 +90,62 @@ template <typename E, auto V>
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+template <int Vmin, typename E> constexpr int count_valid() noexcept { return 0; }
+
+template <int Vmin, typename E, int V1, size_t ...IDXs> 
+constexpr int count_valid() noexcept 
+{ 
+    bool isV(impl::is_valid_enum_value<E, V1+Vmin>()); 
+    //std::cout << impl::to_string<static_cast<E>(V1+Vmin)>() << ":" << isV << "\n";
+    return (int)isV + impl::count_valid<Vmin, E, IDXs...>();
+}
+
+template <int Vmin, typename E, size_t ...IDXs>
+constexpr int count_valid(std::index_sequence<IDXs...> const &) noexcept 
+{
+    return impl::count_valid<Vmin, E, IDXs...>();
+}
+
+template <typename E, int Vmin, int Vmax>
+constexpr int count() noexcept 
+{
+    constexpr const size_t n(std::abs(Vmin)+std::abs(Vmax));
+    return impl::count_valid<Vmin, E>(std::make_integer_sequence<size_t, n>{});
+}
+
+}  // namespace impl
+
+
+/**
+   Stringizing an enum
+   \code
+       #include <lpt/to_string.hpp>
+       enum class Color { eRED=-199, eGREEN=0, eYELLOW=5 };
+       std::cout << lpt::to_string<Color::eRED>();
+   \endcode
+ */
+template <auto V>
+requires (std::is_enum_v<decltype(V)>)
+[[nodiscard]] constexpr auto to_string() noexcept 
+{
+    return impl::to_string<V>();
+}
+
+template <typename E, auto V>
+[[nodiscard]] constexpr bool is_valid_enum_value() noexcept 
+{
+    return impl::is_valid_enum_value<E, V>();
+}
+
+/// Scan the interval [Vmin, Vmax) for valid enum E values
+/// @return the number of enum valid values
+template <typename E, auto Vmin, auto Vmax>
+[[nodiscard]] constexpr int count() noexcept 
+{
+    return impl::count<E, Vmin, Vmax>();
 }
 
 /*

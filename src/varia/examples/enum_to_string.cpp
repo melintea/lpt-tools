@@ -28,6 +28,9 @@ int main()
         if ( true  == lpt::is_valid_enum_value<Color, Color::eRED>() ) {std::cout << "pass\n"; }
         if ( true  == lpt::is_valid_enum_value<Color, -199>() ) {std::cout << "pass\n"; };
         if ( false == lpt::is_valid_enum_value<Color, -200>() ) {std::cout << "pass\n"; };
+
+        auto num(lpt::count<Color, -200, 10>());
+        if ( 3     == num ) {std::cout << "pass\n"; } else {std::cout << "fail:" << num << "\n";  };
     }
 
     {
