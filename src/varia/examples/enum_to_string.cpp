@@ -5,6 +5,7 @@
 
 #include <lpt/to_string.hpp>
 
+#include <cassert>
 #include <iostream>
 
 int main()
@@ -22,6 +23,11 @@ int main()
         //auto color = Color::eYELLOW;
         //std::cout << lpt::to_string(color) << std::endl; // 'eYELLOW'
         std::cout << lpt::to_string<Color::eYELLOW>() << std::endl; // 'eYELLOW'
+    }
+    {
+        if ( true  == lpt::is_valid_enum_value<Color, Color::eRED>() ) {std::cout << "pass\n"; }
+        if ( true  == lpt::is_valid_enum_value<Color, -199>() ) {std::cout << "pass\n"; };
+        if ( false == lpt::is_valid_enum_value<Color, -200>() ) {std::cout << "pass\n"; };
     }
 
     return EXIT_SUCCESS;

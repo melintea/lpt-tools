@@ -19,6 +19,7 @@
 #include <cassert>
 #include <cstdint>
 #include <cstddef>
+#include <iostream>
 #include <source_location>
 #include <string>
 #include <string_view>
@@ -44,7 +45,7 @@ constexpr std::string_view enum_val_name(std::string_view name) noexcept
         }
     }
 
-    return std::string_view(&name[i], name.length() -  1 - i); // main::Color::eRED
+    return std::string_view(&name[i+1], name.length() - 2 - i); // main::Color::eRED
 }
 
 template <typename E, E V>
@@ -75,7 +76,6 @@ inline constexpr auto enum_name_v = enum_name<E, V>();
        std::cout << lpt::to_string<Color::eRED>();
    \endcode
  */
-
 template <auto V>
 requires (std::is_enum_v<decltype(V)>)
 [[nodiscard]] constexpr auto to_string() noexcept 
@@ -85,6 +85,22 @@ requires (std::is_enum_v<decltype(V)>)
     constexpr std::string_view name = impl::enum_name_v<D, V>;
     static_assert( ! name.empty(), "enum value has no name");
     return name;
+}
+
+template <typename E, auto V>
+[[nodiscard]] constexpr bool is_valid_enum_value() noexcept 
+{
+    constexpr std::string_view name = to_string<static_cast<E>(V)>();
+    if (name.empty()) { return false; }
+
+    char c(name[0]);
+    //std::cout << name; 
+    if ((c >= '0' && c <='9') || c == '-' || c == '+' || c == '(')
+    {
+        return false;
+    }
+
+    return true;
 }
 
 /*
