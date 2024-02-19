@@ -7,10 +7,9 @@
 
 #include <iostream>
 
-
 int main()
 {
-    enum class Color { eRED=0, eGREEN, eYELLOW=5 };
+    enum class Color { eRED=-199, eGREEN=0, eYELLOW=5 };
     {
         //auto color = Color::eRED;
         //std::cout << lpt::to_string(color) << std::endl; // 'eRED'

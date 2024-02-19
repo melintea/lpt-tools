@@ -32,24 +32,33 @@ namespace lpt {
 
 namespace impl {
 
-constexpr std::string_view pretty_name(std::string_view name) noexcept 
+// constexpr auto lpt::impl::name_and_val() [with E = main()::Color; E V = main::Color::eRED]
+constexpr std::string_view enum_val_name(std::string_view name) noexcept 
 {
-    // TODO cut:
-    return name;
+    int i(name.length() - 1);
+    for (i; i >=0; --i) 
+    {
+        if (name[i] == ' ')
+        {
+            break;
+        }
+    }
+
+    return std::string_view(&name[i], name.length() -  1 - i); // main::Color::eRED
 }
 
 template <typename E, E V>
-constexpr auto any_name() noexcept 
+constexpr auto name_and_val() noexcept 
 {
     static_assert(std::is_enum_v<E>, "not an enum");
-    return pretty_name(std::source_location::current().function_name());
+   return enum_val_name(std::source_location::current().function_name());
 }
 
 template <typename E, E V>
 constexpr auto enum_name() noexcept 
 {
-    constexpr auto name = any_name<E, V>();
-    return constexpr_string<name.size()>{name};
+    constexpr auto name = name_and_val<E, V>();
+    return std::string_view{name}; //constexpr_string<name.size()>{name};
 }
 
 template <typename E, E V>
@@ -67,6 +76,7 @@ requires (std::is_enum_v<decltype(V)>)
 [[nodiscard]] constexpr auto to_string() noexcept 
 {
     using D = std::decay_t<decltype(V)>;
+    //using U = std::underlying_type_t<D>;
     constexpr std::string_view name = impl::enum_name_v<D, V>;
     static_assert( ! name.empty(), "enum value has no name");
     return name;
@@ -82,7 +92,7 @@ constexpr auto to_string(E v)
     using D = std::decay_t<E>;
     using U = std::underlying_type_t<D>;
     const auto val - static_cast<U>(v);
-    //constexpr std::string_view name = detail::enum_name_v<D, V>;
+    constexpr std::string_view name = impl::enum_name_v<D, V>;
 
     return impl::to_string<D>(v);
 }
