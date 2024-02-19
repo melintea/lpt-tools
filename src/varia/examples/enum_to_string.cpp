@@ -3,7 +3,7 @@
  */
  
 
-#include <lpt/to_string.hpp>
+#include <lpt/enum_tools.hpp>
 
 #include <cassert>
 #include <iostream>
