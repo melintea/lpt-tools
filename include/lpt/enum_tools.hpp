@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <lpt/constexpr_string.hpp>
+//#include <lpt/constexpr_string.hpp>
 
 #include <cassert>
 #include <cstdint>
