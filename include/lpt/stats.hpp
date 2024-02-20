@@ -54,9 +54,9 @@ struct dataset
     {
         const auto& stat(dt._stats);
         const auto  n(boost::accumulators::count(stat));
-        os << boost::accumulators::count(stat) << " samples:\n"
-           << "Name, min%, max%, mean%, median%, stddev\n";
-        os << dt._tag                           << ", "
+        os << "Name, samples, min%, max%, mean%, median%, stddev\n"
+           << dt._tag                           << ", "
+	   << n                                 << ", "
            << boost::accumulators::min(stat)    << ", "
            << boost::accumulators::max(stat)    << ", "
            << boost::accumulators::mean(stat)   << ", "
