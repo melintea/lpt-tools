@@ -56,3 +56,5 @@ inline void barrier() {
 }} //namespace lpt::intel
 
 
+#define KEEP __attribute__((__used__))
+
