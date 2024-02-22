@@ -28,8 +28,8 @@ template<typename PAPI_COUNTERS>
 struct accumulator_set 
 {  
     using counters_t        = PAPI_COUNTERS;
-    using percent_t         = counters_t::percent_t;
-    using percents_t        = counters_t::datapoint::percents;
+    using percent_t         = typename counters_t::percent_t;
+    using percents_t        = typename counters_t::datapoint::percents;
 
     using accumulator_set_t = boost::accumulators::accumulator_set< percent_t,
                                                                     boost::accumulators::features <

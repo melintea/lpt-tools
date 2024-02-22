@@ -455,7 +455,7 @@ public:
         // FIXME: array is not really meant to be inheritable
         struct percents : public std::array<percent_t, counters::size() + 1/*_elapsedTime*/>
         {
-            using typename std::array<percent_t, NUM_COUNTERS + 1/*_elapsedTime*/>::array;
+            using std::array<percent_t, NUM_COUNTERS + 1/*_elapsedTime*/>::array;
 
             static constexpr const size_t POS_TIME = NUM_COUNTERS; // last entry in the array is for time
 
