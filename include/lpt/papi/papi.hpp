@@ -245,7 +245,8 @@ public:
         os << "hardware_constructive_interference_size=" 
 	   << hardware_constructive_interference_size 
 	   << "\nhardware_destructive_interference_size="
-	   << hardware_destructive_interference_size;
+	   << hardware_destructive_interference_size
+	   << '\n';
 
         os <<  "There are " << _numHwCtrs 
            << " counters for " << _hwInfo->vendor_string 
