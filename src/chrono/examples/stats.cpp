@@ -8,6 +8,7 @@
 
 #include <lpt/chrono_stats.hpp>
 #include <lpt/compiler.hpp>
+#include <lpt/papi/papi.hpp>
 
 #include <atomic>
 #include <barrier>
@@ -19,16 +20,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-
-#ifdef __cpp_lib_hardware_interference_size
-    using std::hardware_constructive_interference_size;
-    using std::hardware_destructive_interference_size;
-#else
-    // 64 bytes on x86-64 │ L1_CACHE_BYTES │ L1_CACHE_SHIFT │ __cacheline_aligned │ ...
-    constexpr std::size_t hardware_constructive_interference_size = 64;
-    constexpr std::size_t hardware_destructive_interference_size  = 64;
-#  warning Unknown hardware_constructive_interference_size, check values above
-#endif
 
 constexpr const size_t vecSize = 10'000'000;
 constexpr const int    numLoops = 50;
@@ -136,9 +127,9 @@ int main()
        "123456789."
        "123456"
        ;
-    std::cout << "hardware_destructive_interference_size=" << hardware_destructive_interference_size << "\n";
+    std::cout << "hardware_destructive_interference_size=" << lpt::papi::hardware::hardware_destructive_interference_size() << "\n";
     constexpr const size_t overCacheLineSize(sizeof(overCacheLine));
-    static_assert(overCacheLineSize > hardware_destructive_interference_size);
+    static_assert(overCacheLineSize > lpt::papi::hardware::hardware_destructive_interference_size());
     const std::string overCacheLineStr(overCacheLine, overCacheLineSize);
 
     constexpr const char underCacheLine[] = 
@@ -149,10 +140,10 @@ int main()
        "123456789."
        "123456789"
        ;
-    std::cout << "hardware_constructive_interference_size=" << hardware_constructive_interference_size << "\n";
+    std::cout << "hardware_constructive_interference_size=" << lpt::papi::hardware::hardware_constructive_interference_size() << "\n";
     constexpr const size_t underCacheLineSize(sizeof(underCacheLine));
     const std::string underCacheLineStr(underCacheLine, underCacheLineSize);
-    static_assert(underCacheLineSize <= hardware_constructive_interference_size);
+    static_assert(underCacheLineSize <= lpt::papi::hardware::hardware_constructive_interference_size());
 
    strvec  copyConstructedData;
    strvec  moveConstructedData;

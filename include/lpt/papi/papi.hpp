@@ -212,6 +212,26 @@ class hardware
 {
 public:
 
+    static constexpr std::size_t hardware_constructive_interference_size()
+    {
+#ifdef __cpp_lib_hardware_interference_size
+        constexpr std::size_t val = std::hardware_constructive_interference_size;
+#else
+        constexpr std::size_t val = 64;
+#endif
+        return val;
+    }
+
+    static constexpr std::size_t hardware_destructive_interference_size()
+    {
+#ifdef __cpp_lib_hardware_interference_size
+        constexpr std::size_t val = std::hardware_destructive_interference_size;
+#else
+        constexpr std::size_t val = 64;
+#endif
+        return val;
+    }
+
     hardware()
     {
        thread::init();
@@ -234,19 +254,17 @@ public:
 
     std::ostream& print(std::ostream& os) const
     {
-#ifdef __cpp_lib_hardware_interference_size
-        using std::hardware_constructive_interference_size;
-        using std::hardware_destructive_interference_size;
-#else
-        constexpr std::size_t hardware_constructive_interference_size = 64;
-        constexpr std::size_t hardware_destructive_interference_size  = 64;
+#ifndef __cpp_lib_hardware_interference_size
 #  warning Unknown hardware_constructive_interference_size, check values above
 #endif
         os << "hardware_constructive_interference_size=" 
-	   << hardware_constructive_interference_size 
-	   << "\nhardware_destructive_interference_size="
-	   << hardware_destructive_interference_size
-	   << '\n';
+	       << hardware_constructive_interference_size ()
+	       << "\nhardware_destructive_interference_size="
+	       << hardware_destructive_interference_size()
+#ifndef __cpp_lib_hardware_interference_size
+           << "\nWARNING: c++ unknown std::hardware_constructive_interference_size, check values above"
+#endif
+	       << '\n';
 
         os <<  "There are " << _numHwCtrs 
            << " counters for " << _hwInfo->vendor_string 

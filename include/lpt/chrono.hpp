@@ -222,9 +222,9 @@ public:
     }
 
     template <typename FUNC>
-    accumulator& operator+=(const class measurement<FUNC>& m)
+    accumulator& operator+=(const class measurement<FUNC>& m) // NOLINT
     {
-        _elapsed += m.elapsed();
+        _elapsed += m.elapsed(); // NOLINT
         return *this;
     }
 
