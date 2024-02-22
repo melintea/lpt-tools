@@ -18,5 +18,8 @@ chronostats: stats.cpp Makefile ../../../include/lpt/*.h*
 lockfree1: lockfree1.cpp Makefile ../../../include/lpt/*.h*
 	g++ lockfree1.cpp $(FLAGS) -lpthread -o lockfree1
 
+lint:
+	clang-tidy stats.cpp -- $(FLAGS) 
+
 clean:
 	-rm *.o barrier1 chronotest chronostats lockfree1

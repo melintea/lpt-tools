@@ -25,6 +25,7 @@
 #include <cassert>
 #include <iostream>
 #include <functional>
+#include <new>         // std::hardware_constructive_interference_size
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -233,6 +234,19 @@ public:
 
     std::ostream& print(std::ostream& os) const
     {
+#ifdef __cpp_lib_hardware_interference_size
+        using std::hardware_constructive_interference_size;
+        using std::hardware_destructive_interference_size;
+#else
+        constexpr std::size_t hardware_constructive_interference_size = 64;
+        constexpr std::size_t hardware_destructive_interference_size  = 64;
+#  warning Unknown hardware_constructive_interference_size, check values above
+#endif
+        os << "hardware_constructive_interference_size=" 
+	   << hardware_constructive_interference_size 
+	   << "\nhardware_destructive_interference_size="
+	   << hardware_destructive_interference_size;
+
         os <<  "There are " << _numHwCtrs 
            << " counters for " << _hwInfo->vendor_string 
           << ":" << _hwInfo->model_string 

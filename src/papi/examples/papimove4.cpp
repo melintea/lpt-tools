@@ -38,7 +38,6 @@
     // 64 bytes on x86-64 │ L1_CACHE_BYTES │ L1_CACHE_SHIFT │ __cacheline_aligned │ ...
     constexpr std::size_t hardware_constructive_interference_size = 64;
     constexpr std::size_t hardware_destructive_interference_size  = 64;
-#  warning Unknown hardware_constructive_interference_size, check values above
 #endif
 
 constexpr const size_t vecSize = 10'000'000;
@@ -158,7 +157,6 @@ int main()
        "123456789."
        "123456"
        ;
-    std::cout << "hardware_destructive_interference_size=" << hardware_destructive_interference_size << "\n";
     constexpr const size_t overCacheLineSize(sizeof(overCacheLine));
     static_assert(overCacheLineSize > hardware_destructive_interference_size);
     const std::string overCacheLineStr(overCacheLine, overCacheLineSize);
@@ -171,7 +169,6 @@ int main()
        "123456789."
        "123456789"
        ;
-    std::cout << "hardware_constructive_interference_size=" << hardware_constructive_interference_size << "\n";
     constexpr const size_t underCacheLineSize(sizeof(underCacheLine));
     const std::string underCacheLineStr(underCacheLine, underCacheLineSize);
     static_assert(underCacheLineSize <= hardware_constructive_interference_size);

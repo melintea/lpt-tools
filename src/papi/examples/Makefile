@@ -17,9 +17,13 @@ papimove2: papimove2.cpp Makefile ../../../include/lpt/papi/*.h*
 
 papimove3: papimove3.cpp Makefile ../../../include/lpt/papi/*.h*
 	g++ papimove3.cpp $(FLAGS) -lpapi -lpthread -o papimove3
+	#clang-tidy papimove3.cpp -- $(FLAGS) 
 
 papimove4: papimove4.cpp Makefile ../../../include/lpt/papi/*.h*
 	g++ papimove4.cpp $(FLAGS) -lpapi -lpthread -o papimove4
+
+lint:
+	clang-tidy papimove3.cpp -- $(FLAGS) 
 
 clean:
 	-rm *.o papitest1 papimove1 papimove2 papimove3 papimove4
