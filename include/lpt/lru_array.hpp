@@ -227,6 +227,7 @@ private:
                         })
                      >;
     */
+    // TODO: use a multimap (multiple keys with the same stamp)
     using lruidx_t = std::map<
                           stamp_t,
                           IdxItem
