@@ -13,12 +13,14 @@
 
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <chrono>
 #include <deque>>
 #include <functional>
 #include <iostream>
+#include <iterator>
 #include <queue>
 #include <unordered_map>
 
@@ -28,7 +30,11 @@ namespace lpt {
  * Store a specified max number of items, replace the oldest 
  * when full.
  */
-template <typename T, std::size_t N>
+template <typename    KEY,
+          typename    T, 
+          std::size_t N,
+          typename HASHER_T = std::hash<T>
+>
 class lru_array
 {
 private: 
@@ -53,6 +59,12 @@ private:
 
         Item( Item&& other )                  = default;
         Item& operator=( Item&& other )       = default;
+
+        friend std::ostream& operator<<(std::ostream& os, const Item& i)
+        {
+            os << '(' << i._data /*<< ',' << i._stamp*/ << ')';
+            return os;
+        }
     };
 
 public:
@@ -77,23 +89,72 @@ public:
         return _data.max_size();
     }
 
-    void push(const T& data)
+    void push(const KEY& key, const T& data)
     {
-        if (_numUsed < max_size()) {
-            _data[_numUsed] = data;
-            _idxLru.push(IdxItem{_data[_numUsed], _numUsed});
-            ++_numUsed;
-        } else {
+        std::cout << data << ": ";
+        
+        auto itKey(_idxData.find(key));
+        if (itKey != _idxData.end()) {
+            auto& item = itKey->second;
+
+            _data[item._idx] = data;
+            _idxLru.pop();
+            _idxLru.push(IdxItem{_data[item._idx], item._idx, key});
+
+            invariant();
+            return;
+        }
+
+        if (_numUsed >= max_size()) {
+            const auto& oldKey(_idxLru.top()._key);
             auto idx(_idxLru.top()._idx);
             assert(idx < max_size());
 
             _data[idx] = data;
             _idxLru.pop();
-            _idxLru.push(IdxItem{_data[idx], idx});
+            _idxLru.push(IdxItem{_data[idx], idx, key});
+
+            _idxData.erase(oldKey);
+            auto [it, inserted] = _idxData.insert(std::make_pair(key, IdxItem{_data[idx], idx, key}));
+            assert(inserted);
+
+            invariant();
+            return;
         }
 
-        //std::cout << "*** " << _numUsed << " *** " << _idxLru.size() << "\n";
+        _data[_numUsed] = data;
+        _idxLru.push(IdxItem{_data[_numUsed], _numUsed, key});
+
+        auto [it, inserted] = _idxData.insert(std::make_pair(key, IdxItem{_data[_numUsed], _numUsed, key}));
+        assert(inserted);
+
+        ++_numUsed;
+
+        invariant();
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const lru_array& a)
+    {
+        os << "D [";
+        //std::copy(a._data.cbegin(), a._data.cend(), std::ostream_iterator<T>(os, ","));
+        std::for_each(a._data.cbegin(), a._data.cend(), [&os](const auto& item){ os << item;});
+        os << "]\nID[";
+        std::for_each(a._idxData.cbegin(), a._idxData.cend(), [&os](const auto& item){ os << item.second;});
+        os << "]\nIT[";
+        //std::for_each(a._idxLru.cbegin(), a._idxLru.cend(), [&os](const auto& item){ os << item;});
+        os << "]\n";
+        return os;
+    }
+
+private:
+
+    void invariant() const
+    {
+        std::cout << "*** " << _numUsed 
+                  << " *** " << _idxLru.size() << '[' << _idxLru.top() << ']'
+                  << " *** " << _idxData.size() << "\n";
         assert(_numUsed == _idxLru.size());
+        assert(_numUsed == _idxData.size());
     }
 
 private: 
@@ -103,18 +164,33 @@ private:
 
     struct IdxItem
     {
-        std::reference_wrapper<Item> _data;
-        size_t                       _idx; // in _data
+        std::reference_wrapper<Item> _data; // TODO: redundant since we have the idx?
+        size_t                       _idx;  // in _data
+        KEY                          _key;
+
+        friend std::ostream& operator<<(std::ostream& os, const IdxItem& i)
+        {
+            os << '(' << i._key << ',' << i._idx << ')';
+            return os;
+        }
     }; 
 
     using lruidx_t = std::priority_queue<
                         IdxItem,
                         std::deque<IdxItem>,
                         decltype([](const IdxItem& lhs, const IdxItem& rhs){
-                            return lhs._data.get()._stamp < rhs._data.get()._stamp;
+                            return lhs._data.get()._stamp >= rhs._data.get()._stamp;
                         })
                      >;
     lruidx_t           _idxLru;
+
+    using dataidx_t = std::unordered_map<
+                          KEY,
+                          IdxItem,
+                          std::hash<KEY>,
+                          std::equal_to<KEY>
+                      >;
+    dataidx_t          _idxData;
 
 }; // lru_array
 
