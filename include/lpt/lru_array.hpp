@@ -16,11 +16,10 @@
 #include <array>
 #include <cassert>
 #include <chrono>
-#include <deque>>
 #include <functional>
 #include <iostream>
 #include <iterator>
-#include <queue>
+#include <map>
 #include <set>
 #include <unordered_map>
 
@@ -81,30 +80,19 @@ class lru_array
 {
 private: 
 
-    struct Item
+    using clock_t = std::chrono::high_resolution_clock;
+    using stamp_t = clock_t::time_point;
+
+    struct IdxItem
     {
-        T       _data;
+        std::reference_wrapper<T>    _data; // TODO: redundant since we have the idx?
+        size_t                       _idx = 0;  // in _data
+        KEY                          _key;
+        stamp_t                      _stamp;
 
-        using clock_t = std::chrono::high_resolution_clock;
-        using stamp_t = clock_t::time_point;
-        stamp_t _stamp;
-
-        Item()   = default;
-        Item(const T& data) 
-            : _data(data)
-            , _stamp(clock_t::now())
-        {}
-        ~Item()  = default;
-
-        Item( const Item& other )             = default;
-        Item& operator=( const Item& other )  = default;
-
-        Item( Item&& other )                  = default;
-        Item& operator=( Item&& other )       = default;
-
-        friend std::ostream& operator<<(std::ostream& os, const Item& i)
+        friend std::ostream& operator<<(std::ostream& os, const IdxItem& i)
         {
-            os << '(' << i._data /*<< ',' << i._stamp*/ << ')';
+            os << '(' << i._key << ',' << i._idx /*<< ',' << i._stamp*/ << ')';
             return os;
         }
     };
@@ -133,45 +121,59 @@ public:
 
     void push(const KEY& key, const T& data)
     {
-        std::cout << data << ": ";
+        //std::cout << data << ": ";
 
         auto itKey(_idxData.find(key));
         if (itKey != _idxData.end()) {
-            auto& item = itKey->second;
+            auto& item  = itKey->second;
+            auto& stamp = item._stamp;
 
             _data[item._idx] = data;
-            //_idxLru.pop();  // not with ordered_set
-            _idxLru.push(IdxItem{_data[item._idx], item._idx, key});
+            IdxItem newItem{_data[item._idx], item._idx, key, clock_t::now()};
 
-            item = IdxItem{_data[item._idx], item._idx, key};
+            _idxLru.erase(stamp);
+            auto [itL, inL]  = _idxLru.insert({newItem._stamp, newItem});
+            assert(inL);
+
+            _idxData.erase(key);
+            auto [itD, inD]  = _idxData.insert({newItem._key, newItem});
+            assert(inD);
 
             invariant();
             return;
         }
 
         if (_numUsed >= max_size()) {
-            const auto& oldKey(_idxLru.top()._key);
-            auto idx(_idxLru.top()._idx);
-            assert(idx < max_size());
-            std::cout << "out->" << oldKey;
+            const auto& [oldStamp, oldItem] = *_idxLru.begin();
+            auto oldKey(oldItem._key);
+            auto oldIdx(oldItem._idx);
+            assert(oldIdx < max_size());
 
-            _data[idx] = data;
-            _idxLru.pop();
-            _idxLru.push(IdxItem{_data[idx], idx, key});
+            //std::cout << "out->" << oldItem;
+
+            _data[oldIdx] = data;
+            IdxItem newItem{_data[oldIdx], oldIdx, key, clock_t::now()};
+
+            _idxLru.erase(oldStamp);
+            auto [itL, inL]  = _idxLru.insert({newItem._stamp, newItem});
+            assert(inL);
 
             _idxData.erase(oldKey);
-            auto [it, inserted] = _idxData.insert(std::make_pair(key, IdxItem{_data[idx], idx, key}));
-            assert(inserted);
+            auto [itD, inD]  = _idxData.insert({newItem._key, newItem});
+            assert(inD);
 
             invariant();
             return;
         }
 
         _data[_numUsed] = data;
-        _idxLru.push(IdxItem{_data[_numUsed], _numUsed, key});
+        IdxItem newItem{_data[_numUsed], _numUsed, key, clock_t::now()};
 
-        auto [it, inserted] = _idxData.insert(std::make_pair(key, IdxItem{_data[_numUsed], _numUsed, key}));
-        assert(inserted);
+        auto [itL, inL]  = _idxLru.insert({newItem._stamp, newItem});
+        assert(inL);
+
+        auto [itD, inD]  = _idxData.insert({newItem._key, newItem});
+        assert(inD);
 
         ++_numUsed;
 
@@ -186,7 +188,7 @@ public:
         os << "]\nID[";
         std::for_each(a._idxData.cbegin(), a._idxData.cend(), [&os](const auto& item){ os << item.second;});
         os << "]\nIT[";
-        std::for_each(a._idxLru.cbegin(), a._idxLru.cend(), [&os](const auto& item){ os << item;});
+        std::for_each(a._idxLru.cbegin(), a._idxLru.cend(), [&os](const auto& item){ os << item.second;});
         os << "]\n";
         return os;
     }
@@ -195,31 +197,18 @@ private:
 
     void invariant() const
     {
-        std::cout << "*** " << _numUsed 
-                  << " *** " << _idxLru.size() << '[' << _idxLru.top() << ']'
-                  << " *** " << _idxData.size() << "\n";
-        std::cout << *this;
-        //assert(_numUsed == _idxLru.size());
+        //std::cout << "*** " << _numUsed 
+        //          << " *** " << _idxLru.size() << '[' << _idxLru.begin()->second << ']'
+        //          << " *** " << _idxData.size() << "\n";
+        //std::cout << *this;
+        assert(_numUsed == _idxLru.size());
         assert(_numUsed == _idxData.size());
     }
 
 private: 
 
-    std::array<Item, N> _data;
+    std::array<T, N>    _data;
     size_t              _numUsed{0};
-
-    struct IdxItem
-    {
-        std::reference_wrapper<Item> _data; // TODO: redundant since we have the idx?
-        size_t                       _idx;  // in _data
-        KEY                          _key;
-
-        friend std::ostream& operator<<(std::ostream& os, const IdxItem& i)
-        {
-            os << '(' << i._key << ',' << i._idx << ')';
-            return os;
-        }
-    }; 
 
     /*
     using lruidx_t = std::priority_queue<
@@ -230,19 +219,23 @@ private:
                         })
                      >;
     */
+    /*
     using lruidx_t = ordered_set<
                         IdxItem,
                         decltype([](const IdxItem& lhs, const IdxItem& rhs){
                             return lhs._data.get()._stamp < rhs._data.get()._stamp;
                         })
                      >;
+    */
+    using lruidx_t = std::map<
+                          stamp_t,
+                          IdxItem
+                      >;
     lruidx_t           _idxLru;
 
     using dataidx_t = std::unordered_map<
                           KEY,
-                          IdxItem,
-                          std::hash<KEY>,
-                          std::equal_to<KEY>
+                          IdxItem
                       >;
     dataidx_t          _idxData;
 
