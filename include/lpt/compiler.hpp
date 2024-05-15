@@ -9,7 +9,14 @@
 
 #pragma once 
 
-namespace lpt { namespace intel {
+namespace lpt { 
+
+constexpr bool is_atomic_aligned(const void* p)
+{
+    return (reinterpret_cast<size_t>(p) & (sizeof(*p)-1) == 0);
+}
+    
+namespace intel {
 
 /*
  * "p can be used to access all memory" - placate optimizations for p
@@ -53,7 +60,9 @@ inline void barrier() {
 #  warning ACCESSB already defined
 #endif
 
-}} //namespace lpt::intel
+} //namespace intel
+
+} //namespace lpt
 
 
 #define KEEP __attribute__((__used__))
