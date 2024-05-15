@@ -131,9 +131,17 @@ public:
             _data[item._idx] = data;
             IdxItem newItem{_data[item._idx], item._idx, key, clock_t::now()};
 
-            _idxLru.erase(stamp);
-            auto [itL, inL]  = _idxLru.insert({newItem._stamp, newItem});
-            assert(inL);
+            auto [itLruB, itLruE] = _idxLru.equal_range(stamp);
+            for (; itLruB != itLruE; ++itLruB) {
+                const auto& lruItem(itLruB->second);
+                if (lruItem._key == key) {
+                    assert(lruItem._key == key);
+                    assert(lruItem._idx == item._idx);
+                    itLruB = _idxLru.erase(itLruB);
+                    break; //continue;
+                }
+            }
+            auto itL = _idxLru.insert({newItem._stamp, newItem});
 
             _idxData.erase(key);
             auto [itD, inD]  = _idxData.insert({newItem._key, newItem});
@@ -154,9 +162,13 @@ public:
             _data[oldIdx] = data;
             IdxItem newItem{_data[oldIdx], oldIdx, key, clock_t::now()};
 
-            _idxLru.erase(oldStamp);
-            auto [itL, inL]  = _idxLru.insert({newItem._stamp, newItem});
-            assert(inL);
+            auto [itLruB, itLruE] = _idxLru.equal_range(oldStamp);
+            assert(itLruB != _idxLru.end());
+            const auto& lruItem(itLruB->second);
+            assert(lruItem._key != key);
+            itLruB = _idxLru.erase(itLruB);
+
+            auto itL = _idxLru.insert({newItem._stamp, newItem});
 
             _idxData.erase(oldKey);
             auto [itD, inD]  = _idxData.insert({newItem._key, newItem});
@@ -169,8 +181,7 @@ public:
         _data[_numUsed] = data;
         IdxItem newItem{_data[_numUsed], _numUsed, key, clock_t::now()};
 
-        auto [itL, inL]  = _idxLru.insert({newItem._stamp, newItem});
-        assert(inL);
+        auto itL = _idxLru.insert({newItem._stamp, newItem});
 
         auto [itD, inD]  = _idxData.insert({newItem._key, newItem});
         assert(inD);
@@ -201,6 +212,7 @@ private:
         //          << " *** " << _idxLru.size() << '[' << _idxLru.begin()->second << ']'
         //          << " *** " << _idxData.size() << "\n";
         //std::cout << *this;
+        assert(_numUsed <= _data.max_size());
         assert(_numUsed == _idxLru.size());
         assert(_numUsed == _idxData.size());
     }
@@ -227,8 +239,8 @@ private:
                         })
                      >;
     */
-    // TODO: use a multimap (multiple keys with the same stamp)
-    using lruidx_t = std::map<
+    // TODO: use a multiset?
+    using lruidx_t = std::multimap<
                           stamp_t,
                           IdxItem
                       >;
