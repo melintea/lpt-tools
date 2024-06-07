@@ -10,6 +10,8 @@
  *   ./configure && make && sudo make install-all
  * 
  *  Needs to run as root
+ *
+ * (see also: https://hpc.llnl.gov/software/development-environment-software/tau-tuning-and-analysis-utilities)
  */
 
 #ifndef LPT_PAPI_H
