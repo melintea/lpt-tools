@@ -24,6 +24,7 @@
 namespace lpt {
 
 /// auto-indent ostream
+// TODO: https://stackoverflow.com/questions/1391746/how-to-easily-indent-output-to-ofstream
 /*
 
 struct autoindent : private std::streambuf
