@@ -14,6 +14,7 @@
 #pragma once
 
 
+#include <cassert>
 #include <string>
 #include <iostream>
 
@@ -25,7 +26,7 @@
 namespace lpt {
 
 /// Poor performance auto-indent ostream
-///  @see also https://stackoverflow.com/questions/1391746/how-to-easily-indent-output-to-ofstream
+/// @see also https://stackoverflow.com/questions/1391746/how-to-easily-indent-output-to-ofstream
 
 struct autoindent : private std::streambuf
                   , public std::ostream
@@ -43,6 +44,24 @@ struct autoindent : private std::streambuf
 
     autoindent( autoindent&& other )                 = default;
     autoindent& operator=( autoindent&& other )      = default;
+    
+    int level(int delta)
+    {
+        int crt(_level);
+	
+	_level += delta;
+	if (_level < 0) {
+	    _level = 0;
+	}
+	
+	return crt;
+    }
+    
+    void reset(int level)
+    {
+        assert(level >= 0);
+	_level = level;
+    }
 
 private:
 
@@ -60,8 +79,38 @@ private:
     int           _level{0};
     
     static constexpr const char* sc_indent = "    ";
-};
 
+}; // autoindent
+
+
+class autoindent_guard 
+{
+public:
+
+    autoindent_guard(autoindent& ios)
+        : _ios(ios)
+	, _oldlevel(_ios.level(+1))
+    {}
+    
+    autoindent_guard()   = delete;
+    
+    ~autoindent_guard()
+    {
+        _ios.reset(_oldlevel);
+    }
+
+    autoindent_guard( const autoindent_guard& other )            = default;
+    autoindent_guard& operator=( const autoindent_guard& other ) = default;
+
+    autoindent_guard( autoindent_guard&& other )                 = default;
+    autoindent_guard& operator=( autoindent_guard&& other )      = default;
+    
+    
+private:
+    
+    autoindent& _ios;
+    int         _oldlevel{0};
+};
 
 } //namespace lpt
 
