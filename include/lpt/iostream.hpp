@@ -14,6 +14,7 @@
 #pragma once
 
 
+#include <string>
 #include <iostream>
 
 
@@ -23,40 +24,44 @@
 
 namespace lpt {
 
-/// auto-indent ostream
-// TODO: https://stackoverflow.com/questions/1391746/how-to-easily-indent-output-to-ofstream
-/*
+/// Poor performance auto-indent ostream
+///  @see also https://stackoverflow.com/questions/1391746/how-to-easily-indent-output-to-ofstream
 
 struct autoindent : private std::streambuf
                   , public std::ostream
 {
-    autoindent() : std::ostream(this) {}
+    autoindent(std::ostream& os) 
+        : std::ostream(this) 
+	, _os(os)
+    {}
+
+    autoindent()   = delete;
+    ~autoindent()  = default;
+
+    autoindent( const autoindent& other )            = default;
+    autoindent& operator=( const autoindent& other ) = default;
+
+    autoindent( autoindent&& other )                 = default;
+    autoindent& operator=( autoindent&& other )      = default;
 
 private:
 
     int overflow(int c) override
     {
-        foo(c);
+        _os.put(c);
+	if (c == '\n') {
+	    _os << sc_indent;
+	}
+	
         return 0;
     }
 
-
-    void foo(char c)
-    {
-        std::cout.put(c);
-
-    }
+    std::ostream& _os;
+    int           _level{0};
+    
+    static constexpr const char* sc_indent = "    ";
 };
 
-int main()
-{
-    autoindent b;
-    b<<"Look a number: "<<std::hex<<29<<std::endl;
-
-    return 0;
-}
-
-*/
 
 } //namespace lpt
 
