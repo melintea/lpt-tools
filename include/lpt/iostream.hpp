@@ -99,11 +99,11 @@ public:
         _ios.reset(_oldlevel);
     }
 
-    autoindent_guard( const autoindent_guard& other )            = default;
-    autoindent_guard& operator=( const autoindent_guard& other ) = default;
+    autoindent_guard( const autoindent_guard& other )            = delete;
+    autoindent_guard& operator=( const autoindent_guard& other ) = delete;
 
-    autoindent_guard( autoindent_guard&& other )                 = default;
-    autoindent_guard& operator=( autoindent_guard&& other )      = default;
+    autoindent_guard( autoindent_guard&& other )                 = delete;
+    autoindent_guard& operator=( autoindent_guard&& other )      = delete;
     
     
 private:
