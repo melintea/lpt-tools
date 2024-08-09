@@ -69,7 +69,9 @@ private:
     {
         _os.put(c);
 	if (c == '\n') {
-	    _os << sc_indent;
+	    for (int i = 0; i <_level; ++i) {
+                _os << sc_indent;
+	    }
 	}
 	
         return 0;
