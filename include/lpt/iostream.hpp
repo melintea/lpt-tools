@@ -25,25 +25,26 @@
 
 namespace lpt {
 
-/// Poor performance auto-indent ostream
+/// Poor performance indenting ostream
 /// @see also https://stackoverflow.com/questions/1391746/how-to-easily-indent-output-to-ofstream
+/// for better ideas
 
-struct autoindent : private std::streambuf
-                  , public std::ostream
+struct autoindent_ostream : private std::streambuf
+                          , public std::ostream
 {
-    autoindent(std::ostream& os) 
+    autoindent_ostream(std::ostream& os) 
         : std::ostream(this) 
 	, _os(os)
     {}
 
-    autoindent()   = delete;
-    ~autoindent()  = default;
+    autoindent_ostream()   = delete;
+    ~autoindent_ostream()  = default;
 
-    autoindent( const autoindent& other )            = default;
-    autoindent& operator=( const autoindent& other ) = default;
+    autoindent_ostream( const autoindent_ostream& other )            = default;
+    autoindent_ostream& operator=( const autoindent_ostream& other ) = default;
 
-    autoindent( autoindent&& other )                 = default;
-    autoindent& operator=( autoindent&& other )      = default;
+    autoindent_ostream( autoindent_ostream&& other )                 = default;
+    autoindent_ostream& operator=( autoindent_ostream&& other )      = default;
     
     int level(int delta)
     {
@@ -82,14 +83,46 @@ private:
     
     static constexpr const char* sc_indent = "    ";
 
-}; // autoindent
+}; // autoindent_ostream
 
 
+template <typename OS>
 class autoindent_guard 
 {
 public:
 
-    autoindent_guard(autoindent& ios)
+    autoindent_guard(OS& ios)
+        : _ios(ios)
+    {}
+    
+    autoindent_guard(autoindent_ostream& ios)
+        : _ios(ios)
+    {}
+    
+    autoindent_guard()   = delete;
+    
+    ~autoindent_guard()  = default;
+
+    autoindent_guard( const autoindent_guard& other )            = delete;
+    autoindent_guard& operator=( const autoindent_guard& other ) = delete;
+
+    autoindent_guard( autoindent_guard&& other )                 = delete;
+    autoindent_guard& operator=( autoindent_guard&& other )      = delete;
+    
+    
+private:
+    
+    OS&  _ios;
+
+}; // autoindent_guard
+
+
+template <>
+class autoindent_guard<autoindent_ostream> 
+{
+public:
+
+    autoindent_guard(autoindent_ostream& ios)
         : _ios(ios)
 	, _oldlevel(_ios.level(+1))
     {}
@@ -110,9 +143,10 @@ public:
     
 private:
     
-    autoindent& _ios;
-    int         _oldlevel{0};
-};
+    autoindent_ostream&  _ios;
+    int                  _oldlevel{0};
+
+}; // autoindent_guard
 
 } //namespace lpt
 
