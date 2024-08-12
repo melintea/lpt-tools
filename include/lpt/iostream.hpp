@@ -95,10 +95,6 @@ public:
         : _ios(ios)
     {}
     
-    autoindent_guard(autoindent_ostream& ios)
-        : _ios(ios)
-    {}
-    
     autoindent_guard()   = delete;
     
     ~autoindent_guard()  = default;
