@@ -86,48 +86,27 @@ private:
 }; // autoindent_ostream
 
 
-template <typename OS>
-class autoindent_guard 
+class autoindent_guard
 {
 public:
 
-    autoindent_guard(OS& ios)
+    autoindent_guard(std::ostream& ios)
         : _ios(ios)
-    {}
-    
-    autoindent_guard()   = delete;
-    
-    ~autoindent_guard()  = default;
-
-    autoindent_guard( const autoindent_guard& other )            = delete;
-    autoindent_guard& operator=( const autoindent_guard& other ) = delete;
-
-    autoindent_guard( autoindent_guard&& other )                 = delete;
-    autoindent_guard& operator=( autoindent_guard&& other )      = delete;
-    
-    
-private:
-    
-    OS&  _ios;
-
-}; // autoindent_guard
-
-
-template <>
-class autoindent_guard<autoindent_ostream> 
-{
-public:
-
-    autoindent_guard(autoindent_ostream& ios)
-        : _ios(ios)
-	, _oldlevel(_ios.level(+1))
-    {}
+    {
+        auto pOs(dynamic_cast<autoindent_ostream*>(&_ios));
+	if (pOs) {
+	    _oldlevel = pOs->level(+1);
+	}
+    }
     
     autoindent_guard()   = delete;
     
     ~autoindent_guard()
     {
-        _ios.reset(_oldlevel);
+        auto pOs(dynamic_cast<autoindent_ostream*>(&_ios));
+	if (pOs) {
+            pOs->reset(_oldlevel);
+	}
     }
 
     autoindent_guard( const autoindent_guard& other )            = delete;
@@ -139,8 +118,8 @@ public:
     
 private:
     
-    autoindent_ostream&  _ios;
-    int                  _oldlevel{0};
+    std::ostream&  _ios;
+    int            _oldlevel{0};
 
 }; // autoindent_guard
 

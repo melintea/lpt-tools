@@ -118,7 +118,7 @@ int main()
         std::cout << "[== autoindent ===" << std::endl;
         lpt::autoindent_ostream ios(std::cout);
         ios << "\nLook a number: " <<std::hex<<29 <<std::endl;
-	ios << "\nl1: " << data << std::endl;
+	ios << "\nl1:\n" << data << std::endl;
         std::cout << "]== autoindent ===" << std::endl;
     }
 
