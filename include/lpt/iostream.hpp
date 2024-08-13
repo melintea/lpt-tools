@@ -34,7 +34,7 @@ struct autoindent_ostream : private std::streambuf
 {
     autoindent_ostream(std::ostream& os) 
         : std::ostream(this) 
-	, _os(os)
+    , _os(os)
     {}
 
     autoindent_ostream()   = delete;
@@ -49,19 +49,24 @@ struct autoindent_ostream : private std::streambuf
     int level(int delta)
     {
         int crt(_level);
-	
-	_level += delta;
-	if (_level < 0) {
-	    _level = 0;
-	}
-	
-	return crt;
+    
+        _level += delta;
+        if (_level < 0) {
+            _level = 0;
+        }
+    
+        return crt;
     }
     
     void reset(int level)
     {
         assert(level >= 0);
-	_level = level;
+        _level = level;
+    }
+    
+    void indent()
+    {
+        _os << sc_indent;
     }
 
 private:
@@ -69,12 +74,12 @@ private:
     int overflow(int c) override
     {
         _os.put(c);
-	if (c == '\n') {
-	    for (int i = 0; i <_level; ++i) {
-                _os << sc_indent;
-	    }
-	}
-	
+        if (c == '\n') {
+            for (int i = 0; i <_level; ++i) {
+                indent();
+            }
+        }
+    
         return 0;
     }
 
@@ -94,9 +99,10 @@ public:
         : _ios(ios)
     {
         auto pOs(dynamic_cast<autoindent_ostream*>(&_ios));
-	if (pOs) {
-	    _oldlevel = pOs->level(+1);
-	}
+        if (pOs) {
+            _oldlevel = pOs->level(+1);
+            pOs->indent();
+        }
     }
     
     autoindent_guard()   = delete;
@@ -104,9 +110,9 @@ public:
     ~autoindent_guard()
     {
         auto pOs(dynamic_cast<autoindent_ostream*>(&_ios));
-	if (pOs) {
+        if (pOs) {
             pOs->reset(_oldlevel);
-	}
+        }
     }
 
     autoindent_guard( const autoindent_guard& other )            = delete;

@@ -35,9 +35,9 @@ struct l3
     friend std::ostream& operator<<(std::ostream& os, const l3& x)
     {
         lpt::autoindent_guard indent(os);
-        os << "(\n";
+        os << "(l3\n";
         std::ranges::copy(x._data, std::ostream_iterator<std::string>(os, "\n"));
-        os << ")";
+        os << ")l3";
         return os;
     }
 };
@@ -61,9 +61,9 @@ struct l2
     friend std::ostream& operator<<(std::ostream& os, const l2& x)
     {
         lpt::autoindent_guard indent(os);
-        os << "(\n";
+        os << "(l2\n";
         std::ranges::copy(x._data, std::ostream_iterator<l3>(os, "\n"));
-        os << ")";
+        os << ")l2";
         return os;
     }
 };
@@ -87,9 +87,9 @@ struct l1
     friend std::ostream& operator<<(std::ostream& os, const l1& x)
     {
         lpt::autoindent_guard indent(os);
-        os << "(\n";
+        os << "(l1\n";
         std::ranges::copy(x._data, std::ostream_iterator<l2>(os, "\n"));
-        os << ")";
+        os << ")l1";
         return os;
     }
 };
