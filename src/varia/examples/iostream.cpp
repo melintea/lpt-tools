@@ -36,9 +36,9 @@ struct l3
     {
         lpt::autoindent_guard indent(os);
         os << "(\n";
-	std::ranges::copy(x._data, std::ostream_iterator<std::string>(os, "\n"));
-        os << ")\n";
-	return os;
+        std::ranges::copy(x._data, std::ostream_iterator<std::string>(os, "\n"));
+        os << ")";
+        return os;
     }
 };
 
@@ -62,9 +62,9 @@ struct l2
     {
         lpt::autoindent_guard indent(os);
         os << "(\n";
-	std::ranges::copy(x._data, std::ostream_iterator<l3>(os, "\n"));
-        os << ")\n";
-	return os;
+        std::ranges::copy(x._data, std::ostream_iterator<l3>(os, "\n"));
+        os << ")";
+        return os;
     }
 };
 
@@ -88,9 +88,9 @@ struct l1
     {
         lpt::autoindent_guard indent(os);
         os << "(\n";
-	std::ranges::copy(x._data, std::ostream_iterator<l2>(os, "\n"));
-        os << ")\n";
-	return os;
+        std::ranges::copy(x._data, std::ostream_iterator<l2>(os, "\n"));
+        os << ")";
+        return os;
     }
 };
 
@@ -98,27 +98,27 @@ int main()
 {
     l1 data{
         {
-	    {"l1.1-l2.1-l3.1", "l1.1-l2.1-l3.2", "l1.1-l2.1-l3.3"}
-	},
-	{
-	    {"l1.1-l2.2-l3.1", "l1.1-l2.2-l3.2", "l1.1-l2.2-l3.3"}
-	},
-	{
-	    {"l1.1-l2.3-l3.1", "l1.1-l2.3-l3.2", "l1.1-l2.3-l3.3"}
-	}
+            {"l1.1-l2.1-l3.1", "l1.1-l2.1-l3.2", "l1.1-l2.1-l3.3"}
+        },
+        {
+            {"l1.1-l2.2-l3.1", "l1.1-l2.2-l3.2", "l1.1-l2.2-l3.3"}
+        }, 
+        {
+            {"l1.1-l2.3-l3.1", "l1.1-l2.3-l3.2", "l1.1-l2.3-l3.3"}
+        }
     };
     
     {
         std::cout << "[== std::cout ===" << std::endl;
         std::cout << "\nLook a number: " <<std::hex<<29 << std::endl;
-	std::cout << "\nl1: " << data << std::endl;
+        std::cout << "\nl1: " << data << std::endl;
         std::cout << "]== std::cout ===" << std::endl;
     }
     {
         std::cout << "[== autoindent ===" << std::endl;
         lpt::autoindent_ostream ios(std::cout);
         ios << "\nLook a number: " <<std::hex<<29 <<std::endl;
-	ios << "\nl1:\n" << data << std::endl;
+        ios << "\nl1:\n" << data << std::endl;
         std::cout << "]== autoindent ===" << std::endl;
     }
 
