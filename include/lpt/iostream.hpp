@@ -25,9 +25,22 @@
 
 namespace lpt {
 
-/// Poor performance indenting ostream
-/// @see also https://stackoverflow.com/questions/1391746/how-to-easily-indent-output-to-ofstream
-/// for better ideas
+/** Poor performance indenting ostream
+ *  @see also https://stackoverflow.com/questions/1391746/how-to-easily-indent-output-to-ofstream
+ *  for better ideas
+ *
+ *  Usage:
+ *
+ *    std::ostream& operator<<(std::ostream& os, const l1& x)
+ *    {
+ *        lpt::autoindent_guard indent(os);
+ *        os << "(l1\n" << ... << ")l1";
+ *        return os;
+ *    }
+ *
+ *    lpt::autoindent_ostream ios(std::cout);
+ *    ios << l1() << std::endl;
+ */
 
 struct autoindent_ostream : private std::streambuf
                           , public std::ostream
