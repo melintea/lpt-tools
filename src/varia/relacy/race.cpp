@@ -23,12 +23,14 @@ struct race_test : rl::test_suite<race_test, 2>
         if (0 == thread_index)
         {
             x($) = 1;
-            a($).store(1, rl::memory_order_relaxed);
+            a.store(1, rl::memory_order_relaxed); //FIX: a($). => a.
         }
         else
         {
-            if (1 == a($).load(rl::memory_order_relaxed))
+            if (1 == a.load(rl::memory_order_relaxed)) //FIX: a($). => a.
+	    {
                 x($) = 2;
+	    }
         }
     }
 
