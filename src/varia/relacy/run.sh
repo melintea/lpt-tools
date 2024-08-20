@@ -21,12 +21,16 @@ target=$(basename -s \.cpp $1)
 
 ${compiler} --version
 
-g++ -MD -MF ${target}.o.d -MP -MT ${target}.o -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -O1 -c -o ${target}.o -g $1
-g++ -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -O1 ${target}.o -g -o ${target}
+#
+# No -std=c++20 
+#
 
-#${compiler} $1 -std=c++20 -g -O3 \
-#  -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -I ${lptInc} \
-#  -o ${target} 
+#${compiler} -MD -MF ${target}.o.d -MP -MT ${target}.o -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -O1 -c -o ${target}.o -g $1
+#${compiler} -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -O1 ${target}.o -g -o ${target}
+
+${compiler} $1 -g -O3 \
+  -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -I ${lptInc} \
+  -o ${target} 
 
 ./${target} 
 
