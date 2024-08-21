@@ -13,7 +13,12 @@ if [ $# -ne 1 ]; then
 fi
 
 compiler=g++
-relacyHome=${HOME}/work/relacy
+
+# https://github.com/ccotter/relacy
+relacyHome=${HOME}/work/relacy-cotter
+
+# https://github.com/dvyukov/relacy
+#relacyHome=${HOME}/work/relacy-dvyukov
 
 lptInc=../../../include
 
