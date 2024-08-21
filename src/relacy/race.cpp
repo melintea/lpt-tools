@@ -52,6 +52,12 @@ struct race_test : rl::test_suite<race_test, 2>
 
 int main()
 {
-    rl::simulate<race_test>();
+    rl::test_params params;
+    //params.search_type = rl::sched_full;
+    //params.iteration_count = 100000000;
+    params.search_type = rl::sched_random;
+    params.iteration_count = 1000000;
+    
+    rl::simulate<race_test>(/*params*/);
 }
 

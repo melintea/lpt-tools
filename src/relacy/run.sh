@@ -28,10 +28,11 @@ ${compiler} --version
 #${compiler} -MD -MF ${target}.o.d -MP -MT ${target}.o -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -O1 -c -o ${target}.o -g $1
 #${compiler} -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -O1 ${target}.o -g -o ${target}
 
-${compiler} $1 -g -O3 \
+${compiler} $1 -g -O0 \
   -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -I ${lptInc} \
   -o ${target} 
 
-./${target} 
+#./${target} 
+cgdb ./${target} 
 
 rm ./${target} ./${target}.o*
