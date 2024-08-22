@@ -33,11 +33,11 @@ ${compiler} --version
 #${compiler} -MD -MF ${target}.o.d -MP -MT ${target}.o -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -O1 -c -o ${target}.o -g $1
 #${compiler} -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -O1 ${target}.o -g -o ${target}
 
-${compiler} $1 -g -O0 \
+${compiler} $1 -g -O0 -Wno-deprecated -Wno-inline-new-delete  \
   -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -I ${lptInc} \
   -o ${target} 
 
-#./${target} 
-cgdb ./${target} 
+./${target} 
+#cgdb ./${target} 
 
 rm ./${target} ./${target}.o*

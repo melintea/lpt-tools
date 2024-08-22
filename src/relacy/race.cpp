@@ -2,12 +2,13 @@
 // 
 //
 
-#include <relacy/relacy_std.hpp>
+#include <relacy/relacy.hpp>
+//#include <relacy/relacy_std.hpp>
 
 // template parameter '2' is number of threads
 struct race_test : rl::test_suite<race_test, 2>
 {
-    std::atomic<int> a;
+    rl::atomic<int> a;
     rl::var<int> x;
 
     // executed in single thread before main thread function
