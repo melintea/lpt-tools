@@ -26,16 +26,14 @@ target=$(basename -s \.cpp $1)
 
 ${compiler} --version
 
-#
-# No -std=c++20 
-#
-
 #${compiler} -MD -MF ${target}.o.d -MP -MT ${target}.o -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -O1 -c -o ${target}.o -g $1
 #${compiler} -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -O1 ${target}.o -g -o ${target}
 
-${compiler} $1 -g -O0 -Wno-deprecated -Wno-inline-new-delete  \
-  -I ${relacyHome} -I ${relacyHome}/relacy/fakestd -I ${lptInc} \
-  -o ${target} 
+${compiler} $1 -o ${target} \
+  -g -O0 -Wno-deprecated -Wno-inline-new-delete  \
+  -I ${relacyHome} -I ${lptInc} \
+  -std=c++20 \
+   
 
 ./${target} 
 #cgdb ./${target} 

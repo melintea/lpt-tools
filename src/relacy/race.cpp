@@ -1,5 +1,5 @@
 //
-// 
+// With -std=c++20
 //
 
 #include <relacy/relacy.hpp>
@@ -8,7 +8,7 @@
 // template parameter '2' is number of threads
 struct race_test : rl::test_suite<race_test, 2>
 {
-    rl::atomic<int> a;
+    rl::atomic<int> a; //std::atomic
     rl::var<int> x;
 
     // executed in single thread before main thread function
@@ -24,15 +24,15 @@ struct race_test : rl::test_suite<race_test, 2>
         if (0 == thread_index)
         {
             x($) = 1;
-	    // bug: use rl::memory_order_relaxed
-	    // fix: use rl::memory_order_release
-            a.store(1, rl::memory_order_relaxed); //FIX: a($). => a.
+	    // bug: use rl::mo_relaxed aka std::memory_order_relaxed
+	    // fix: use rl::mo_release aka rl::memory_order_release
+            a($).store(1, rl::mo_release);
         }
         else
         {
-	    // bug: use rl::memory_order_relaxed
-	    // fix: use rl::memory_order_acquire
-            if (1 == a.load(rl::memory_order_relaxed)) //FIX: a($). => a.
+	    // bug: use rl::mo_relaxed aka std::memory_order_relaxed
+	    // fix: use rl::mo_acquire aka rl::memory_order_acquire
+            if (1 == a($).load(rl::mo_acquire))
 	    {
                 x($) = 2;
 	    }
