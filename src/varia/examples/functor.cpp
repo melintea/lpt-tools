@@ -1,5 +1,6 @@
 //==============================================================================
-// Poor man's function & task (cdschecked does not support a full std)
+// Poor man's function & task (cdschecker has limited std support 
+// and std::function is messing with memory addresses being checked)
 //==============================================================================
 
 
@@ -161,6 +162,20 @@ public:
     }
 };
 
+struct task_base
+{
+    virtual ~task_base() {}
+    
+    virtual void operator()() = 0; 
+
+    static void run(void* pTask)
+    {
+        task_base* p(reinterpret_cast<task_base*>(pTask));
+        assert(p);
+        p->operator()();
+    }   
+};
+
 
 // Canned fuction<> + args template catch-all
 template <typename FUNCTION>
@@ -172,6 +187,7 @@ class task
 // Canned (function || lambda || functor) + args for a thread
 template <typename RET, typename... ARGS>
 class task<RET(*)(ARGS...)> 
+    : public task_base
 {
 
 public:
@@ -208,12 +224,14 @@ public:
         }
     }
     
-    static ret_t run(void* pTask)
+    /*
+    void run(void* pTask)
     {
         task* p(reinterpret_cast<task*>(pTask));
         assert(p);
-        return p->operator()();
+        p->operator()();
     }
+    */
 };
 
 
@@ -350,7 +368,10 @@ int main(int argc, char** argv)
         a = 5;
         auto /*task<void(*)(int, int*)>*/ task2 = create_task(someTask2, 42, &a);
         task2();
-        decltype(task2)::run(&task2);
+        //decltype(task2)::run(&task2);
+        task_base::run((void*)&task2);
+        task_base* pTask = static_cast<task_base*>(&task2);
+        pTask->run(&task2);
         std::cout << a << std::endl; // 5
         assert(a == 5);
 
