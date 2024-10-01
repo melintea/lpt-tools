@@ -31,7 +31,9 @@ struct callable
     using ret_t       = RET ;
     using signature_t = ret_t (*)(ARGS...);
 
-    virtual ret_t operator()(ARGS... args) = 0;
+    virtual ~callable() {}
+
+    virtual ret_t operator()(ARGS... args) = 0;   
 };
 
 
