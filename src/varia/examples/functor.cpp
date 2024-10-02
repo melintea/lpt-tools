@@ -162,8 +162,19 @@ public:
     }
 };
 
+//==============================================================================
+// 
+//==============================================================================
+
+struct thrd_t
+{
+    int priv{101};
+};
+
 struct task_base
 {
+    thrd_t  _tid;
+    
     virtual ~task_base() {}
     
     virtual void operator()() = 0; 
@@ -171,7 +182,7 @@ struct task_base
     static void run(void* pTask)
     {
         task_base* p(reinterpret_cast<task_base*>(pTask));
-        assert(p);
+        assert(p->_tid.priv == 101);
         p->operator()();
     }   
 };
@@ -360,6 +371,7 @@ int main(int argc, char** argv)
             std::cout << "&a = 0x" << pa << '\n';
             assert(pa == &a);
         });
+        assert(task1._tid.priv == 101);
         task1();
         std::cout << a << std::endl; // 20
         assert(a == 20);
@@ -367,6 +379,7 @@ int main(int argc, char** argv)
         // Top level function reference
         a = 5;
         auto /*task<void(*)(int, int*)>*/ task2 = create_task(someTask2, 42, &a);
+        assert(task2._tid.priv == 101);
         task2();
         //decltype(task2)::run(&task2);
         task_base::run((void*)&task2);
