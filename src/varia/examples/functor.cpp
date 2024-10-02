@@ -1,6 +1,6 @@
 //==============================================================================
 // Poor man's function & task (cdschecker has limited std support 
-// and std::function is messing with memory addresses being checked)
+// and std::function is messing with the memory addresses being checked)
 //==============================================================================
 
 
@@ -163,7 +163,7 @@ public:
 };
 
 //==============================================================================
-// 
+// task<> stuff
 //==============================================================================
 
 struct thrd_t
