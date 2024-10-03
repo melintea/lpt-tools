@@ -22,7 +22,10 @@ ${compiler} --version
 
 #TODO: -mavx2 
 ${compiler} $1 -std=c++20 -g -O3 \
-  -Wall -Wextra -Werror -pedantic -Wno-deprecated-volatile \
+  -Wall \
+  -Wextra -Werror \
+  -Wno-deprecated-volatile \
+  -fno-omit-frame-pointer \
   -pedantic \
   -isystem ${lptInc} \
   -lpthread \
