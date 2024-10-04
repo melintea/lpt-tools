@@ -212,7 +212,7 @@ public:
 
     task(RET(*func)(ARGS...), ARGS&&... args)
         : _callableClosure(new closure<signature_t, ret_t, ARGS...>(func))
-    , _args(std::forward<ARGS>(args)...)
+        , _args(std::forward<ARGS>(args)...)
     {}
     
     // Captured lambda specialization
@@ -226,7 +226,7 @@ public:
         delete _callableClosure;
     }
 
-    ret_t operator()()
+    ret_t operator()() override
     {
         if constexpr (is_void<ret_t>::value == true) {
             (void)std::apply(*_callableClosure, std::move(_args));
@@ -258,7 +258,34 @@ create_task(FUNC&& func, ARGS&& ... args)// -> decltype(func(args...))
     return task<signature_t>(std::forward<FUNC>(func), std::forward<ARGS>(args)...);
 }
 
+template <typename FUNC, typename ... ARGS>
+task_base* /* task<RET(*)(ARGS...)>* */
+create_task_ptr(FUNC&& func, ARGS&& ... args)
+{
+    using ret_t         = decltype(func(args...));
+    using signature_t   = ret_t (*)(ARGS...);
+    using function_t    = function<signature_t> ;
+    
+    return new task<signature_t>(std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+}
 
+
+namespace std {
+
+struct thread
+{
+
+    task_base* _ptdata{nullptr};
+
+    template<typename F, typename... ARGS>
+    thread(F&& f, ARGS&&... args)
+    {
+        _ptdata = create_task_ptr(std::forward<F>(f), std::forward<ARGS>(args)...);
+        //thrd_create(&_ptdata->_tid, (thrd_start_t)&task_base::run, _ptdata);
+    }
+}; //thread
+
+} // std
 
 //==============================================================================
 // 
@@ -396,6 +423,65 @@ int main(int argc, char** argv)
         assert(a == 5);
 #endif
     }
+
+    std::cout << "==== task ptr \n";
+    { // task
+        int  a  = 15;
+        int* pa = &a;
+        int  b  = 1;
+        std::cout << "&a = 0x" << pa << '\n';
+
+        // Lambda 
+        task_base* pTask1 = create_task_ptr([&]() {
+            a += 5;
+            std::cout << "&a = 0x" << pa << '\n';
+            assert(pa == &a);
+        });
+        assert(pTask1->_tid.priv == 101);
+        pTask1->run(pTask1);
+        std::cout << a << std::endl; // 20
+        assert(a == 20);
+
+        // Top level function reference
+        a = 5;
+        task_base* pTask2 = create_task_ptr(someTask2, 42, &a);
+        assert(pTask2->_tid.priv == 101);
+        //decltype(task2)::run(&task2);
+        task_base::run(pTask2);
+        pTask2->run(pTask2);
+        std::cout << a << std::endl; // 5
+        assert(a == 5);
+    }
+
+#if 1
+    std::cout << "==== thread \n";
+    { // task
+        int  a  = 15;
+        int* pa = &a;
+        int  b  = 1;
+        std::cout << "&a = 0x" << pa << '\n';
+
+        // Lambda 
+        std::thread thread1 = std::thread([&]() {
+            a += 5;
+            std::cout << "&a = 0x" << pa << '\n';
+            assert(pa == &a);
+        });
+        assert(thread1._ptdata->_tid.priv == 101);
+        task_base::run(&thread1);
+        std::cout << a << std::endl; // 20
+        //assert(a == 20);
+
+        // Top level function reference
+        a = 5;
+        std::thread  thread2 = std::thread(someTask2, 42, &a);
+        assert(thread2._ptdata->_tid.priv == 101);
+        //decltype(thread2)::run(&thread2);
+        task_base::run(&thread2);
+        std::cout << a << std::endl; // 5
+        assert(a == 5);
+    }
+#endif
 }
 
 
