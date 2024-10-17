@@ -19,9 +19,6 @@ namespace std {
 
 /*
  * Minimal implementation. Not fully standard compliant.
- * If SIGSEGV because of a null model* ModelChecker: this class cannot be used for
- * global vars.
- * Might hog the machine because of the while loops in the implementation.
  */
 class shared_mutex 
 {
