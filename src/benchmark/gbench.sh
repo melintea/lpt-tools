@@ -30,6 +30,9 @@ ${compiler} $1 -std=c++20 -g -O3 \
   -o ${target} 
 ${compiler} --version
 
+uname -a
+cat /proc/cpuinfo | grep model
+
 ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
 #perf c2c record -g --all-user --call-graph ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
 #perf c2c report -NN -g --call-graph
