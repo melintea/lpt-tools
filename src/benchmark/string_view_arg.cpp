@@ -71,6 +71,17 @@ void BM_arg(benchmark::State& state) {
     }
     state.SetItemsProcessed(N*state.iterations());
 }
+template <>
+void BM_arg<std::string_view>(benchmark::State& state) {
+    
+    for (auto _ : state) {
+        for (int i = 0; i < static_cast<int>(N); ++i) {
+            //std::cout << &s[i] << '\n';
+            benchmark::DoNotOptimize( dummy_call(std::string_view(vecs[i])) );
+        }
+    }
+    state.SetItemsProcessed(N*state.iterations());
+}
 BENCHMARK(BM_arg<std::string>);
 BENCHMARK(BM_arg<std::string_view>);
 BENCHMARK(BM_arg<std::string>);
