@@ -1,5 +1,5 @@
 /*
- * Which index is faster in a for() loop: int
+ * Transparent comparators
  */
  
 #include <benchmark/benchmark.h>
