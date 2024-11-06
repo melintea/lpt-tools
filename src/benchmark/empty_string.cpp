@@ -29,7 +29,7 @@ void BM_str_copy(benchmark::State& state) {
         for (int i = 0; i < static_cast<int>(N); ++i) {
             //std::cout << &s[i] << '\n';
 	    std::string s = empty;
-            benchmark::DoNotOptimize( s );
+            benchmark::DoNotOptimize( s.data() );
 	    benchmark::ClobberMemory();
         }
     }
@@ -41,7 +41,7 @@ void BM_str_move(benchmark::State& state) {
         for (int i = 0; i < static_cast<int>(N); ++i) {
             //std::cout << &s[i] << '\n';
 	    std::string s = std::move<std::string>({});
-            benchmark::DoNotOptimize( s );
+            benchmark::DoNotOptimize( s.data() );
 	    benchmark::ClobberMemory();
         }
     }
