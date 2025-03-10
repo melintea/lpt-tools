@@ -108,12 +108,12 @@ class autoindent_guard
 {
 public:
 
-    autoindent_guard(std::ostream& ios)
+    autoindent_guard(std::ostream& ios, int delta = 1)
         : _ios(ios)
     {
         auto pOs(dynamic_cast<autoindent_ostream*>(&_ios));
         if (pOs) {
-            _oldlevel = pOs->level(+1);
+            _oldlevel = pOs->level(delta);
             pOs->indent();
         }
     }
