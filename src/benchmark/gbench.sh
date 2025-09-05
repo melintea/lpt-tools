@@ -17,6 +17,9 @@ compiler=g++
 googleBenchmark=${HOME}/work/benchmark
 lptInc=../../include
 
+boostInc=${HOME}/work/boost/boost_1_89_0
+boostLib=${HOME}/work/boost/boost_1_89_0/stage/lib 
+
 target=$(basename -s \.cpp $1)
 
 #TODO: -mavx2 
@@ -24,9 +27,11 @@ ${compiler} $1 -std=c++20 -g -O3 \
   -Wall -Wextra -Werror -pedantic -Wno-deprecated-volatile \
   -isystem ${googleBenchmark}/include \
   -isystem ${lptInc} \
+  -isystem ${boostInc} \
   -L${googleBenchmark}/build/src \
   -L${googleBenchmark}/build/lib \
   -lbenchmark -lpthread \
+  -L${boostLib} \
   -o ${target} 
 ${compiler} --version
 
