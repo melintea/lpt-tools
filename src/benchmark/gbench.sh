@@ -37,6 +37,7 @@ ${compiler} --version
 
 uname -a
 cat /proc/cpuinfo | grep model
+ldd ./${target}
 
 ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
 #perf c2c record -g --all-user --call-graph ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
