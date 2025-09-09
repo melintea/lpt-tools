@@ -39,7 +39,7 @@ uname -a
 cat /proc/cpuinfo | grep model
 ldd ./${target}
 
-./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
+LD_LIBRARY_PATH=/usr/local/lib64:${LD_LIBRARY_PATH} ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
 #perf c2c record -g --all-user --call-graph ./${target} --benchmark_counters_tabular=true #--benchmark_repetitions=3
 #perf c2c report -NN -g --call-graph
 #perf lock record -g --all-user --call-graph dwarf,8192
