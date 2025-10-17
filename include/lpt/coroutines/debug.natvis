@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+<Type Name="promise_base">
+    <Expand>
+        <Item Name="self">selfHandle</Item>
+        <Synthetic Name="Async Call Stack">
+        <Expand>
+          <LinkedListItems>
+            <HeadPointer>this</HeadPointer>
+            <NextPointer>_parent</NextPointer>
+            <ValueNode>selfHandle</ValueNode>
+          </LinkedListItems>
+        </Expand>
+      </Synthetic>
+    </Expand>
+  </Type>
+
+</AutoVisualizer>
+
