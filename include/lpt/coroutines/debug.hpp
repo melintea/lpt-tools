@@ -52,7 +52,7 @@ struct coroframe
         assert(_parent == nullptr);
         _parent = &(other.promise());
         assert(other.promise()._child == nullptr);
-        other.promise()._child = reinterpret_cast<PROMISE_T*>(this);
+        other.promise()._child = static_cast<PROMISE_T*>(this);
     }
     
     // Unregister ourselves from our parent when we resume
@@ -100,7 +100,7 @@ struct corostack
 	PROMISE_T* pf(_ret);
 	while (pf) {
 	    os << pf << '\n';
-	    pf = reinterpret_cast<PROMISE_T*>(pf->_parent);
+	    pf = static_cast<PROMISE_T*>(pf->_parent);
 	}
     }
     
