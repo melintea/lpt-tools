@@ -12,4 +12,4 @@ corodebug: debug.cpp Makefile ../../../../include/lpt/coroutines/*.h*
 debug: corodebug
 	LD_LIBRARY_PATH=/opt/gcc152/lib64 cgdb -d /opt/gdb163/bin/gdb ./corodebug
 clean:
-	-rm *.o corodebug 
+	-rm *.o *.coro corodebug 
