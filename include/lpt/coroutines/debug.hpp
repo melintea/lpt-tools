@@ -32,6 +32,31 @@
 
 namespace lpt {
 
+// gdb+gcc helper. @see the g++ coroutine header
+struct n4861_frame
+{
+    void (*_resume)()  = nullptr;
+    void (*_destroy)() = nullptr;
+
+    void print(std::ostream& os) const
+    {
+        os        << "resume:  " << std::hex << reinterpret_cast<void*>(_resume);
+        //os << '\n'<< "destroy: " << std::hex << reinterpret_cast<void*>(_destroy);
+    }
+    friend std::ostream& operator<<(std::ostream& os, const n4861_frame* pf)
+    {
+        if (pf) {
+            pf->print(os);
+	}
+        return os;
+    }
+    friend std::ostream& operator<<(std::ostream& os, const n4861_frame& f)
+    {
+        return os;
+    }
+};
+
+
 /*
  * Usage:
  *     struct promise_base : public lpt::coroframe<promise_base> {...}
@@ -51,8 +76,9 @@ struct coroframe
     {
         assert(_parent == nullptr);
         _parent = &(other.promise());
+
         assert(other.promise()._child == nullptr);
-        other.promise()._child = static_cast<PROMISE_T*>(this);
+        other.promise()._child = static_cast<OTHER_PROMISE_T*>(this);
     }
     
     // Unregister ourselves from our parent when we resume
@@ -62,7 +88,50 @@ struct coroframe
     {
         _parent->_child = nullptr;
     }
+    
+    const n4861_frame* parent_frame() const
+    {
+        if ( !_parent) return nullptr;
+        return reinterpret_cast<n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*_parent).address());
+    }
+    
+    const n4861_frame* this_frame() const
+    {
+        return reinterpret_cast<n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*this).address());
+    }
+    
+    const n4861_frame* child_frame() const
+    {
+        if ( !_child) return nullptr;
+        return reinterpret_cast<n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*_child).address());
+    }
 
+    void print(std::ostream& os) const
+    {
+	if (_parent) {
+            os << parent_frame();
+            //os         << "parent: " << parent_frame();
+	}
+	//if (_child) {
+        //    os << '\n' << "child:  " << child_frame();
+	//}
+    }
+    
+    friend std::ostream& operator<<(std::ostream& os, const coroframe<PROMISE_T>* p)
+    {
+        if (p) {
+            p->print(os);
+	} else {
+	    os << "(null coroframe)";
+	}
+        return os;
+    }
+    friend std::ostream& operator<<(std::ostream& os, const coroframe<PROMISE_T>& cs)
+    {
+        cs.print(os);
+        return os;
+    }
+    
 }; // coroframe
 
 /* 
@@ -99,11 +168,21 @@ struct corostack
 	
 	PROMISE_T* pf(_ret);
 	while (pf) {
-	    os << pf << '\n';
+            auto pff = reinterpret_cast<n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*pf).address());
+	    os << pff << '\n';
 	    pf = static_cast<PROMISE_T*>(pf->_parent);
 	}
     }
     
+    friend std::ostream& operator<<(std::ostream& os, const corostack<PROMISE_T>* p)
+    {
+        if (p) {
+            p->print(os);
+	} else {
+	    os << "(null corostack)";
+	}
+        return os;
+    }
     friend std::ostream& operator<<(std::ostream& os, const corostack<PROMISE_T>& cs)
     {
         cs.print(os);
