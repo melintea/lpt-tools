@@ -39,6 +39,7 @@ namespace lpt {
 namespace hacks {
 
 // @see https://github.com/dfrib/accessprivate/blob/master/include/accessprivate/accessprivate.h
+// This might work with MSVC: https://github.com/martong/access_private
 template <auto MEM_PTR>
 struct private_accessor {
     static constexpr auto _memPtr = MEM_PTR;
