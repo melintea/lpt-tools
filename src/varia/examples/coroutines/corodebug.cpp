@@ -3,7 +3,7 @@
 //     https://www.youtube.com/watch?v=lKUVuaUbRDk
 // g++ -fcoroutines -std=c++23 -O0 -ggdb -fdump-lang-coro // gcc 15.1
 
-#include <lpt/coroutines/debug.hpp>
+#include <lpt/coroutines/corodebug.hpp>
 
 #include <cassert>
 #include <coroutine>

@@ -10,7 +10,7 @@ CXX      = /opt/gcc152/bin/g++
 
 all: $(TARGET)
 
-$(TARGET): debug.o  
+$(TARGET): corodebug.o  
 	$(CXX) $< $(LDFLAGS) -o $(TARGET)
 	
 %.o: %.cpp Makefile ../../../../include/lpt/coroutines/*.h*
