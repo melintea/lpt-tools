@@ -29,8 +29,8 @@
  *
  * Compile with:
  *    g++:   -lstdc++exp -fcoroutines -std=c++23 -O0 -ggdb -fdump-lang-coro // gcc 15.1
- *    clang: 
- *    MSVC:  
+ *    clang: -ggdb -std=c++23 -O0 -fcoroutines
+ *    MSVC:  /std:c++23preview or set the C/C++ language standard to "Preview - ISO C++ 23 Standard (/std:c++preview)" in project properties
  */
 
 namespace lpt {
