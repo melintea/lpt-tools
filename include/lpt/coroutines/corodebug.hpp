@@ -63,6 +63,16 @@ struct stack_frame : public std::stacktrace_entry
     }
     
 }; // stack_frame
+#elif defined(__clang__)
+struct stack_frame : public std::stacktrace_entry
+{
+    stack_frame(void* addr) : std::stacktrace_entry() {}
+}; // stack_frame
+#elif defined(__MSVC_VER)
+struct stack_frame : public std::stacktrace_entry
+{
+    stack_frame(void* addr) : std::stacktrace_entry() {}
+}; // stack_frame
 #else
 struct stack_frame : public std::stacktrace_entry
 {
