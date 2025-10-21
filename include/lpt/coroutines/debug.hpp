@@ -16,6 +16,7 @@
 #include <coroutine>
 #include <exception>
 #include <iostream>
+#include <stacktrace>
 
 /*
  * Coroutines debugging utilities.
@@ -32,6 +33,36 @@
 
 namespace lpt {
 
+// Overcome standard committee's ovesights
+namespace hacks {
+
+//https://github.com/dfrib/accessprivate/blob/master/include/accessprivate/accessprivate.h
+template <auto MEM_PTR>
+struct private_accessor {
+    static constexpr auto _memPtr = MEM_PTR;
+    struct delegate;
+};
+
+#define DEFINE_ACCESSOR(qualified_class_name, class_data_member)                    \
+    template <>                                                                     \
+    struct private_accessor<&qualified_class_name::class_data_member>::delegate {   \
+        friend auto& get_##class_data_member(qualified_class_name& obj) {           \
+            return obj.*_memPtr;                                                    \
+        }                                                                           \
+    };                                                                              \
+    auto &get_##class_data_member(qualified_class_name& obj); 
+
+
+DEFINE_ACCESSOR(std::stacktrace_entry, _M_pc);
+struct stack_frame : public std::stacktrace_entry
+{
+    stack_frame(void* addr) : std::stacktrace_entry()
+    {
+        hacks::get__M_pc(*this) = reinterpret_cast<std::stacktrace_entry::native_handle_type>(addr);
+    }
+    
+}; // stack_frame
+
 // gdb+gcc helper. @see the g++ coroutine header
 struct n4861_frame
 {
@@ -40,7 +71,10 @@ struct n4861_frame
 
     void print(std::ostream& os) const
     {
-        os        << "resume:  " << std::hex << reinterpret_cast<void*>(_resume);
+        void* resumePoint(reinterpret_cast<void*>(_resume));
+        os        << "resume:  " << std::hex << resumePoint << ' '
+	          << std::dec << stack_frame(resumePoint);
+		  
         //os << '\n'<< "destroy: " << std::hex << reinterpret_cast<void*>(_destroy);
     }
     friend std::ostream& operator<<(std::ostream& os, const n4861_frame* pf)
@@ -54,7 +88,9 @@ struct n4861_frame
     {
         return os;
     }
-};
+}; // n4861_frame
+
+} // hacks
 
 
 /*
@@ -89,21 +125,21 @@ struct coroframe
         _parent->_child = nullptr;
     }
     
-    const n4861_frame* parent_frame() const
+    const hacks::n4861_frame* parent_frame() const
     {
         if ( !_parent) return nullptr;
-        return reinterpret_cast<n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*_parent).address());
+        return reinterpret_cast<hacks::n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*_parent).address());
     }
     
-    const n4861_frame* this_frame() const
+    const hacks::n4861_frame* this_frame() const
     {
-        return reinterpret_cast<n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*this).address());
+        return reinterpret_cast<hacks::n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*this).address());
     }
     
-    const n4861_frame* child_frame() const
+    const hacks::n4861_frame* child_frame() const
     {
         if ( !_child) return nullptr;
-        return reinterpret_cast<n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*_child).address());
+        return reinterpret_cast<hacks::n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*_child).address());
     }
 
     void print(std::ostream& os) const
@@ -168,7 +204,7 @@ struct corostack
 	
 	PROMISE_T* pf(_ret);
 	while (pf) {
-            auto pff = reinterpret_cast<n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*pf).address());
+            auto pff = reinterpret_cast<hacks::n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*pf).address());
 	    os << pff << '\n';
 	    pf = static_cast<PROMISE_T*>(pf->_parent);
 	}

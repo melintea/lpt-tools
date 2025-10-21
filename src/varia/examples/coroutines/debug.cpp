@@ -240,7 +240,7 @@ Async<int> inner_function(int i) {
     // its parents in the async call stack have already gone into suspension.
     //auto callstack = co_await GetCallStack{};
     auto callstack = co_await lpt::corostack<Async<int>::promise_type>{};
-    std::cout << lpt::corostack(callstack) << '\n';
+    std::cout << '\n' << lpt::corostack(callstack) << '\n';
     
     std::cout << std::this_thread::get_id() << " GetData returned " << additional_data << '\n';
     co_return i + additional_data;
