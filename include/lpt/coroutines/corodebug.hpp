@@ -70,10 +70,14 @@ struct symbol : public std::stacktrace_entry
 {
     symbol(void* addr) : std::stacktrace_entry() {}
 }; // symbol
-#elif defined(__MSVC_VER)
+#elif defined(_MSC_VER)
+//DEFINE_ACCESSOR(std::stacktrace_entry, _Address); // C2248
 struct symbol : public std::stacktrace_entry
 {
-    symbol(void* addr) : std::stacktrace_entry() {}
+    symbol(void* addr) : std::stacktrace_entry()
+    {
+        //hacks::get__Address(*this) = reinterpret_cast<std::stacktrace_entry::native_handle_type>(addr);
+    }
 }; // symbol
 #else
 struct symbol : public std::stacktrace_entry
