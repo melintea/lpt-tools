@@ -73,17 +73,19 @@ struct n4861_frame
     {
         void* resumePoint(reinterpret_cast<void*>(_resume));
         os        << "resume:  " << std::hex << resumePoint << ' '
-	          << std::dec << stack_frame(resumePoint);
-		  
+                  << std::dec << stack_frame(resumePoint);
+          
         //os << '\n'<< "destroy: " << std::hex << reinterpret_cast<void*>(_destroy);
     }
+    
     friend std::ostream& operator<<(std::ostream& os, const n4861_frame* pf)
     {
         if (pf) {
             pf->print(os);
-	}
+        }
         return os;
     }
+    
     friend std::ostream& operator<<(std::ostream& os, const n4861_frame& f)
     {
         return os;
@@ -144,22 +146,22 @@ struct coroframe
 
     void print(std::ostream& os) const
     {
-	if (_parent) {
+        if (_parent) {
             os << parent_frame();
             //os         << "parent: " << parent_frame();
-	}
-	//if (_child) {
+        }
+        //if (_child) {
         //    os << '\n' << "child:  " << child_frame();
-	//}
+        //}
     }
     
     friend std::ostream& operator<<(std::ostream& os, const coroframe<PROMISE_T>* p)
     {
         if (p) {
             p->print(os);
-	} else {
-	    os << "(null coroframe)";
-	}
+        } else {
+            os << "(null coroframe)";
+        }
         return os;
     }
     friend std::ostream& operator<<(std::ostream& os, const coroframe<PROMISE_T>& cs)
@@ -201,24 +203,25 @@ struct corostack
     void print(std::ostream& os) const
     {
         os << "Async Stack:\n"; 
-	
-	PROMISE_T* pf(_ret);
-	while (pf) {
+    
+        PROMISE_T* pf(_ret);
+        while (pf) {
             auto pff = reinterpret_cast<hacks::n4861_frame*>(std::coroutine_handle<PROMISE_T>::from_promise(*pf).address());
-	    os << pff << '\n';
-	    pf = static_cast<PROMISE_T*>(pf->_parent);
-	}
+            os << pff << '\n';
+            pf = static_cast<PROMISE_T*>(pf->_parent);
+        }
     }
     
     friend std::ostream& operator<<(std::ostream& os, const corostack<PROMISE_T>* p)
     {
         if (p) {
             p->print(os);
-	} else {
-	    os << "(null corostack)";
-	}
+        } else {
+            os << "(null corostack)";
+        }
         return os;
     }
+    
     friend std::ostream& operator<<(std::ostream& os, const corostack<PROMISE_T>& cs)
     {
         cs.print(os);
