@@ -57,29 +57,29 @@ struct private_accessor {
 
 #if defined(__GNUG__)
 DEFINE_ACCESSOR(std::stacktrace_entry, _M_pc);
-struct stack_frame : public std::stacktrace_entry
+struct symbol : public std::stacktrace_entry
 {
-    stack_frame(void* addr) : std::stacktrace_entry()
+    symbol(void* addr) : std::stacktrace_entry()
     {
         hacks::get__M_pc(*this) = reinterpret_cast<std::stacktrace_entry::native_handle_type>(addr);
     }
     
-}; // stack_frame
+}; // symbol
 #elif defined(__clang__)
-struct stack_frame : public std::stacktrace_entry
+struct symbol : public std::stacktrace_entry
 {
-    stack_frame(void* addr) : std::stacktrace_entry() {}
-}; // stack_frame
+    symbol(void* addr) : std::stacktrace_entry() {}
+}; // symbol
 #elif defined(__MSVC_VER)
-struct stack_frame : public std::stacktrace_entry
+struct symbol : public std::stacktrace_entry
 {
-    stack_frame(void* addr) : std::stacktrace_entry() {}
-}; // stack_frame
+    symbol(void* addr) : std::stacktrace_entry() {}
+}; // symbol
 #else
-struct stack_frame : public std::stacktrace_entry
+struct symbol : public std::stacktrace_entry
 {
-    stack_frame(void* addr) : std::stacktrace_entry() {}
-}; // stack_frame
+    symbol(void* addr) : std::stacktrace_entry() {}
+}; // symbol
 #endif
 
 // gdb+gcc helper. @see the g++ coroutine header
@@ -92,7 +92,7 @@ struct n4861_frame
     {
         void* resumePoint(reinterpret_cast<void*>(_resume));
         os        << "resume:  " << std::hex << resumePoint << ' '
-                  << std::dec << stack_frame(resumePoint);
+                  << std::dec << symbol(resumePoint);
           
         //os << '\n'<< "destroy: " << std::hex << reinterpret_cast<void*>(_destroy);
     }
