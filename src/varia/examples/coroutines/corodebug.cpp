@@ -1,7 +1,7 @@
 // @see 
 //     https://godbolt.org/z/d7EPTGTdd
 //     https://www.youtube.com/watch?v=lKUVuaUbRDk
-// g++ -fcoroutines -std=c++23 -O0 -ggdb -fdump-lang-coro // gcc 15.1
+//     https://releases.llvm.org/21.1.0/tools/clang/docs/DebuggingCoroutines.html
 
 #include <lpt/coroutines/corodebug.hpp>
 

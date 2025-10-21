@@ -23,9 +23,7 @@
  * @see original at:
  *    - https://godbolt.org/z/d7EPTGTdd
  *    - https://www.youtube.com/watch?v=lKUVuaUbRDk
- *
- * This works well under MSVC in conjunction with the natvis file.
- * Not so much with g++
+ *    - https://releases.llvm.org/21.1.0/tools/clang/docs/DebuggingCoroutines.html
  *
  * Compile with:
  *    g++:   -lstdc++exp -fcoroutines -std=c++23 -O0 -ggdb -fdump-lang-coro // gcc 15.1
