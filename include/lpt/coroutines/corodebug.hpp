@@ -28,7 +28,9 @@
  * Not so much with g++
  *
  * Compile with:
- *    g++ -fcoroutines -std=c++23 -O0 -ggdb -fdump-lang-coro // gcc 15.1
+ *    g++:   -lstdc++exp -fcoroutines -std=c++23 -O0 -ggdb -fdump-lang-coro // gcc 15.1
+ *    clang: 
+ *    MSVC:  
  */
 
 namespace lpt {
@@ -126,6 +128,7 @@ struct coroframe
     // to establish the links between parent and child
     // Call in:
     //     auto await_suspend(std::coroutine_handle<OTHER_PROMISE_T> h_other)
+    //
     template<typename OTHER_PROMISE_T>
     void on_await_suspend(std::coroutine_handle<OTHER_PROMISE_T> other) 
     {
@@ -139,6 +142,7 @@ struct coroframe
     // Unregister ourselves from our parent when we resume
     // Call in:
     //    T await_resume()
+    //
     void on_await_resume() 
     {
         _parent->_child = nullptr;
