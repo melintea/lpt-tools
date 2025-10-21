@@ -53,6 +53,7 @@ struct private_accessor {
     auto &get_##class_data_member(qualified_class_name& obj); 
 
 
+#if defined(__GNUG__)
 DEFINE_ACCESSOR(std::stacktrace_entry, _M_pc);
 struct stack_frame : public std::stacktrace_entry
 {
@@ -62,6 +63,12 @@ struct stack_frame : public std::stacktrace_entry
     }
     
 }; // stack_frame
+#else
+struct stack_frame : public std::stacktrace_entry
+{
+    stack_frame(void* addr) : std::stacktrace_entry() {}
+}; // stack_frame
+#endif
 
 // gdb+gcc helper. @see the g++ coroutine header
 struct n4861_frame
