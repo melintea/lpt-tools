@@ -71,7 +71,7 @@ struct symbol : public std::stacktrace_entry
 // no __cpp_lib_stacktrace
 struct symbol 
 {
-    symbol(void* addr){}
+    symbol(void* addr) {}
 
     friend std::ostream& operator<<(std::ostream& os, const symbol* ps)
     {
@@ -98,7 +98,7 @@ struct symbol : public std::stacktrace_entry
 // no __cpp_lib_stacktrace
 struct symbol 
 {
-    symbol(void* addr){}
+    symbol(void* addr) {}
 
     friend std::ostream& operator<<(std::ostream& os, const symbol* ps)
     {
