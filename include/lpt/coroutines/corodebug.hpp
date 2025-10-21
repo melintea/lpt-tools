@@ -38,32 +38,53 @@ namespace lpt {
 // Overcome standard committee's ovesights
 namespace hacks {
 
-// @see https://github.com/dfrib/accessprivate/blob/master/include/accessprivate/accessprivate.h
-// This might work with MSVC: https://github.com/martong/access_private
-template <auto MEM_PTR>
-struct private_accessor {
-    static constexpr auto _memPtr = MEM_PTR;
-    struct delegate;
+// @see https://github.com/altamic/privablic
+template <class STUB>
+struct member
+{
+    static typename STUB::type value;
+};
+template <class STUB>
+typename STUB::type member<STUB>::value;
+
+template <class STUB, typename STUB::type x>
+struct private_member
+{
+    private_member() { member<STUB>::value = x; }
+    static private_member instance;
+};
+template <class STUB, typename STUB::type x>
+private_member<STUB, x> private_member<STUB, x>::instance;
+
+template<typename STUB>
+struct func {
+    typedef typename STUB::type type;
+    static type ptr;
 };
 
-#define DEFINE_ACCESSOR(qualified_class_name, class_data_member)                    \
-    template <>                                                                     \
-    struct private_accessor<&qualified_class_name::class_data_member>::delegate {   \
-        friend auto& get_##class_data_member(qualified_class_name& obj) {           \
-            return obj.*_memPtr;                                                    \
-        }                                                                           \
-    };                                                                              \
-    auto &get_##class_data_member(qualified_class_name& obj); 
+template<typename STUB>
+typename func<STUB>::type func<STUB>::ptr;
 
+template<typename STUB, typename STUB::type p>
+struct private_method : func<STUB> {
+    struct _private_method {
+        _private_method() { func<STUB>::ptr = p; }
+    };
+    static _private_method private_method_obj;
+};
+
+template<typename STUB, typename STUB::type p>
+typename private_method<STUB, p>::_private_method private_method<STUB, p>::private_method_obj;
 
 #if defined(__cpp_lib_stacktrace)
 #  if defined(__GNUG__) && ! defined(__clang__)
-DEFINE_ACCESSOR(std::stacktrace_entry, _M_pc);
+struct stacktrace_entry_address { typedef std::stacktrace_entry::native_handle_type std::stacktrace_entry::* type; };
+template struct private_member<stacktrace_entry_address, &std::stacktrace_entry::_M_pc>;
 struct symbol : public std::stacktrace_entry
 {
     symbol(void* addr) : std::stacktrace_entry()
     {
-        hacks::get__M_pc(*this) = reinterpret_cast<std::stacktrace_entry::native_handle_type>(addr);
+        *this.*member<stacktrace_entry_address>::value = reinterpret_cast<std::stacktrace_entry::native_handle_type>(addr);
     }
     
 }; // symbol
@@ -83,12 +104,13 @@ struct symbol
     }
 }; // symbol
 #  elif defined(_MSC_VER)
-//DEFINE_ACCESSOR(std::stacktrace_entry, _Address); // C2248
+struct stacktrace_entry_address { typedef void* std::stacktrace_entry::*type; };
+template struct private_member<stacktrace_entry_address, &std::stacktrace_entry::_Address>;
 struct symbol : public std::stacktrace_entry
 {
     symbol(void* addr) : std::stacktrace_entry()
     {
-        //hacks::get__Address(*this) = reinterpret_cast<std::stacktrace_entry::native_handle_type>(addr);
+        *this.*member<stacktrace_entry_address>::value = reinterpret_cast<std::stacktrace_entry::native_handle_type>(addr);
     }
 }; // symbol
 #  else
