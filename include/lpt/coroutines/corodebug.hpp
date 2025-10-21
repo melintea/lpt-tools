@@ -56,7 +56,8 @@ struct private_accessor {
     auto &get_##class_data_member(qualified_class_name& obj); 
 
 
-#if defined(__GNUG__) && ! defined(__clang__)
+#if defined(__cpp_lib_stacktrace)
+#  if defined(__GNUG__) && ! defined(__clang__)
 DEFINE_ACCESSOR(std::stacktrace_entry, _M_pc);
 struct symbol : public std::stacktrace_entry
 {
@@ -66,7 +67,7 @@ struct symbol : public std::stacktrace_entry
     }
     
 }; // symbol
-#elif defined(__clang__)
+#  elif defined(__clang__)
 // no __cpp_lib_stacktrace
 struct symbol 
 {
@@ -81,7 +82,7 @@ struct symbol
         return os;
     }
 }; // symbol
-#elif defined(_MSC_VER)
+#  elif defined(_MSC_VER)
 //DEFINE_ACCESSOR(std::stacktrace_entry, _Address); // C2248
 struct symbol : public std::stacktrace_entry
 {
@@ -90,12 +91,26 @@ struct symbol : public std::stacktrace_entry
         //hacks::get__Address(*this) = reinterpret_cast<std::stacktrace_entry::native_handle_type>(addr);
     }
 }; // symbol
+#  else
+#    error "Unknown compiler"
+#  endif
 #else
-struct symbol : public std::stacktrace_entry
+// no __cpp_lib_stacktrace
+struct symbol 
 {
-    symbol(void* addr) : std::stacktrace_entry() {}
+    symbol(void* addr){}
+
+    friend std::ostream& operator<<(std::ostream& os, const symbol* ps)
+    {
+        return os;
+    }
+    friend std::ostream& operator<<(std::ostream& os, const symbol& s)
+    {
+        return os;
+    }
 }; // symbol
-#endif
+#endif // __cpp_lib_stacktrace
+
 
 // gdb+gcc helper. @see the g++ coroutine header
 struct n4861_frame
