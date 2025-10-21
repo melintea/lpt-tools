@@ -56,7 +56,7 @@ struct private_accessor {
     auto &get_##class_data_member(qualified_class_name& obj); 
 
 
-#if defined(__GNUG__)
+#if defined(__GNUG__) && ! defined(__clang__)
 DEFINE_ACCESSOR(std::stacktrace_entry, _M_pc);
 struct symbol : public std::stacktrace_entry
 {
@@ -67,9 +67,19 @@ struct symbol : public std::stacktrace_entry
     
 }; // symbol
 #elif defined(__clang__)
-struct symbol : public std::stacktrace_entry
+// no __cpp_lib_stacktrace
+struct symbol 
 {
-    symbol(void* addr) : std::stacktrace_entry() {}
+    symbol(void* addr){}
+
+    friend std::ostream& operator<<(std::ostream& os, const symbol* ps)
+    {
+        return os;
+    }
+    friend std::ostream& operator<<(std::ostream& os, const symbol& s)
+    {
+        return os;
+    }
 }; // symbol
 #elif defined(_MSC_VER)
 //DEFINE_ACCESSOR(std::stacktrace_entry, _Address); // C2248

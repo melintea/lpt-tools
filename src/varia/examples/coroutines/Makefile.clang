@@ -1,0 +1,26 @@
+#
+#
+#
+
+TARGET   = corodebug
+
+CXXFLAGS = -I../../../../include -ggdb -std=c++23 -O0 -fcoroutines 
+LDFLAGS  = 
+CXX      = clang++
+
+all: $(TARGET)
+
+$(TARGET): corodebug.o  
+	$(CXX) $< $(LDFLAGS) -o $(TARGET)
+	
+%.o: %.cpp Makefile ../../../../include/lpt/coroutines/*.h*
+	$(CXX) $(CXXFLAGS) -c $<
+
+run: $(TARGET)
+	./$(TARGET)
+
+debug: $(TARGET)
+	cgdb -d /opt/gdb163/bin/gdb ./$(TARGET)
+
+clean:
+	-rm *.o *.coro $(TARGET) 
