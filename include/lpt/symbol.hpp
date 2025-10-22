@@ -13,6 +13,7 @@
 
 #include <lpt/access.hpp>
 
+#include <iostream>
 #include <stacktrace>
 
 namespace lpt {

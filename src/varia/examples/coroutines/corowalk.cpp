@@ -3,7 +3,7 @@
 //     https://www.youtube.com/watch?v=lKUVuaUbRDk
 //     https://releases.llvm.org/21.1.0/tools/clang/docs/DebuggingCoroutines.html
 
-#include <lpt/coroutines/corodebug.hpp>
+#include <lpt/coroutines/corowalk.hpp>
 
 #include <cassert>
 #include <coroutine>

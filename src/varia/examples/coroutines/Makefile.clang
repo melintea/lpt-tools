@@ -2,7 +2,7 @@
 #
 #
 
-TARGET   = corodebug
+TARGET   = corowalk
 
 CXXFLAGS = -I../../../../include -ggdb -std=c++23 -O0 -fcoroutines 
 LDFLAGS  = 
@@ -10,7 +10,7 @@ CXX      = clang++
 
 all: $(TARGET)
 
-$(TARGET): corodebug.o  
+$(TARGET): corowalk.o  
 	$(CXX) $< $(LDFLAGS) -o $(TARGET)
 	
 %.o: %.cpp Makefile ../../../../include/lpt/coroutines/*.h*
