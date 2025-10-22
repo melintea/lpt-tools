@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include <lpt/access.hpp>
 
 #include <cassert>
 #include <coroutine>
@@ -34,50 +35,11 @@
 namespace lpt {
 
 // Overcome standard committee's ovesights
-namespace hacks {
-
-// @see https://github.com/altamic/privablic
-template <class STUB>
-struct member
-{
-    static typename STUB::type value;
-};
-template <class STUB>
-typename STUB::type member<STUB>::value;
-
-template <class STUB, typename STUB::type x>
-struct private_member
-{
-    private_member() { member<STUB>::value = x; }
-    static private_member instance;
-};
-template <class STUB, typename STUB::type x>
-private_member<STUB, x> private_member<STUB, x>::instance;
-
-template<typename STUB>
-struct func {
-    typedef typename STUB::type type;
-    static type ptr;
-};
-
-template<typename STUB>
-typename func<STUB>::type func<STUB>::ptr;
-
-template<typename STUB, typename STUB::type p>
-struct private_method : func<STUB> {
-    struct _private_method {
-        _private_method() { func<STUB>::ptr = p; }
-    };
-    static _private_method private_method_obj;
-};
-
-template<typename STUB, typename STUB::type p>
-typename private_method<STUB, p>::_private_method private_method<STUB, p>::private_method_obj;
 
 #if defined(__cpp_lib_stacktrace)
 #  if defined(__GNUG__) && ! defined(__clang__)
 struct stacktrace_entry_address { typedef std::stacktrace_entry::native_handle_type std::stacktrace_entry::* type; };
-template struct private_member<stacktrace_entry_address, &std::stacktrace_entry::_M_pc>;
+template struct lpt::private_member<stacktrace_entry_address, &std::stacktrace_entry::_M_pc>;
 struct symbol : public std::stacktrace_entry
 {
     symbol(void* addr) : std::stacktrace_entry()
@@ -132,6 +94,8 @@ struct symbol
 #endif // __cpp_lib_stacktrace
 
 
+namespace hacks {
+
 // gdb+gcc helper. @see the g++ coroutine header
 struct n4861_frame
 {
@@ -142,7 +106,7 @@ struct n4861_frame
     {
         void* resumePoint(reinterpret_cast<void*>(_resume));
         os        << "resume:  " << std::hex << resumePoint << ' '
-                  << std::dec << symbol(resumePoint);
+                  << std::dec << lpt::symbol(resumePoint);
           
         //os << '\n'<< "destroy: " << std::hex << reinterpret_cast<void*>(_destroy);
     }
