@@ -9,6 +9,6 @@ Various programming/debugging tools and scripts
   * Compiler trick instructions
   * std::tuple for_each
   * enum::to_string
-* libmemleak: an interposition library to detect memory leaks; suggestion: use [bcc](https://github.com/iovisor/bcc)
+* libmemleak: an interposition library to detect memory leaks; suggestion: use [bcc](https://github.com/iovisor/bcc) instead
 * coroutines: tools to walk the async stack
 * (deprecated) libmtrace: an mtrace(3) interposition library 
