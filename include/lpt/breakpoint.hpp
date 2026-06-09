@@ -12,6 +12,13 @@
 
 namespace lpt { namespace intel {
 
+#if __cpp_lib_debugging > 202403L
+
+#include <debugging>
+#define breakpoint1 std::breakpoint()
+#define breakpoint2 std::breakpoint()
+
+#else
 
 #define breakpoint1  asm volatile ("int3;")
 
@@ -22,5 +29,6 @@ namespace lpt { namespace intel {
         ".quad 0b;"                       \
         ".popsection;")
 
+#endif // __cpp_lib_debugging
 
 }} //namespace
