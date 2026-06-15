@@ -164,6 +164,37 @@ constexpr auto to_string(E v)
 }
 */
 
+/*
+WIP
+
+struct EnumFormatter
+{
+    constexpr auto parse(auto& ctx) { return ctx.begin(); }
+
+    template<typename E>
+    requires std::is_enum_v<E>
+    auto format(const E& value, auto& ctx) const
+    {
+        std::string_view label{"unknown"};
+        template for(constexpr auto& enu : std::define_static_array(
+                                std::meta::enumerators_of(^^E)))
+        {
+            if (value == [:enu:])
+            {
+                label = std::meta::identifier_of(enu);
+                break;
+            }
+        }
+        auto out = ctx.out();
+        std::format_to(out, "{}", label);
+        return out;
+    }
+};
+
+template <> struct std::formatter<EnumWhatever> : EnumFormatter { };
+
+*/
+
 } //namespace lpt
 
 
