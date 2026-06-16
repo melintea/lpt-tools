@@ -3,6 +3,7 @@
  * C++17
  */
  
+#include <source_location>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -34,6 +35,20 @@ constexpr bool is_size_sorted()
     }
 }
 
+template <typename Type> struct UnoptimizedTypePrinter;
+
+template <typename Type>
+constexpr void is_optimal() 
+{
+    using TupleType = decltype(to_tuple(std::declval<Type>()));
+    constexpr bool isOptimal = is_size_sorted<TupleType>();
+    if constexpr ( ! isOptimal) {
+        UnoptimizedTypePrinter<Type> err;
+        static_assert(isOptimal, "Sort members from largest to smallest");
+    }
+}
+
+
 // ==================== TEST CASES ====================
 
 // Valid: Sorted from largest (8 bytes) to smallest (1 byte)
@@ -52,16 +67,11 @@ struct BadStruct
     char c;   // 1 byte
 };
 
-// Map the structs to tuple types for evaluation
-using OptimizedTuple = decltype(to_tuple(std::declval<OptimizedStruct>()));
-using BadTuple = decltype(to_tuple(std::declval<BadStruct>()));
-
-// Compile-time checks
-static_assert(is_size_sorted<OptimizedTuple>(), "Error: OptimizedStruct members must be sorted largest to smallest!");
-static_assert(is_size_sorted<BadTuple>(), "Error: BadStruct members must be sorted largest to smallest!"); // Triggers compile error
 
 int main()
 {
-    return 0;
+    is_optimal<OptimizedStruct>();
+    is_optimal<BadStruct>();
+    return EXIT_SUCCESS;
 }
 
