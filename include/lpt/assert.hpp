@@ -4,6 +4,8 @@
  *
  *  You need a C++0x compiler.
  *
+ *  \brief static_assert 
+ *
  */
 
 

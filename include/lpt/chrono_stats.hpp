@@ -4,7 +4,7 @@
  *  Copyright 2024 Aurelian Melinte. 
  *  Released under LGPL 3.0 or later. 
  * 
- *  Time measurement stats container
+ *  \brief Time measurement stats container
  */
 
 #pragma once

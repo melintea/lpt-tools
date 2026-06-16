@@ -5,6 +5,7 @@
  *  You need a C++0x compiler.
  *
  *  Ref: http://mainisusuallyafunction.blogspot.com/2012/01/embedding-gdb-breakpoints-in-c-source.html
+ *  \brief Insert breakpoints in code
  */
 
 

@@ -2,7 +2,7 @@
  *  Copyright 2012 Aurelian Melinte. 
  *  Released under GPL 3.0 or later. 
  *
- *  Evil singleton. 
+ *  \brief Evil singleton. 
  * 
  */
 

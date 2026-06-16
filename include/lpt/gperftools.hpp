@@ -4,7 +4,7 @@
  *  Copyright 2024 Aurelian Melinte.
  *  Released under GPL 3.0 or later.
  *
- *  gperftools.
+ *  \brief progiling with gperftools.
  *  https://github.com/gperftools/gperftools
  *
  */

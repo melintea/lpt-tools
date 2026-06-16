@@ -4,7 +4,7 @@
  *  Copyright 2024 Aurelian Melinte.
  *  Released under GPL 3.0 or later.
  *
- *  constexpr string
+ *  \brief constexpr string
  *  You need a C++20 compiler.
  *
  */

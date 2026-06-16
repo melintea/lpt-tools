@@ -4,8 +4,6 @@
  *  Copyright 2024 Aurelian Melinte.
  *  Released under GPL 3.0 or later.
  *
- *  You need a C++0x compiler.
- *
  *  \brief iostream tools
  *
  */
@@ -110,12 +108,12 @@ class autoindent_guard
 {
 public:
 
-    autoindent_guard(std::ostream& ios, int delta = 1)
+    autoindent_guard(std::ostream& ios, int increment)
         : _ios(ios)
     {
         auto pOs(dynamic_cast<autoindent_ostream*>(&_ios));
         if (pOs) {
-            _oldlevel = pOs->level(delta);
+            _oldlevel = pOs->level(increment);
             pOs->indent();
         }
     }
@@ -135,7 +133,7 @@ public:
 
     autoindent_guard( autoindent_guard&& other )                 = delete;
     autoindent_guard& operator=( autoindent_guard&& other )      = delete;
-    
+   
     
 private:
     
@@ -143,6 +141,35 @@ private:
     int            _oldlevel{0};
 
 }; // autoindent_guard
+
+
+struct autoindent
+{
+    autoindent_guard _guard;
+
+    autoindent( std::ostream& ios) : _guard(ios, +1) {}
+    ~autoindent() = default;
+
+    autoindent( const autoindent& other )            = delete;
+    autoindent& operator=( const autoindent& other ) = delete;
+
+    autoindent( autoindent&& other )                 = delete;
+    autoindent& operator=( autoindent&& other )      = delete;
+}; // autoindent
+
+struct autounindent
+{
+    autoindent_guard _guard;
+
+    autounindent( std::ostream& ios) : _guard(ios, +1) {}
+    ~autounindent() = default;
+
+    autounindent( const autounindent& other )            = delete;
+    autounindent& operator=( const autounindent& other ) = delete;
+
+    autounindent( autounindent&& other )                 = delete;
+    autounindent& operator=(autounindent&& other )      = delete;
+}; // autounindent
 
 } //namespace lpt
 

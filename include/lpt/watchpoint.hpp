@@ -4,7 +4,7 @@
  *  Copyright 2026 Aurelian Melinte.
  *  Released under GPL 3.0 or later.
  *
- *  Hardware breakpoints
+ *  \brief Hardware breakpoints
  *  @see https://www.timdbg.com/posts/writing-a-debugger-from-scratch-part-5/
  *  @see https://aarzilli.github.io/debugger-bibliography/hwbreak.html
  *  @see https://github.com/mmorearty/hardware-breakpoints

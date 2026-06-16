@@ -4,7 +4,7 @@
  *  Copyright 2023 Aurelian Melinte.
  *  Released under GPL 3.0 or later.
  *
- *  LLVM MCA tools.
+ *  \brief LLVM Machine Code Analyzer wrapper tools.
  *
  */
 

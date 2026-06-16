@@ -4,6 +4,8 @@
  *  Copyright 2025 Aurelian Melinte.
  *  Released under GPL 3.0 or later.
  *
+ *  \brief Poor man's symbol resolution piggybacked on std::stacktrace
+ *
  */
 
 #ifndef INCLUDED_symbol_hpp_235fc3e6_8e07_4cb0_bfdf_bfcd8c3c4d4e

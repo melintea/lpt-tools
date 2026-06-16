@@ -4,7 +4,7 @@
  *  Copyright 2Michelangelo Altamore.
  *  Released under the MIT license.
  *
- *  Access to private members
+ *  \brief Access to private members
  *  @see https://github.com/altamic/privablic
  */
 

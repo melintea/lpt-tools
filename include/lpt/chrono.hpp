@@ -4,7 +4,7 @@
  *  Copyright 2023 Aurelian Melinte. 
  *  Released under LGPL 3.0 or later. 
  * 
- *  Measure elapsed time.
+ *  \brief Measure elapsed time.
  */
 
 #pragma once 

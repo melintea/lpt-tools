@@ -6,6 +6,8 @@
  *
  *  You need a C++0x compiler.
  *
+ *  \brief LRU array
+ *
  */
 
 #ifndef INCLUDED_lru_array_hpp_025884f0_0423_46a1_bf95_5481fe40426b

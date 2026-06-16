@@ -3,6 +3,8 @@
  *  Released under GPL 3.0 or later. 
  *
  *  You need a C++0x compiler. 
+ *
+ *  \brief Enforce on-stack instantiation
  * 
  */
  

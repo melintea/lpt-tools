@@ -4,7 +4,7 @@
  *
  *  You need a C++0x compiler. 
  * 
- *  Fedor Pikus spinlock.
+ *  \brief Fedor Pikus spinlock.
  * 
  */
  
