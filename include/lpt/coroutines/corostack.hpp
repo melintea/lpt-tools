@@ -4,6 +4,8 @@
  *  Copyright 2025 Aurelian Melinte.
  *  Released under GPL 3.0 or later.
  *
+ *  \brief coroutine stack walking
+ *
  */
 
 #ifndef INCLUDED_debug_hpp_540364bb_c1da_4b40_8b6a_9793b8589616
