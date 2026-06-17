@@ -108,8 +108,8 @@ constexpr auto make_tuple_from_struct(T&& obj)
 template <typename Type> struct UnoptimizedTypePrinter; // Force type printing
 
 /*
- *  lpt::cpu::is_cache_optimal<OptimizedStruct>();
- *  lpt::cpu::is_cache_optimal<BadStruct>();
+ * static_assert(lpt::cpu::is_cache_optimal<OptimizedStruct>());
+ * static_assert( ! lpt::cpu::is_cache_optimal<BadStruct>());
  */ 
 template <typename Type>
 constexpr bool is_cache_optimal() 

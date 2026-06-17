@@ -23,12 +23,10 @@ struct BadStruct
     char c;   // 1 byte
 };
 
-bool bo = lpt::cpu::is_cache_optimal<OptimizedStruct>();
-bool bb = lpt::cpu::is_cache_optimal<BadStruct>();
+static_assert(lpt::cpu::is_cache_optimal<OptimizedStruct>());
+static_assert(lpt::cpu::is_cache_optimal<BadStruct>());
 int main()
 {
-    lpt::cpu::is_cache_optimal<OptimizedStruct>();
-    lpt::cpu::is_cache_optimal<BadStruct>();
     return EXIT_SUCCESS;
 }
 
