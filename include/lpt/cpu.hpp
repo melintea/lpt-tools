@@ -4,7 +4,7 @@
  *  Copyright 2026 Aurelian Melinte.
  *  Released under GPL 3.0 or later.
  *
- *  \brief CPU/cache utilities; C++17
+ *  \brief CPU/cache utilities; C++20
  *
  */
 
@@ -27,6 +27,8 @@
 namespace lpt {
 
 namespace cpu {
+
+namespace impl {
 
 template <typename T, std::size_t N> struct to_tuple {};
 
@@ -104,20 +106,21 @@ constexpr auto make_tuple_from_struct(T&& obj)
 }
 
 
-
 template <typename Type> struct UnoptimizedTypePrinter; // Force type printing
+
+} // namespace impl
+
 
 /*
  * static_assert(lpt::cpu::is_cache_optimal<OptimizedStruct>());
- * static_assert( ! lpt::cpu::is_cache_optimal<BadStruct>());
  */ 
 template <typename Type>
 constexpr bool is_cache_optimal() 
 {
-    using TupleType = decltype(make_tuple_from_struct(std::declval<Type>()));
-    constexpr bool isOptimal = is_size_sorted<TupleType>();
+    using TupleType = decltype(impl::make_tuple_from_struct(std::declval<Type>()));
+    constexpr bool isOptimal = impl::is_size_sorted<TupleType>();
     if constexpr ( ! isOptimal) {
-        UnoptimizedTypePrinter<Type> err;
+        impl::UnoptimizedTypePrinter<Type> err;
         static_assert(isOptimal, "Sort members from largest to smallest");
     }
     return isOptimal;
@@ -126,7 +129,7 @@ constexpr bool is_cache_optimal()
 
 } // namespace cpu
 
-} //namespace lpt
+} // namespace lpt
 
 
 #endif //#define INCLUDED_cpu_hpp_761c5125_5c94_4fa7_9819_cdf017d08a41
