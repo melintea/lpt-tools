@@ -13,17 +13,21 @@
 
 namespace lpt { 
 
-class nocopy
+struct nocopy
 {
-protected:
-   
-    nocopy() {}
-    ~nocopy() {}
+    nocopy()  = default;
+    ~nocopy() = default;
       
-private:  
-      
-    nocopy( const nocopy& );
-    const nocopy& operator=( const nocopy& );
+    nocopy( const nocopy& ) = delete;
+    const nocopy& operator=( const nocopy& ) = delete;
 };
+  
+
+struct immovable
+{
+    nocopy( nocopy&& ) = delete;
+    nocopy& operator=( nocopy&& ) = delete;
+};
+
   
 } //namespace
