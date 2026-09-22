@@ -13,9 +13,10 @@
 
 namespace lpt {
 
-#include <atomic>   // for std::atomic
-#include <mutex>    // for std::mutex
-#include <thread>   // for std::thread::id
+#include <atomic>
+#include <cerrno>
+#include <thread>
+#include <pthread.h>
 
 
 
@@ -28,8 +29,22 @@ class robust_mutex // TODO no copy/move
 {
 public:
 
-    robust_mutex(void)  = default;
-    ~robust_mutex()     = default;
+    robust_mutex(void)
+    {
+        pthread_mutexattr_t attr;
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_setrobust(&attr,  PTHREAD_MUTEX_ROBUST);
+        pthread_mutexattr_setpshared(&attr, PTHREAD_MPROCESS_SHARED);
+    
+        pthread_mutex_init(&_mutex, &attr);
+
+        pthread_mutexattr_destroy(&attr);
+    }
+    
+    ~robust_mutex()
+    {
+        pthread_mutex_destroy(&_mutex);
+    }
 
     robust_mutex( const robust_mutex& other )            = delete;
     robust_mutex& operator=( const robust_mutex& other ) = delete;
@@ -39,37 +54,49 @@ public:
 
     void lock(void)
     {
-        m_mutex.lock();
-        m_ownerThread.store(std::this_thread::get_id(), std::memory_order_relaxed);
+        int rc = pthread_mutex_lock(&_mutex);
+        if (rc == EOWNERDEAD) {
+            if (0 != pthread_mutex_consistent(&_mutex)) {
+                perror(pthread_mutex_consistent);
+            }
+        }
+        _ownerThread.store(std::this_thread::get_id(), std::memory_order_relaxed);
     }
     
     bool try_lock(void)
     {
-        if(!m_mutex.try_lock())
-        {
+        int rc = pthread_mutex_trylock(&_mutex);
+        if (rc == EOWNERDEAD) {
+            if (0 != pthread_mutex_consistent(&_mutex)) {
+                perror(pthread_mutex_consistent);
+            }
+            // continue
+        } else if (rc == EBUSY) {
+            return false;
+        } else {
+            // TODO: diagnostic
             return false;
         }
-
-        m_ownerThread.store(std::this_thread::get_id(), std::memory_order_relaxed);
+    
+        _ownerThread.store(std::this_thread::get_id(), std::memory_order_relaxed);
         return true;
     }
     
     void unlock(void)
     {
-        m_ownerThread.store(std::thread::id{}, std::memory_order_relaxed);
-        m_mutex.unlock();
+        _ownerThread.store(std::thread::id{}, std::memory_order_relaxed);
+        pthread_mutex_unlock(&_mutex);
     }
     
     bool is_locked_by_self(void) const
     {
-        return m_ownerThread.load(std::memory_order_relaxed) == std::this_thread::get_id();
+        return _ownerThread.load(std::memory_order_relaxed) == std::this_thread::get_id();
     }
     
 private:
 
-    std::mutex m_mutex; ///< TODO: pthread
-
-    std::atomic<std::thread::id> m_ownerThread{}; ///< Thread that currently owns the mutex
+    pthread_mutext_t             _mutex; 
+    std::atomic<std::thread::id> _ownerThread{}; ///< Thread that currently owns the mutex
 
 }; // class robust_mutex
 
