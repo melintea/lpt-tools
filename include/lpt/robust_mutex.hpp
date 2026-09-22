@@ -20,13 +20,24 @@ namespace lpt {
 #include <thread>
 #include <pthread.h>
 
+namespace impl {
+
+struct error_handling_policy
+{
+    void handle_errno(int err, const char* pContext)
+    {
+        perror(pContext);
+    }
+}; // error_handling_policy
+
+} // impl
 
 
 /**
  * Drop-in replacement for \c std::mutex with debug ownership validation
  * using pthread robust mutex API.
  */
-class robust_mutex 
+class robust_mutex<typename ERRHANDLER_T = impl::error_handling_policy> : public ERRHANDLER_T 
 {
 public:
 
@@ -58,11 +69,13 @@ public:
         int rc = pthread_mutex_lock(&_mutex);
         if (rc == EOWNERDEAD) {
             if (0 != pthread_mutex_consistent(&_mutex)) {
-                perror(pthread_mutex_consistent);
+                handle_errno(errno, "pthread_mutex_consistent");
+        return; 
             }
         } else if (rc == EOWNERDEAD) {
-            perror(pthread_mutex_lock);
-	}
+            handle_errno(errno, "pthread_mutex_consistent");
+        return;
+    }
         _ownerThread.store(std::this_thread::get_id(), std::memory_order_relaxed);
     }
     
@@ -73,12 +86,12 @@ public:
             return false;
         } else if (rc == EOWNERDEAD) {
             if (0 != pthread_mutex_consistent(&_mutex)) {
-                perror(pthread_mutex_consistent);
+                handle_errno(errno, "pthread_mutex_consistent");
+                return false;
             }
-	    return false;
+            // continue
         } else {
-            // TODO abort policy
-            //perror(pthread_mutex_consistent);
+            handle_errno(errno, "pthread_mutex_trylock");
             return false;
         }
     
