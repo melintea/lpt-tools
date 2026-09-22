@@ -4,6 +4,8 @@
  *  Copyright 2026 Aurelian Melinte.
  *  Released under GPL 3.0 or later.
  *
+ * Drop-in replacement for \c std::mutex with debug ownership validation
+ * using pthread robust mutex API.
  */
 
 #ifndef INCLUDED_robust_mutex_hpp_1ca9f675_0791_43b1_a013_d5fb2b5d45ef
@@ -23,9 +25,8 @@ namespace lpt {
 /**
  * Drop-in replacement for \c std::mutex with debug ownership validation
  * using pthread robust mutex API.
- *
  */
-class robust_mutex // TODO no copy/move
+class robust_mutex 
 {
 public:
 
@@ -59,22 +60,25 @@ public:
             if (0 != pthread_mutex_consistent(&_mutex)) {
                 perror(pthread_mutex_consistent);
             }
-        }
+        } else if (rc == EOWNERDEAD) {
+            perror(pthread_mutex_lock);
+	}
         _ownerThread.store(std::this_thread::get_id(), std::memory_order_relaxed);
     }
     
     bool try_lock(void)
     {
         int rc = pthread_mutex_trylock(&_mutex);
-        if (rc == EOWNERDEAD) {
+        if (rc == EBUSY) {
+            return false;
+        } else if (rc == EOWNERDEAD) {
             if (0 != pthread_mutex_consistent(&_mutex)) {
                 perror(pthread_mutex_consistent);
             }
-            // continue
-        } else if (rc == EBUSY) {
-            return false;
+	    return false;
         } else {
-            // TODO: diagnostic
+            // TODO abort policy
+            //perror(pthread_mutex_consistent);
             return false;
         }
     
