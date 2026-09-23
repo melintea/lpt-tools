@@ -13,13 +13,17 @@
 
 #pragma once
 
-namespace lpt {
-
 #include <atomic>
 #include <cerrno>
+#include <mutex>
 #include <system_error>
 #include <thread>
+#include <typeinfo>
+
+#include <stdio.h>
 #include <pthread.h>
+
+namespace lpt {
 
 namespace impl {
 
@@ -38,7 +42,8 @@ struct error_handling_policy
  * Drop-in replacement for \c std::mutex with debug ownership validation
  * using pthread robust mutex API.
  */
-class robust_mutex<typename ERRHANDLER_T = impl::error_handling_policy> : public ERRHANDLER_T 
+template <typename ERRHANDLER_T = impl::error_handling_policy>
+class robust_mutex : public ERRHANDLER_T 
 {
 public:
 
@@ -47,7 +52,7 @@ public:
         pthread_mutexattr_t attr;
         pthread_mutexattr_init(&attr);
         pthread_mutexattr_setrobust(&attr,  PTHREAD_MUTEX_ROBUST);
-        pthread_mutexattr_setpshared(&attr, PTHREAD_MPROCESS_SHARED);
+        pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
     
         pthread_mutex_init(&_mutex, &attr);
 
@@ -70,13 +75,13 @@ public:
         int rc = pthread_mutex_lock(&_mutex);
         if (rc == EOWNERDEAD) {
             if (0 != pthread_mutex_consistent(&_mutex)) {
-                handle_errno(errno, "pthread_mutex_consistent");
-                throw std::system_errorerrno, std::generic_category() 
+                ERRHANDLER_T::handle_errno(errno, "pthread_mutex_consistent");
+                throw std::system_error(errno, std::generic_category()); 
             }
             // continue
         } else if (rc == EOWNERDEAD) {
-            handle_errno(errno, "pthread_mutex_consistent");
-            throw std::system_errorerrno, std::generic_category() 
+            ERRHANDLER_T::handle_errno(errno, "pthread_mutex_consistent");
+            throw std::system_error(errno, std::generic_category()); 
         }
         _ownerThread.store(std::this_thread::get_id(), std::memory_order_relaxed);
     }
@@ -88,12 +93,12 @@ public:
             return false;
         } else if (rc == EOWNERDEAD) {
             if (0 != pthread_mutex_consistent(&_mutex)) {
-                handle_errno(errno, "pthread_mutex_consistent");
+                ERRHANDLER_T::handle_errno(errno, "pthread_mutex_consistent");
                 return false;
             }
             // continue
         } else {
-            handle_errno(errno, "pthread_mutex_trylock");
+            ERRHANDLER_T::handle_errno(errno, "pthread_mutex_trylock");
             return false;
         }
     
@@ -114,7 +119,7 @@ public:
     
 private:
 
-    pthread_mutext_t             _mutex; 
+    pthread_mutex_t              _mutex; 
     std::atomic<std::thread::id> _ownerThread{}; ///< Thread that currently owns the mutex
 
 }; // class robust_mutex
