@@ -17,6 +17,7 @@ namespace lpt {
 
 #include <atomic>
 #include <cerrno>
+#include <system_error>
 #include <thread>
 #include <pthread.h>
 
@@ -41,7 +42,7 @@ class robust_mutex<typename ERRHANDLER_T = impl::error_handling_policy> : public
 {
 public:
 
-    robust_mutex(void)
+    explicit robust_mutex(void)
     {
         pthread_mutexattr_t attr;
         pthread_mutexattr_init(&attr);
@@ -70,12 +71,13 @@ public:
         if (rc == EOWNERDEAD) {
             if (0 != pthread_mutex_consistent(&_mutex)) {
                 handle_errno(errno, "pthread_mutex_consistent");
-        return; 
+                throw std::system_errorerrno, std::generic_category() 
             }
+            // continue
         } else if (rc == EOWNERDEAD) {
             handle_errno(errno, "pthread_mutex_consistent");
-        return;
-    }
+            throw std::system_errorerrno, std::generic_category() 
+        }
         _ownerThread.store(std::this_thread::get_id(), std::memory_order_relaxed);
     }
     
